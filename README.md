@@ -2,8 +2,6 @@
 
 markx is a markdown compiler built on node.js
 
-# <center>**MarkX Syntax**</center>
-
 # Guide
 
 ## Line Breaks and Paragraphs
@@ -285,40 +283,3 @@ $$\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$$ % center aligned math equation
 	\% will show a % sign
 	\\\ will show a \ sign
 	\` will show a ` sign
-
-# Language Specs
-
-## Tokens
-
-*	`*` STAR
-*	`_` UNDERLINE
-*	`-` DASH
-*	`#` POUND
-*	` BACKTICK
-*	`>` ANGLEOPEN
-*	`<` ANGLECLOSE
-*	`^` SUPERSCRIPT
-*	`+` PLUS
-*	`=` EQUAL
-*	`~` TILDE
-*	`[` SQUAREOPEN
-*	`]` SQUARECLOSE
-*	`(` ROUNDOPEN
-*	`)` ROUNDCLOSE
-*	`!` EXCLAMATION
-*	`{` BRACKETOPEN
-*	`}` BRACKETCLOSE
-*	`%` PERCENT
-*	`|` BAR
-*	`\` BACKSLASH
-*	`$` DOLLAR
-*	NEWLINE
-*	TEXT
-
-## Derivation Rule
-
-||||
-|---|---|---|
-| markx | -> | element elements |
-| elements | -> | element elements |
-| elements | -> | |
