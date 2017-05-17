@@ -14,41 +14,36 @@ An empty line will be considered as a beginning/end of a paragraph.
 
 ## Emphasis
 
-### Italic
+```
+Italic: *This setntence is italic.*
+Boldface: **This setntence is bold.**
+Combination: ***This setntence is italic and bold.***
 
-	*text*
+Underline: _This setntence is underlined._
+Strikethrough：__This setntence is striked through.__
+Combination: ___This setntence is underlined and striked through.___
 
-### Boldface
+Highlight: -This sentence is highlighted.-
+Colored Text: --This sentence is in red.--
+Boxed Text: ---This sentence is boxed.---
+```
+Italic: *This setntence is italic.*
 
-	**text**
+Boldface: **This setntence is bold.**
 
-### Italic & Boldface
+Combination: ***This setntence is italic and bold.***
 
-	***text***
+Underline: <u>This setntence is underlined.</u>
 
-### Underline
+Strikethrough：~~This setntence is striked through.~~
 
-	_text_
+Combination: ~~<u>This setntence is underlined and striked through.</u>~~
 
-### Strike Through
+Highlight: <Mark>This sentence is highlighted.</Mark>
 
-	__text__
+Colored Text: <font color="red">This sentence is in red.</font>
 
-### Underline & Strike Through
-
-	___text___
-
-### Highlight (yellow)
-
-	-text-
-
-### Colored Text (red)
-
-	--text--
-
-### Boxed Text
-
-	---text---
+Boxed Text: ---This sentence is boxed.---
 
 ## Header & Title
 
