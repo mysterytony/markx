@@ -1,0 +1,23 @@
+{
+  "name": "markx",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mysterytony/markx.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mysterytony/markx/issues"
+  },
+  "homepage": "https://github.com/mysterytony/markx#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "jsdoc": "^3.4.3"
+  }
+}
