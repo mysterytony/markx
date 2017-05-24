@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mysterytony/markx#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "jsdoc": "^3.4.3"
+    "jsdoc": "^3.4.3",
+    "mongodb": "^2.2.27"
   }
 }
