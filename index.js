@@ -11,7 +11,7 @@ var greetingMsg;
 
 // Use connect method to connect to the server
 MongoClient.connect(url, function(err, db) {
-	var collection = db.collection('documents');
+	var collection = db.collection('test');
 	// Find some documents
 	collection.find({}).toArray(function(err, docs) {
 		greetingMsg = docs[0].message;
