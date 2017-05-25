@@ -1,5 +1,5 @@
 # markx sample #
-## Headers
+## Headers:
 # H1
 ## H2
 ### H3
@@ -7,7 +7,27 @@
 ##### H5
 ###### H6
 
+## Code block:
 ```javascript
 var arr = [1, 2, 3];
 arr.length;
 ```
+
+## Inline Code:
+The `inline code` has `back-ticks` around it.
+
+## Emphasis:
+*This setntence is italic.*
+**This setntence is bold.**
+***This setntence is italic and bold.***
+
+_This setntence is underlined._
+__This setntence is striked through.__
+___This setntence is underlined and striked through.___
+
+-This sentence is highlighted.-
+--This sentence is in red.--
+---This sentence is boxed.---
+
+## Block Quotes:
+
