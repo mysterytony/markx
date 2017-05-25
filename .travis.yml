@@ -6,4 +6,9 @@ before_script:
   - npm install -g gulp
   - npm install jscs -g
 
-script: gulp
+script: 
+  - gulp
+  - npm test
+
+install:
+  - npm start
