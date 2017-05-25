@@ -2,6 +2,32 @@
 <html>
 <head>
 <style>
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+code {
+  font-family: monospace;
+}
+pre {
+    padding: 10px;
+    background: #F7F7F7;
+    font-size: 85%;
+    color: #2A2A2A;
+    /*-moz-tab-size: 4;*/
+    tab-size: 4;
+    overflow: auto;
+    border: 1px solid #DFDFDF;
+    border-radius: 3px;
+}
+pre .func {
+  color: #8E44AD;
+}
+pre .number {
+  color: #0E6655;
+}
+pre .keyword {
+  color: #A71D5D;
+}
 .seperator  {
   padding-bottom: 0.3em; 
   border-bottom: 1px solid #D5D8DC;
@@ -20,6 +46,15 @@ mx-title  {
 <h4>H4</h4>
 <h5>H5</h5>
 <h6>H6</h6>
+
+<div>
+  <code class="javascript">
+    <pre>
+      <span class="keyword">var</span> arr <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+      <span class="pl-en">arr.</span><span class="func">length</span>;
+    </pre>
+  </code>
+</div>
 
 </body>
 </html>

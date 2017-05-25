@@ -6,3 +6,8 @@
 #### H4
 ##### H5
 ###### H6
+
+```javascript
+var arr = [1, 2, 3];
+arr.length;
+```
