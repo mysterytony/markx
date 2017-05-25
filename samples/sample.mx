@@ -30,4 +30,150 @@ ___This setntence is underlined and striked through.___
 ---This sentence is boxed.---
 
 ## Block Quotes:
+>>>
+Block Quotes have ">>>" and "<<<" around them.
+Note: Block Qutoes can be nested.
+<<<
 
+## Boxed Paragraph With Colored Background
+^^^
+Boxed Paragraph havs "^^^" around it.
+The background color is blue.
+^^^
+
+## Lists:
+1   Item 1
+2   Item 2
+3   Item 3
+
+a   Item 1
+b   Item 2
+c   Item 3
+
+I   Item 1
+II   Item 2
+III   Item 3
+
+i   Item 1
+ii   Item 2
+iii   Item 3
+
+*   Item 1
+*   Item 2
+*   Item 3
+
++   Item 1
++   Item 2
++   Item 3
+
+-   Item 1
+-   Item 2
+-   Item 3
+
+>   Item 1
+>   Item 2
+>   Item 3
+
+## Horizontal Lines
+First line
+---
+Second line
+
+## Links
+[markx's Github Page](https://github.com/mysterytony/markx)
+<https://github.com/mysterytony/markx>
+
+## Media
+![markx's logo](https://github.com/mysterytony/markx/blob/master/logo/64x64.png)
+
+## Subscript & Superscript
+H_{2]O
+x^{2}=x * x
+
+## Footnote
+Here is some text[^1].
+[^1] Refer to some links to read more.
+
+## Paragraph Alignment
+^^^ <
+Align Left
+^^^
+
+^^^ =
+Align Center
+^^^
+
+^^^ >
+Align Left
+^^^
+
+^^^ ==
+Fit Width
+^^^
+
+## Columns
+``` = = % 2 columns
+text text and more text
+```
+
+``` = = = % 3 columns
+text text and more text
+```
+
+``` == = % 2 columns with width 2/3 and 1/3
+text text and more text
+```
+
+## Table
+| th | th | th |
+|====|====|====|
+| hd | hd | hd |
+|----|----|----|
+| hd | hd | hd |
+
+|====|====|====|
+| td | td | td |
+
+| td | td | td |
+| td | td | td |
+
+| td | td | td |
+| text \\ text | td | td|
+
+table title
+| th | th | th |
+|====|====|====|
+| hd | hd | hd |
+
+| th      | th |
+|----|----|----|
+| th | th | th |
+|====|====|====|
+| td      | td |
+|         |----|
+|         | td |
+
+## Math Equations
+```
+$1$, $\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$ % in line math equation
+```
+
+```
+$$\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$$ % center aligned math equation
+```
+
+## Comment
+```
+Text% This is a comment
+%% Comment that is
+on multiple lines%%
+```
+Text% This is a comment
+%% Comment that is
+on multiple lines%%
+
+## Escapes
+
+`\%` will show a \% sign
+`\\\` will show a \\\ sign
+`\`` will show a \` sign
