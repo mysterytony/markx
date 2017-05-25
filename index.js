@@ -5,7 +5,7 @@ var app = express();
 var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-var ul = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
+var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
 
 var greetingMsg;
 
