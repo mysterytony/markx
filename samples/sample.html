@@ -1,61 +1,284 @@
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-code {
-  font-family: monospace;
-}
-pre {
-    padding: 10px;
-    background: #F7F7F7;
-    font-size: 85%;
-    color: #2A2A2A;
-    /*-moz-tab-size: 4;*/
-    tab-size: 4;
-    overflow: auto;
-    border: 1px solid #DFDFDF;
-    border-radius: 3px;
-}
-pre .func {
-  color: #8E44AD;
-}
-pre .number {
-  color: #0E6655;
-}
-pre .keyword {
-  color: #A71D5D;
-}
-.seperator  {
-  padding-bottom: 0.3em; 
-  border-bottom: 1px solid #D5D8DC;
-  }
-mx-title  {
-  text-align: center;
-}
-</style>
-</head>
-<body>
-<mx-title><h1>markx sample</h1></mx-title>
-<h2 class = "seperator">Headers:</h2>
-<h1 class = "seperator">H1</h1>
-<h2 class = "seperator">H2</h2>
-<h3>H3</h3>
-<h4>H4</h4>
-<h5>H5</h5>
-<h6>H6</h6>
 
-<h2 class = "seperator">Code Block:</h2>
-<div>
-  <code class="javascript">
-    <pre>
-      <span class="keyword">var</span> arr <span class="keyword">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
-      <span class="pl-en">arr.</span><span class="func">length</span>;
-    </pre>
-  </code>
-</div>
+<head>
+  <style>
+    .mx-body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      padding: 0.5em;
+      margin: 0.5em;
+      border-style: solid;
+      border-color: #e0e0e0;
+      border-radius: 0.3em;
+      border-width: 0.1em;
+    }
+
+    .mx-body p {
+      margin: 0px 0px 10px 0px;
+      padding: 0px;
+    }
+
+    .mx-body h1.title {
+      text-align: center;
+      font-size: 4em;
+      border-bottom: none;
+      padding: 0em;
+    }
+
+    .mx-body h1,
+    .mx-body h2,
+    .mx-body h3,
+    .mx-body h4,
+    .mx-body h5,
+    .mx-body h6 {
+      padding-left: 0px;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-top: 0px;
+    }
+
+    .mx-body h1,
+    .mx-body h2,
+    .mx-body h3 {
+      border-bottom: 1px solid #D5D8DC;
+    }
+
+    .mx-body h1 {
+      font-size: 2.5em;
+    }
+
+    .mx-body h2 {
+      font-size: 2.25em;
+    }
+
+    .mx-body h3 {
+      font-size: 2em;
+    }
+
+    .mx-body h4 {
+      font-size: 1.75em;
+    }
+
+    .mx-body h5 {
+      font-size: 1.5em;
+    }
+
+    .mx-body h6 {
+      font-size: 1.25em;
+    }
+
+    .mx-body .code-block .number-line {
+      position: absolute;
+      padding-left: 5px;
+      padding-top: 11px;
+      font-size: 0.9em;
+      color: #00b9ce;
+      text-align: right;
+      line-height: 14px;
+    }
+
+    .mx-body code {
+      font-family: monospace;
+      font-size: 0.9em;
+      margin: 0em;
+      padding: 0em;
+      line-height: 14px;
+    }
+
+    .mx-body pre {
+      padding: 10px 10px 10px 30px;
+      background: #F7F7F7;
+      border: 1px solid #DFDFDF;
+      border-radius: 0.3em;
+      margin: 0em 0em 10px 0em;
+    }
+
+    .mx-body pre .word {
+      color: #00006d;
+    }
+
+    .mx-body pre .func {
+      color: #8E44AD;
+    }
+
+    .mx-body pre .number {
+      color: #0E6655;
+    }
+
+    .mx-body pre .keyword {
+      color: #A71D5D;
+    }
+
+    .mx-body pre .comment {
+      color: #009302;
+    }
+
+    .mx-body span.inline {
+      font-size: 0.9em;
+      background-color: #efefef;
+      color: #161616;
+      padding: 3px;
+      border-radius: 0.3em;
+    }
+
+    .mx-body span.red {
+      color: red;
+    }
+
+    .mx-body span.box {
+      border: 1px solid black;
+      padding: 1px;
+    }
+
+    .mx-body div.block-quote {
+      border-left: 5px solid #00b9ce;
+      padding: 10px;
+      background: #dbfcff;
+      border-top-left-radius: 0.3em;
+      border-bottom-left-radius: 0.3em;
+    }
+
+    .mx-body div.boxed {
+      border: 3px solid #d6d600;
+      background-color: #ffffc9;
+      padding: 10px;
+      border-radius: 0.3em;
+    }
+  </style>
+
+</head>
+
+<body class="mx-body">
+  <h1 class="title">Markx Sample Title</h1>
+  <h1>H1</h1>
+  <h2>H2</h2>
+  <h3>H3</h3>
+  <h4>H4</h4>
+  <h5>H5</h5>
+  <h6>H6</h6>
+
+  <h2>Code Block:</h2>
+  <div class="code-block">
+    <div class="number-line">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+      <div>6</div>
+      <div>7</div>
+      <div>8</div>
+      <div>9</div>
+      <div>10</div>
+      <div>11</div>
+      <div>12</div>
+    </div>
+    <code>
+<pre><span class="keyword">var</span> <span class="word">arr</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="word">arr</span>.<span class="word">length</span>;
+<span class="word">console</span>.<span class="func">log</span>(arr); <span class="comment">// this is a comment</span>
+<span class="keyword">var</span> <span class="word">arr</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="word">arr</span>.<span class="word">length</span>;
+<span class="word">console</span>.<span class="func">log</span>(arr); <span class="comment">// this is a comment</span>
+<span class="keyword">var</span> <span class="word">arr</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="word">arr</span>.<span class="word">length</span>;
+<span class="word">console</span>.<span class="func">log</span>(arr); <span class="comment">// this is a comment</span>
+<span class="keyword">var</span> <span class="word">arr</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="word">arr</span>.<span class="word">length</span>;
+<span class="word">console</span>.<span class="func">log</span>(arr); <span class="comment">// this is a comment</span>
+</pre>
+      </code>
+  </div>
+
+  <h2>Inline Code:</h2>
+
+  <p>
+    This <span class="inline">inline code</span> has <span class="inline">back-ticks (`)</span> around it.
+  </p>
+
+  <h2>Emphasis:</h2>
+
+  <p>
+    <i>This setntence is italic.</i>
+  </p>
+
+  <p>
+    <b>This setntence is bold.</b>
+  </p>
+
+  <p>
+    <b><i>This setntence is italic and bold.</i></b>
+  </p>
+
+  <p>
+    <u>This setntence is underlined.</u>
+  </p>
+
+  <p>
+    <s>This setntence is striked through.</s>
+  </p>
+
+  <p>
+    <u><s>This setntence is striked through.</s></u>
+  </p>
+
+  <p>
+    <mark>This sentence is highlighted.</mark>
+  </p>
+
+  <p>
+    <span class="red">This sentence is in red.<span>
+  </p>
+
+  <p>
+    <span class="box">This sentence is boxed.</span>
+  </p>
+
+  <h2>Block Quotes</h2>
+
+  <div class="block-quote">
+    <p>
+      Block Quotes have ">>>" and "<<<" around them.
+      Note: Block Qutoes can be nested.
+    </p>
+
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+
+      Donec pretium sit amet velit nec pulvinar. Donec hendrerit fringilla tellus, sit amet bibendum lacus finibus eget. Nunc blandit, libero id tincidunt iaculis, purus sapien pulvinar lectus, et blandit ligula neque a ante. Phasellus ac metus volutpat, auctor erat at, finibus mi. Duis at lacus eget urna varius auctor. Mauris lobortis turpis sed dui bibendum, at imperdiet est congue. Phasellus dapibus ex non dapibus sollicitudin. Donec porttitor turpis ullamcorper est eleifend cursus. Vestibulum posuere dignissim urna ut pellentesque.
+
+      Donec nec mollis velit. Fusce quis bibendum lectus, in iaculis lectus. Donec eu metus condimentum, imperdiet magna sit amet, fermentum nunc. Vivamus sit amet nibh sit amet velit fermentum eleifend. Curabitur lectus enim, ultrices vel odio ac, euismod scelerisque tortor. Cras consequat, sapien non blandit finibus, nunc sem dictum ex, ac laoreet nibh tellus eu massa. Proin vulputate lorem eget urna maximus, sed luctus odio bibendum. Proin blandit euismod elementum.
+
+      Pellentesque non ipsum sem. Morbi congue ligula vitae justo rhoncus blandit sed eu tortor. Sed non lacus quam. Mauris euismod lectus a nisl sollicitudin tempor. Donec in condimentum elit. Sed non vulputate lorem. Vestibulum molestie tristique nibh, quis tempor ipsum eleifend vitae.
+
+      Donec ac ipsum quis dolor laoreet semper. Aenean ex leo, commodo eu felis nec, mollis maximus ipsum. Aliquam porttitor magna et quam suscipit consequat. Pellentesque vestibulum vel neque id facilisis. Aenean at turpis eleifend, aliquet magna ut, mattis ex. Nullam eget urna augue. Praesent ultrices aliquet lorem eu hendrerit. Sed vitae massa nisi. Phasellus vitae pretium ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin vel posuere elit. Nunc sagittis vel purus ut mattis. Donec et nulla ante. Suspendisse in lorem dolor. Duis at ex pretium, aliquam ante sed, ullamcorper metus. Fusce malesuada facilisis ligula, ac aliquam metus faucibus non.
+    </p>
+  </div>
+
+  <h2>Boxed Paragraph With Colored Background</h2>
+
+  <div class="boxed">
+    <p>
+      Boxed Paragraph havs "^^^" around it.
+      The background color is blue.
+    </p>
+
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+
+      Donec pretium sit amet velit nec pulvinar. Donec hendrerit fringilla tellus, sit amet bibendum lacus finibus eget. Nunc blandit, libero id tincidunt iaculis, purus sapien pulvinar lectus, et blandit ligula neque a ante. Phasellus ac metus volutpat, auctor erat at, finibus mi. Duis at lacus eget urna varius auctor. Mauris lobortis turpis sed dui bibendum, at imperdiet est congue. Phasellus dapibus ex non dapibus sollicitudin. Donec porttitor turpis ullamcorper est eleifend cursus. Vestibulum posuere dignissim urna ut pellentesque.
+
+      Donec nec mollis velit. Fusce quis bibendum lectus, in iaculis lectus. Donec eu metus condimentum, imperdiet magna sit amet, fermentum nunc. Vivamus sit amet nibh sit amet velit fermentum eleifend. Curabitur lectus enim, ultrices vel odio ac, euismod scelerisque tortor. Cras consequat, sapien non blandit finibus, nunc sem dictum ex, ac laoreet nibh tellus eu massa. Proin vulputate lorem eget urna maximus, sed luctus odio bibendum. Proin blandit euismod elementum.
+
+      Pellentesque non ipsum sem. Morbi congue ligula vitae justo rhoncus blandit sed eu tortor. Sed non lacus quam. Mauris euismod lectus a nisl sollicitudin tempor. Donec in condimentum elit. Sed non vulputate lorem. Vestibulum molestie tristique nibh, quis tempor ipsum eleifend vitae.
+
+      Donec ac ipsum quis dolor laoreet semper. Aenean ex leo, commodo eu felis nec, mollis maximus ipsum. Aliquam porttitor magna et quam suscipit consequat. Pellentesque vestibulum vel neque id facilisis. Aenean at turpis eleifend, aliquet magna ut, mattis ex. Nullam eget urna augue. Praesent ultrices aliquet lorem eu hendrerit. Sed vitae massa nisi. Phasellus vitae pretium ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin vel posuere elit. Nunc sagittis vel purus ut mattis. Donec et nulla ante. Suspendisse in lorem dolor. Duis at ex pretium, aliquam ante sed, ullamcorper metus. Fusce malesuada facilisis ligula, ac aliquam metus faucibus non.
+    </p>
+  </div>
 
 </body>
+
 </html>
