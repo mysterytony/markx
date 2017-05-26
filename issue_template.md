@@ -22,3 +22,25 @@
 
 * Branch: [not set/#some number]
 * Pull Request: [not set/#some number]
+
+---
+
+# [Task Title]
+
+## Summary
+
+* finish design the page
+
+## To Do
+
+- [ ] add button to the page
+- [ ] add input box to the page
+
+## Attachment
+
+[screen shot/help document/etc.]
+
+## Related Branch/Pull Request
+
+* Branch: [not set/#some number]
+* Pull Request: [not set/#some number]
