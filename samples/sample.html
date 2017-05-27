@@ -9,7 +9,7 @@
       padding: 0.5em;
       margin: 0.5em;
       border-style: solid;
-      border-color: #e0e0e0;
+      border-color: #DFDFDF;
       border-radius: 0.3em;
       border-width: 0.1em;
     }
@@ -43,7 +43,7 @@
     .mx-body h1,
     .mx-body h2,
     .mx-body h3 {
-      border-bottom: 1px solid #D5D8DC;
+      border-bottom: 1px solid #DFDFDF;
     }
 
     .mx-body h1 {
@@ -147,8 +147,150 @@
       padding: 10px;
       border-radius: 0.3em;
     }
-  </style>
 
+    .mx-body ol.number {
+      list-style-type: decimal;
+    }
+
+    .mx-body ol.alphabet {
+      list-style-type: lower-alpha;
+    }
+
+    .mx-body ol.upper-roman {
+      list-style-type: upper-roman;
+    }
+    
+    .mx-body ol.lower-roman {
+      list-style-type: lower-roman;
+    }
+
+    .mx-body ul.disc {
+      list-style-type: disc;
+    }
+
+    .mx-body ul.square {
+      list-style-type: square;
+    }
+
+    .mx-body ul.dash {
+      list-style: none;
+      padding: 0;
+    }
+
+    .mx-body ul.dash li{
+      padding-left: 27px; 
+
+    }
+
+    .mx-body ul.dash li::before{
+      content: "-";
+      padding-right: 8px;
+      line-height: 1em;
+    }
+
+    .mx-body ul.arrow {
+      list-style: none;
+      padding: 0;
+    }
+
+    .mx-body ul.arrow li{
+      padding-left: 19px; 
+
+    }
+
+    .mx-body ul.arrow li::before{
+      content: "⮚";
+      padding-right: 8px;
+      line-height: 1em;
+    }
+
+    .mx-body hr.light {
+      height: 3px;
+      border: none;
+      background-color: #DFDFDF;
+    }
+
+    .mx-body hr.heavy {
+      height: 5px;
+      border: 0;
+      background-color: #b5b5b5;
+    }
+
+    .mx-body hr.squiggly {
+      border: 0;
+      height:15px;
+      background: url(http://ibrahimjabbari.com/english/images/hr-12.png) repeat-x 0 0;
+    }
+
+    .mx-body p.align-left {
+      text-align: left;
+    }
+
+    .mx-body p.align-center {
+      text-align: center;
+    }
+
+    .mx-body p.align-right {
+      text-align: right;
+    }
+
+    .mx-body p.fit-width {
+      text-align: justify;
+    }
+
+    .mx-body div.column {
+      -webkit-column-rule: 1px solid lightblue;
+      -moz-column-rule: 1px solid lightblue;
+      column-rule: 1px solid lightblue;
+      -webkit-column-gap: 40px;
+      -moz-column-gap: 40px;
+      column-gap: 40px;
+    }
+    .mx-body div.column-2 {
+      -webkit-column-count: 2;
+      -moz-column-count: 2;
+      column-count: 2;
+    }
+
+    .mx-body div.column-3 {
+      -webkit-column-count: 3;
+      -moz-column-count: 3;
+      column-count: 3;
+    }
+
+    .mx-body table {
+      border-collapse: collapse;
+      border: 2px solid #b5b5b5;
+      margin-bottom: 10px;
+      width: auto;
+    }
+
+    .mx-body table th {
+      text-align: center;
+    }
+
+    .mx-body table th,
+    .mx-body table td {
+      border: 1px solid #b5b5b5;
+      padding: 5px;
+    }
+
+    .mx-body table tr:nth-child(even) {
+      background-color: #F7F7F7;
+    }
+
+    .mx-body table caption {
+      font-size: 1.25em;
+    }
+  </style>
+  <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
 </head>
 
 <body class="mx-body">
@@ -279,6 +421,246 @@
     </p>
   </div>
 
+  <h2>Lists:</h2>
+
+  <ol class="number">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ol>
+
+  <ol class="alphabet">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ol>
+
+  <ol class="upper-roman">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ol>
+
+  <ol class="lower-roman">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ol>
+
+  <ul class="disc">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+  <ul class="square">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+  <ul class="dash">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+  <ul class="arrow">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+  <h2>Horizontal Lines</h2>
+
+  <p>
+    First line (light)
+    <hr class="light" />
+    Second line (heavy)
+    <hr class="heavy" />
+    Third line
+    <hr class="squiggly" />
+  </p>
+
+  <h2>Links</h2>
+
+  <p>
+    <a href="https://github.com/mysterytony/markx" target="_blank">markx's Github Page</a>
+  </p>
+
+  <p>
+    <a href="https://github.com/mysterytony/markx">https://github.com/mysterytony/markx</a>
+  </p>
+
+  <h2>Subscript &amp; Superscript</h2>
+
+  <p>
+    H<sub>2</sub>O<br />
+    X<sup>2</sup>=x*x
+  </p>
+
+  <h2>Footnote</h2>
+
+  <p>
+    Here is some text<sup><a href="#1">[1]</a></sup><br />
+    <a id="1" href="#1">[1]</a> Refer to some links to read more.
+  </p>
+
+  <h2>Paragraph Alignment</h2>
+
+  <p class="align-left">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+  </p>
+
+
+  <p class="align-center">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+  </p>
+
+
+  <p class="align-right">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+  </p>
+
+  <p class="fit-width">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+  </p>
+
+  <h2>Columns</h2>
+
+  <p>
+    <div class="column column-2">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+    </div>
+  </p>
+
+  <p>
+    <div class="column column-3">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed lobortis quam, ac tincidunt ex. Morbi a nisi a est auctor pulvinar. Donec cursus ornare elit, vitae blandit eros viverra vel. Donec rhoncus malesuada ex, eget pharetra lorem vestibulum id. Integer sit amet viverra metus. Nunc molestie tortor ut sem condimentum, vel lacinia odio auctor. Integer dolor leo, sollicitudin eu maximus sed, porttitor id magna. Vivamus massa magna, cursus in nisl in, tristique sagittis enim. Donec tincidunt risus accumsan purus vulputate pharetra. In aliquet auctor gravida. Duis aliquet lectus lectus, in pellentesque enim efficitur eu.
+    </div>
+  </p>
+
+  <h2>Table</h2>
+
+  <table>
+    <tr>
+      <th>Month</th>
+      <th>Savings</th>
+    </tr>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+    <tr>
+      <td>February</td>
+      <td>$80</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+    <tr>
+      <td>February</td>
+      <td>$80</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+    <tr>
+      <td>February <br /> March</td>
+      <td>$80</td>
+    </tr>
+  </table>
+
+  <table>
+    <caption>Monthly savings</caption>
+    <tr>
+      <td>January</td>
+      <td>$100</td>
+    </tr>
+    <tr>
+      <td>February</td>
+      <td>$80</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th colspan="2">th</th>
+      <th>th</th>
+    </tr>
+    <tr>
+      <th>th</th>
+      <th>th</th>
+      <th>th</th>
+    </tr>
+    <tr>
+      <td rowspan="2" colspan="2">td</td>
+      <td>td</td>
+    </tr>
+    <tr>
+      <td>td</td>
+    </tr>
+  </table>
+
+  <h2>Math Equations</h2>
+
+  <p>
+    $1$, $\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$
+  </p>
+
+  <p>
+    $$\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$$
+  </p>
+
+  <h2>Comment</h2>
+
+  <p>
+    Use <span class="inline">%</span> to start comment.
+  </p>
+
+  <p>
+    Text% This is a comment<br/>
+  </p>
+
+  <p>
+    %% Comment that is<br/>
+    on multiple lines%%
+  </p>
+
+  <h2>Escapes</h2>
+
+  <p>
+    <span class="inline">\%</span> will show a <span class="inline">%</span> sign
+  </p>
+
+  <p>
+    <span class="inline">\\\</span> will show a <span class="inline">\</span> sign
+  </p>
+
+  <p>
+    <span class="inline">\`</span> will show a <span class="inline">\`</span> sign
+  </p>
+
+  <h2>Misc</h2>
+
+  <p>
+    Line break will start paragraph a new line. An empty line indecate 2 paragraphs. Use <span class="inline">\\</span> to break line.
+  </p>
 </body>
 
 </html>

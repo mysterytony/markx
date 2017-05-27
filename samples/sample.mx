@@ -87,13 +87,17 @@ iii   Item 3
 
 ## Horizontal Lines
 
-First line
+First line (light)
 ---
-Second line
+Second line (heavy)
+===
+Third line
+~~~
 
 ## Links
 
 [markx's Github Page](https://github.com/mysterytony/markx)
+
 <https://github.com/mysterytony/markx>
 
 ## Media
@@ -102,7 +106,7 @@ Second line
 
 ## Subscript & Superscript
 
-H_{2]O
+H_{2}O
 x^{2}=x * x
 
 ## Footnote
@@ -153,9 +157,11 @@ text text and more text
 |====|====|====|
 | td | td | td |
 
+|====|====|====|
 | td | td | td |
 | td | td | td |
 
+|====|====|====|
 | td | td | td |
 | text \\ text | td | td|
 
@@ -196,5 +202,5 @@ on multiple lines%%
 ## Escapes
 
 `\%` will show a \% sign
-`\\\` will show a \\\ sign
+`\\\` will show a \ sign
 `\`` will show a \` sign
