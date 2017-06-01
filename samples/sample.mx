@@ -171,7 +171,7 @@ Monthly savings
 | th   ||   th |
 | th | th | th |
 | td     || td |
-|;;;     || td |
+|;;      || td |
 
 ## Math Equations
 $1$, $\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$ % in line math equation
