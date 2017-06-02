@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MarkX</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<style>
+			.zs-body {
+				color: black;
+			}
+			
+			.zs-body div{
+				position: fixed;
+				background-color: #eeeeee;
+				padding: 20px;
+				font-size: 25px;
+				text-indent: 5%;
+				width: 47%;
+			}
+			
+			.zs-body .button {
+				background-color: #008CBA;
+				border: none;
+				color: white;
+				padding: 15px 40px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+				border-radius: 12px;
+				width: 180px;
+			}
+			
+			.zs-body .button span {
+				cursor: pointer;
+				display: inline-block;
+				position: relative;
+				transition: 0.5s;
+			}
+			
+			.zs-body .button span:after {
+				content: '\00bb';
+				position: absolute;
+				opacity: 0;
+				top: 0;
+				right: -20px;
+				transition: 0.5s;
+			}
+			
+			.zs-body .button:hover span {
+				padding-right: 25px;
+			}
+			
+			.zs-body .button:hover span:after {
+				opacity: 1;
+				right: 0;
+			}
+		</style>
+	</head>
+	
+	<body class="zs-body">
+		<div><h1>MarkX</h1></div>
+		
+		<button class="button" style="top:50%; left:12%; position:fixed;"><span>UPLOAD</span></button>
+		
+		<button class="button" style="top:50%; left:28%; position:fixed;"><span>DOWNLOAD</span></button>
+		
+		<iframe name="filePreview" width="50%" height="1000" style="float:right; border:none; background-color:lightgreen;"></iframe>
+		
+		<p id="time" style="color:black; font-size:15px; bottom:0px; position:fixed;"></p>
+		
+		<script>
+		document.getElementById("time").innerHTML = Date();
+		</script>
+	</body>
+</html>
