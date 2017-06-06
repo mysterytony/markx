@@ -1,0 +1,189 @@
+# markx sample #
+
+# H1
+
+## H2
+
+### H3
+
+#### H4
+
+##### H5
+
+###### H6
+
+## Code block:
+
+```javascript
+var arr = [1, 2, 3];
+arr.length;
+```
+
+## Inline Code:
+
+The `inline code` has `back-ticks (\`)` around it.
+
+## Emphasis:
+
+*This setntence is italic.*
+**This setntence is bold.**
+***This setntence is italic and bold.***
+
+_This setntence is underlined._
+__This setntence is striked through.__
+___This setntence is underlined and striked through.___
+
+-This sentence is highlighted.-
+--This sentence is in red.--
+---This sentence is boxed.---
+
+## Block Quotes:
+
+>>>
+Block Quotes have ">>>" and "<<<" around them.
+Note: Block Qutoes can be nested.
+<<<
+
+## Boxed Paragraph With Colored Background
+
+^^^
+Boxed Paragraph havs "^^^" around it.
+The background color is blue.
+^^^
+
+## Lists:
+
+1   Item 1
+2   Item 2
+3   Item 3
+
+a   Item 1
+b   Item 2
+c   Item 3
+
+I   Item 1
+I   Item 2
+I   Item 3
+
+i   Item 1
+i   Item 2
+i   Item 3
+
+*   Item 1
+*   Item 2
+*   Item 3
+
++   Item 1
++   Item 2
++   Item 3
+
+-   Item 1
+-   Item 2
+-   Item 3
+
+>   Item 1
+>   Item 2
+>   Item 3
+
+## Horizontal Lines
+
+First line (light)
+---
+Second line (heavy)
+===
+Third line
+~~~
+
+## Links
+
+[markx's Github Page](https://github.com/mysterytony/markx)
+
+<https://github.com/mysterytony/markx>
+
+## Media
+
+![markx's logo](https://github.com/mysterytony/markx/blob/master/logo/64x64.png)
+
+## Subscript & Superscript
+
+H_{2}O
+x^{2}=x * x
+
+## Footnote
+
+Here is some text[^1].
+[^1] Refer to some links to read more.
+
+## Paragraph Alignment
+
+^^^ <
+Align Left
+^^^
+
+^^^ =
+Align Center
+^^^
+
+^^^ >
+Align Left
+^^^
+
+^^^ ==
+Fit Width
+^^^
+
+## Columns
+
+^^^ = = % 2 columns
+^^^
+
+^^^ = = = % 3 columns
+text text and more text
+^^^
+
+## Table
+
+|::Month::|::Savings::|
+|January  |$100       |
+|February |$80        |
+
+|January|$100|
+
+|January |$100|
+|February|$80 |
+
+|January          |$100|
+|February \\ March|$80 |
+
+Monthly savings
+|January |$100|
+|February|$80 |
+
+|::Monthly savings::||
+|January    |$100    |
+|February   |$80     |
+
+| th   ||   th |
+| th | th | th |
+| td     || td |
+|;;      || td |
+
+## Math Equations
+$1$, $\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$ % in line math equation
+
+$$\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$$ % center aligned math equation
+
+```
+Text% This is a comment
+```
+Text% This is a comment
+
+## No Formatting
+Text enclose by `%%` will be displayed without any formatting.
+The link below will not be formatted.
+%%[markx's Github Page](https://github.com/mysterytony/markx)%%
+
+
+## Escapes
+`\\\` will show a \ sign
+`\`` will show a \` sign
