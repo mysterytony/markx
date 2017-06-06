@@ -143,55 +143,47 @@ text text and more text
 
 ## Table
 
+|::Month::|::Savings::|
+|January  |$100       |
+|February |$80        |
+
+|January|$100|
+
+|January |$100|
+|February|$80 |
+
+|January          |$100|
+|February \\ March|$80 |
+
+Monthly savings
+|January |$100|
+|February|$80 |
+
+|::Monthly savings::||
+|January    |$100    |
+|February   |$80     |
+
+| th   ||   th |
 | th | th | th |
-|====|====|====|
-| hd | hd | hd |
-|----|----|----|
-| hd | hd | hd |
-
-|====|====|====|
-| td | td | td |
-
-|====|====|====|
-| td | td | td |
-| td | td | td |
-
-|====|====|====|
-| td | td | td |
-| text \\ text | td | td|
-
-table title
-| th | th | th |
-|====|====|====|
-| hd | hd | hd |
-
-| th      | th |
-|----|----|----|
-| th | th | th |
-|====|====|====|
-| td      | td |
-|         |----|
-|         | td |
+| td     || td |
+|;;      || td |
 
 ## Math Equations
-
-```
 $1$, $\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$ % in line math equation
-```
 
-```
 $$\int_{- \infty}^{\infty} \frac{1}{x^2} \, dx$$ % center aligned math equation
-```
-
-## Comment
 
 ```
 Text% This is a comment
 ```
 Text% This is a comment
+
+## No Formatting
+Text enclose by `%%` will be displayed without any formatting.
+The link below will not be formatted.
+%%[markx's Github Page](https://github.com/mysterytony/markx)%%
+
 
 ## Escapes
-
-`\%` will show a \% sign
 `\\\` will show a \ sign
 `\`` will show a \` sign
