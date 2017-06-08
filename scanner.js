@@ -4,14 +4,18 @@ var getRules = function(callback) {
   var MongoClient = require('mongodb').MongoClient;
   var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
   MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     db.collection('scannerrule').findOne({}, function(err, result) {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
       db.close();
       callback(result);
     });
   });
-}
+};
 
 var enumGenerator = function(rules) {
   var enumResult = {};
@@ -20,7 +24,7 @@ var enumGenerator = function(rules) {
     enumResult[rules[i].state] = i;
   }
   return enumResult;
-}
+};
 
 // to correct the dollar marks caused by mongodb's restriction
 var rulesCorrector = function(original) {
@@ -36,7 +40,7 @@ var rulesCorrector = function(original) {
       }
   }
   return rules;
-}
+};
 
 class scanner {
   constructor(callback) {
@@ -51,21 +55,21 @@ class scanner {
       self.dollarMarkReplacement = result.dollarMarkReplacement;
       self.TOKENTYPE = enumGenerator(result.rules);
       self.tokenTypeKeys = Object.keys(self.TOKENTYPE);
-      
+
       // reset outputList
       self.resetOutputList = function() {
         self.outputList = [];
-      }
+      };
       // reset currentStateIndex
-      self.resetCurrentStateIndex = function(){
-          self.currentStateIndex = self.startIndex;
-      }
+      self.resetCurrentStateIndex = function() {
+        self.currentStateIndex = self.startIndex;
+      };
 
-      self.charToTokenTypeKey = function(chr){
+      self.charToTokenTypeKey = function(chr) {
         var result = [];
         let currentState = self.rules[self.currentStateIndex];
-        if ('continuousState' in currentState){
-          while ('continuousState' in currentState){
+        if ('continuousState' in currentState) {
+          while ('continuousState' in currentState) {
             result.push(self.TOKENTYPE[currentState.state]);
             currentState = self.rules[currentState.continuousState];
           }
@@ -74,20 +78,22 @@ class scanner {
           return result;
         }
         if ('next' in currentState) {
-          if(chr in currentState.next) {
-            if (currentState.next[chr] != null){
+          if (chr in currentState.next) {
+            if (currentState.next[chr] != null) {
               self.currentStateIndex = currentState.next[chr];
               return result;
             }
-          } else if (("otherwiseNext" in currentState) && (currentState["otherwiseNext"] != null)){
-            self.currentStateIndex = currentState["otherwiseNext"];
+          } else if (
+              ('otherwiseNext' in currentState) &&
+              (currentState['otherwiseNext'] != null)) {
+            self.currentStateIndex = currentState['otherwiseNext'];
             return result;
           }
         }
         result = [self.TOKENTYPE[currentState.state]];
         self.resetCurrentStateIndex();
         return result;
-      }
+      };
 
       // the scanner function
       // warning: non-BMP char is not considered yet
@@ -97,19 +103,20 @@ class scanner {
 
         // this function only scans the first variable which must be a string
         // todo: maybe use throw
-        if (typeof string != 'string') throw "Scanner Error: input is not string type variable.";
+        if (typeof string != 'string')
+          throw 'Scanner Error: input is not string type variable.';
 
-        for (let i = 0, keys, chr; i < string.length; i++){
+        for (let i = 0, keys, chr; i < string.length; i++) {
           chr = string.charAt(i);
           keys = self.charToTokenTypeKey(chr);
 
-          for(let aKey of keys){
+          for (let aKey of keys) {
             self.outputList.push(aKey);
           }
 
-          // if the state is reseted then last character needs to be processed again.
-          if(self.currentStateIndex == self.startIndex)
-            i--;
+          // if the state is reseted then last character needs to be processed
+          // again.
+          if (self.currentStateIndex == self.startIndex) i--;
         }
         var keyOfLastState = self.tokenTypeKeys[self.currentStateIndex];
         self.outputList.push(self.TOKENTYPE[keyOfLastState]);
