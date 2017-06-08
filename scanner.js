@@ -137,7 +137,7 @@ class scanner {
         return self.outputList;
       };
       callback(self.TOKENTYPE, self.scan);
-    })
+    });
   }
 }
 
