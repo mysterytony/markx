@@ -33,11 +33,12 @@ var rulesCorrector = function(original) {
   var dollarMarkReplacement = original.dollarMarkReplacement;
   var correctedRules = [];
   for (let aRule of rules) {
-    if ('next' in aRule)
+    if ('next' in aRule) {
       if (dollarMarkReplacement in aRule.next) {
-        aRule.next['$'] = aRule.next[dollarMarkReplacement];
+        aRule.next.$ = aRule.next[dollarMarkReplacement];
         delete aRule.next[dollarMarkReplacement];
       }
+    }
   }
   return rules;
 };
@@ -85,8 +86,8 @@ class scanner {
             }
           } else if (
               ('otherwiseNext' in currentState) &&
-              (currentState['otherwiseNext'] != null)) {
-            self.currentStateIndex = currentState['otherwiseNext'];
+              (currentState.otherwiseNext != null)) {
+            self.currentStateIndex = currentState.otherwiseNext;
             return result;
           }
         }
@@ -102,9 +103,9 @@ class scanner {
         self.resetCurrentStateIndex();
 
         // this function only scans the first variable which must be a string
-        // todo: maybe use throw
-        if (typeof string != 'string')
+        if (typeof string != 'string') {
           throw 'Scanner Error: input is not string type variable.';
+        }
 
         for (let i = 0, keys, chr; i < string.length; i++) {
           chr = string.charAt(i);
@@ -116,7 +117,9 @@ class scanner {
 
           // if the state is reseted then last character needs to be processed
           // again.
-          if (self.currentStateIndex == self.startIndex) i--;
+          if (self.currentStateIndex == self.startIndex) {
+            i--;
+          }
         }
         var keyOfLastState = self.tokenTypeKeys[self.currentStateIndex];
         self.outputList.push(self.TOKENTYPE[keyOfLastState]);
@@ -137,5 +140,5 @@ class scanner {
     })
   }
 }
+
 module.exports = scanner;
-// TODO CALL BACK PASS A SCANNER FUNCTION
