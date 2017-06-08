@@ -43,7 +43,9 @@
                 "\\": 28,
                 "dollar$": 29,
                 " ": 31,
-                "\n": 32
+                "\n": 32,
+                ":": 34,
+                ";": 35
             },
             "otherwiseNext": 12
         },
@@ -134,7 +136,9 @@
                 "\\":null,
                 "dollar$": null,
                 " ": null,
-                "\n":null
+                "\n":null,
+                ":": null,
+                ";": null
             },
             "otherwiseNext": 12
         },
@@ -175,7 +179,9 @@
                 "\\":null,
                 "dollar$": null,
                 " ": null,
-                "\n":null
+                "\n":null,
+                ":": null,
+                ";": null
             },
             "otherwiseNext": 12
         },
@@ -216,7 +222,9 @@
                 "\\":null,
                 "dollar$": null,
                 " ": null,
-                "\n":null
+                "\n":null,
+                ":": null,
+                ";": null
             },
             "otherwiseNext": 12
         },
@@ -257,7 +265,9 @@
                 "\\":null,
                 "dollar$": null,
                 " ": null,
-                "\n":null
+                "\n":null,
+                ":": null,
+                ";": null
             },
             "otherwiseNext": 12
         },
@@ -298,7 +308,9 @@
                 "\\":null,
                 "dollar$": null,
                 " ": null,
-                "\n":null
+                "\n":null,
+                ":": null,
+                ";": null
             },
             "otherwiseNext": 12
         },
@@ -350,13 +362,13 @@
         {
             "state": "SPACES",
             "next": {
-                " ": 31
+                " ": 30
             }
         },
         {
             "state": "SINGLESPACE",
             "next": {
-                " ": 31
+                " ": 30
             }
         },
         {
@@ -365,10 +377,24 @@
         },
         {
             "state": "NEWLINE"
+        },
+        {
+            "state": "COLON"
+        },        
+        {
+            "state": "SEMICOLON"
+        },
+        {
+            "state": "NEWFILE"
+        },        
+        {
+            "state": "ENDFILE"
         }
     ],
     "startIndex": 0,
     "endlineIndex": 32,
     "newlineIndex": 33,
-    "dollarMarkReplacement": "dollar$"
+    "dollarMarkReplacement": "dollar$",
+    "newfileIndex": 36,
+    "endlineIndex": 37
 }

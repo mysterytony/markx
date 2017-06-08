@@ -1,5 +1,5 @@
 'use strict';
-function getRules(callback) {
+var getRules = function(callback) {
   var http = require('http');
   var MongoClient = require('mongodb').MongoClient;
   var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
@@ -13,7 +13,7 @@ function getRules(callback) {
   });
 }
 
-function enumGenerator(rules) {
+var enumGenerator = function(rules) {
   var enumResult = {};
   var numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
@@ -23,7 +23,7 @@ function enumGenerator(rules) {
 }
 
 // to correct the dollar marks caused by mongodb's restriction
-function rulesCorrector(original) {
+var rulesCorrector = function(original) {
   var rules = original.rules;
 
   var dollarMarkReplacement = original.dollarMarkReplacement;
@@ -46,18 +46,87 @@ class scanner {
       self.startIndex = result.startIndex;
       self.endlineIndex = result.endlineIndex;
       self.newlineIndex = result.newlineIndex;
+      self.newfileIndex = result.newfileIndex;
+      self.endfileIndex = result.endfileIndex;
       self.dollarMarkReplacement = result.dollarMarkReplacement;
       self.TOKENTYPE = enumGenerator(result.rules);
+      self.tokenTypeKeys = Object.keys(self.TOKENTYPE);
+      
+      // reset outputList
+      self.resetOutputList = function() {
+        self.outputList = [];
+      }
+      // reset currentStateIndex
+      self.resetCurrentStateIndex = function(){
+          self.currentStateIndex = self.startIndex;
+      }
+
+      self.charToTokenTypeKey = function(chr){
+        var result = [];
+        let currentState = self.rules[self.currentStateIndex];
+        if ('continuousState' in currentState){
+          while ('continuousState' in currentState){
+            result.push(self.TOKENTYPE[currentState.state]);
+            currentState = self.rules[currentState.continuousState];
+          }
+          result.push(self.TOKENTYPE[currentState.state]);
+          self.resetCurrentStateIndex();
+          return result;
+        }
+        if ('next' in currentState) {
+          if(chr in currentState.next) {
+            if (currentState.next[chr] != null){
+              self.currentStateIndex = currentState.next[chr];
+              return result;
+            }
+          } else if (("otherwiseNext" in currentState) && (currentState["otherwiseNext"] != null)){
+            self.currentStateIndex = currentState["otherwiseNext"];
+            return result;
+          }
+        }
+        result = [self.TOKENTYPE[currentState.state]];
+        self.resetCurrentStateIndex();
+        return result;
+      }
+
+      // the scanner function
+      // warning: non-BMP char is not considered yet
       self.scan = function(string) {
-        var tokens = [];
+        self.resetOutputList();
+        self.resetCurrentStateIndex();
 
         // this function only scans the first variable which must be a string
         // todo: maybe use throw
-        if (typeof string != 'string') return tokens;
+        if (typeof string != 'string') throw "Scanner Error: input is not string type variable.";
 
+        for (let i = 0, keys, chr; i < string.length; i++){
+          chr = string.charAt(i);
+          keys = self.charToTokenTypeKey(chr);
 
-        return tokens;
-      } callback(self.TOKENTYPE, self.scan);
+          for(let aKey of keys){
+            self.outputList.push(aKey);
+          }
+
+          // if the state is reseted then last character needs to be processed again.
+          if(self.currentStateIndex == self.startIndex)
+            i--;
+        }
+        var keyOfLastState = self.tokenTypeKeys[self.currentStateIndex];
+        self.outputList.push(self.TOKENTYPE[keyOfLastState]);
+        // finish up process: adding ENDLIND to the end,
+        //                and adding NEWLINE to the beginning.
+        var keyOfEndline = self.tokenTypeKeys[self.endlineIndex];
+        var keyOfNewline = self.tokenTypeKeys[self.newlineIndex];
+        var keyOfNewFile = self.tokenTypeKeys[self.newfileIndex];
+        var keyOfEndfile = self.tokenTypeKeys[self.endfileIndex];
+        self.outputList.push(self.TOKENTYPE[keyOfEndline]);
+        self.outputList.unshift(self.TOKENTYPE[keyOfNewline]);
+
+        self.outputList.push(self.TOKENTYPE[keyOfEndfile]);
+        self.outputList.unshift(self.TOKENTYPE[keyOfNewFile]);
+        return self.outputList;
+      };
+      callback(self.TOKENTYPE, self.scan);
     })
   }
 }
