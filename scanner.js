@@ -44,99 +44,103 @@ var rulesCorrector = function(original) {
 };
 
 class scanner {
+  _resetOutputList() {
+    this._outputList = [];
+  }
+  _resetCurrentStateIndex() {
+    this._currentStateIndex = this._startIndex;
+  }
+  _charToTokenTypeKey(chr) {
+    var result = [];
+    let currentState = this._rules[this._currentStateIndex];
+    if ('continuousState' in currentState) {
+      while ('continuousState' in currentState) {
+        result.push(this._TOKENTYPE[currentState.state]);
+        currentState = this._rules[currentState.continuousState];
+      }
+      result.push(this._TOKENTYPE[currentState.state]);
+      this._resetCurrentStateIndex();
+      return result;
+    }
+    if ('next' in currentState) {
+      if (chr in currentState.next) {
+        if (currentState.next[chr] != null) {
+          this._currentStateIndex = currentState.next[chr];
+          return result;
+        }
+      } else if (
+          ('otherwiseNext' in currentState) &&
+          (currentState.otherwiseNext != null)) {
+        this._currentStateIndex = currentState.otherwiseNext;
+        return result;
+      }
+    }
+    result = [this._TOKENTYPE[currentState.state]];
+    this._resetCurrentStateIndex();
+    return result;
+  }
+
+  // the scanner function
+  // warning: non-BMP char is not considered yet
+  _scan(string, doneScanCallBack) {
+    this._resetOutputList();
+    this._resetCurrentStateIndex();
+
+    // this function only scans the first variable which must be a string
+    if (typeof string != 'string') {
+      throw 'Scanner Error: input is not string type variable.';
+    }
+
+    for (let i = 0, keys, chr; i < string.length; i++) {
+      chr = string.charAt(i);
+      keys = this._charToTokenTypeKey(chr);
+
+      for (let aKey of keys) {
+        this._outputList.push(aKey);
+      }
+
+      // if the state is reseted then last character needs to be processed
+      // again.
+      if (this._currentStateIndex == this._startIndex) {
+        i--;
+      }
+    }
+    var keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
+    this._outputList.push(this._TOKENTYPE[keyOfLastState]);
+    // finish up process: adding ENDLIND to the end,
+    //                and adding NEWLINE to the beginning.
+    var keyOfEndline = this._tokenTypeKeys[this._endlineIndex];
+    var keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
+    var keyOfNewFile = this._tokenTypeKeys[this._newfileIndex];
+    var keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
+    this._outputList.push(this._TOKENTYPE[keyOfEndline]);
+    this._outputList.unshift(this._TOKENTYPE[keyOfNewline]);
+
+    this._outputList.push(this._TOKENTYPE[keyOfEndfile]);
+    this._outputList.unshift(this._TOKENTYPE[keyOfNewFile]);
+    if (typeof doneScanCallBack == 'function') {
+      doneScanCallBack(this._outputList);
+    }
+  }
   constructor(callback) {
     var self = this;
     getRules(function(result) {
-      self.rules = rulesCorrector(result);
-      self.startIndex = result.startIndex;
-      self.endlineIndex = result.endlineIndex;
-      self.newlineIndex = result.newlineIndex;
-      self.newfileIndex = result.newfileIndex;
-      self.endfileIndex = result.endfileIndex;
-      self.dollarMarkReplacement = result.dollarMarkReplacement;
-      self.TOKENTYPE = enumGenerator(result.rules);
-      self.tokenTypeKeys = Object.keys(self.TOKENTYPE);
+      self._rules = rulesCorrector(result);
+      self._startIndex = result.startIndex;
+      self._endlineIndex = result.endlineIndex;
+      self._newlineIndex = result.newlineIndex;
+      self._newfileIndex = result.newfileIndex;
+      self._endfileIndex = result.endfileIndex;
+      self._dollarMarkReplacement = result.dollarMarkReplacement;
+      self._TOKENTYPE = enumGenerator(result.rules);
+      self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
 
-      // reset outputList
-      self.resetOutputList = function() {
-        self.outputList = [];
-      };
-      // reset currentStateIndex
-      self.resetCurrentStateIndex = function() {
-        self.currentStateIndex = self.startIndex;
-      };
-
-      self.charToTokenTypeKey = function(chr) {
-        var result = [];
-        let currentState = self.rules[self.currentStateIndex];
-        if ('continuousState' in currentState) {
-          while ('continuousState' in currentState) {
-            result.push(self.TOKENTYPE[currentState.state]);
-            currentState = self.rules[currentState.continuousState];
-          }
-          result.push(self.TOKENTYPE[currentState.state]);
-          self.resetCurrentStateIndex();
-          return result;
-        }
-        if ('next' in currentState) {
-          if (chr in currentState.next) {
-            if (currentState.next[chr] != null) {
-              self.currentStateIndex = currentState.next[chr];
-              return result;
-            }
-          } else if (
-              ('otherwiseNext' in currentState) &&
-              (currentState.otherwiseNext != null)) {
-            self.currentStateIndex = currentState.otherwiseNext;
-            return result;
-          }
-        }
-        result = [self.TOKENTYPE[currentState.state]];
-        self.resetCurrentStateIndex();
-        return result;
-      };
-
-      // the scanner function
-      // warning: non-BMP char is not considered yet
-      self.scan = function(string) {
-        self.resetOutputList();
-        self.resetCurrentStateIndex();
-
-        // this function only scans the first variable which must be a string
-        if (typeof string != 'string') {
-          throw 'Scanner Error: input is not string type variable.';
-        }
-
-        for (let i = 0, keys, chr; i < string.length; i++) {
-          chr = string.charAt(i);
-          keys = self.charToTokenTypeKey(chr);
-
-          for (let aKey of keys) {
-            self.outputList.push(aKey);
-          }
-
-          // if the state is reseted then last character needs to be processed
-          // again.
-          if (self.currentStateIndex == self.startIndex) {
-            i--;
-          }
-        }
-        var keyOfLastState = self.tokenTypeKeys[self.currentStateIndex];
-        self.outputList.push(self.TOKENTYPE[keyOfLastState]);
-        // finish up process: adding ENDLIND to the end,
-        //                and adding NEWLINE to the beginning.
-        var keyOfEndline = self.tokenTypeKeys[self.endlineIndex];
-        var keyOfNewline = self.tokenTypeKeys[self.newlineIndex];
-        var keyOfNewFile = self.tokenTypeKeys[self.newfileIndex];
-        var keyOfEndfile = self.tokenTypeKeys[self.endfileIndex];
-        self.outputList.push(self.TOKENTYPE[keyOfEndline]);
-        self.outputList.unshift(self.TOKENTYPE[keyOfNewline]);
-
-        self.outputList.push(self.TOKENTYPE[keyOfEndfile]);
-        self.outputList.unshift(self.TOKENTYPE[keyOfNewFile]);
-        return self.outputList;
-      };
-      callback(self.TOKENTYPE, self.scan);
+      var scanFunc = self._scan.bind(self);
+      Object.freeze(self._TOKENTYPE);
+      Object.freeze(self._scan);
+      if (typeof callback == 'function') {
+        callback(self._TOKENTYPE, scanFunc);
+      }
     });
   }
 }
