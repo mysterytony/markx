@@ -54,12 +54,12 @@ The background color is blue.
 ## Lists:
 
 1   Item 1
-2   Item 2
-3   Item 3
+1   Item 2
+1   Item 3
 
 a   Item 1
-b   Item 2
-c   Item 3
+a   Item 2
+a   Item 3
 
 I   Item 1
 I   Item 2
