@@ -240,3 +240,11 @@
 ## Additional Rules
 
 ## Parse Table
+
+## Order of Scan
+
+| scan for | parse |
+|---|---|
+| `\`...\``||
+| `<...>` | |
+| `![...](...)` ||
