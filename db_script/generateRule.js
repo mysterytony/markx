@@ -36,8 +36,7 @@ var readTransitions = (doneCallback) => {
 
 var generateRules = () => {
   // helper functions
-  var getAllCurrTransitions = (currTran, symbolsGeneratedFor) => {
-    var nextSymbol = currTran.next;
+  var getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
     if (nextSymbol === nextSymbol.toLowerCase()) {
       var derivedTransitions = transitions.filter((e) => {
@@ -54,10 +53,11 @@ var generateRules = () => {
           next: derivedTran.to[0] ? derivedTran.to[0] : null
         };
 
-        symbolsGeneratedFor.push(derivedTran.from);
+        currTransArray.push(currTran);
+        symbolsGeneratedFor.add(derivedTran.from);
 
-        if (currTran.next && symbolsGeneratedFor.indexOf(currTran.next) === -1) {
-          var nextCurrTransitions = getAllCurrTransitions(currTran, symbolsGeneratedFor);
+        if (currTran.next && !symbolsGeneratedFor.has(currTran.next)) {
+          var nextCurrTransitions = getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray.concat(nextCurrTransitions);
         }
 
@@ -66,7 +66,7 @@ var generateRules = () => {
       return currTransArray;
     }
 
-    return [currTran];
+    return [];
   };
 
   var genreateRuleForNextSymbol = (sym, currTransitions) => {
@@ -74,13 +74,17 @@ var generateRules = () => {
 
     var newNode = { id: 0, currTransitions: [], rules: [] };
     var currTransArray = JSON.parse(JSON.stringify(currTransitions));
+    var nextSymbol = null;
+
     for (var currTran of currTransArray) {
       currTran.position++;
       currTran.next = currTran.transition.to[currTran.position];
-
-      // recursively get all non terminal
-      newNode.currTransitions.concat(getAllCurrTransitions(currTran, []));
+      nextSymbol = currTran.next;
     }
+
+    // recursively get all non terminal
+    newNode.currTransitions.concat(getAllCurrTransitions(nextSymbol, new Set()));
+
     var existingRuleNode = graph.filter((e) => {
       e.currTransitions === newNode.currTransitions;
     });
