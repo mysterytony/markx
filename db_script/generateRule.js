@@ -1,18 +1,19 @@
 // read transitions
 var transitions = [];
 
-var graph = [{ id: 0, currTransitions: [], rules: [] }];
+var graph = [{id: 0, currTransitions: [], rules: []}];
 
 var readTransitions = (doneCallback) => {
   var fs = require('fs');
   var readline = require('readline');
   var stream = require('stream');
 
-  var instream = fs.createReadStream('c:\\Users\\TOLi\\Desktop\\markx\\db_script\\transitions');
+  var instream = fs.createReadStream(
+      'c:\\Users\\lihen\\Documents\\Github\\markx\\db_script\\mocktransitions');
   var outstream = new stream;
   var rl = readline.createInterface(instream, outstream);
 
-  rl.on('line', function (line) {
+  rl.on('line', function(line) {
     if (!line || line === '') return;
     var terms = line.split(' ');
 
@@ -28,10 +29,10 @@ var readTransitions = (doneCallback) => {
         to.push(terms[i]);
       }
     }
-    transitions.push({ from: from, to: to, lookAheadToken: lookAheadToken });
+    transitions.push({from: from, to: to, lookAheadToken: lookAheadToken});
   });
 
-  rl.on('close', function () { doneCallback(); });
+  rl.on('close', function() { doneCallback(); });
 };
 
 var generateRules = () => {
@@ -39,9 +40,8 @@ var generateRules = () => {
   var getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
     if (nextSymbol === nextSymbol.toLowerCase()) {
-      var derivedTransitions = transitions.filter((e) => {
-        return e.from === nextSymbol;
-      });
+      var derivedTransitions =
+          transitions.filter((e) => { return e.from === nextSymbol; });
 
       var currTransArray = [];
       // symbolsGeneratedFor.push(currTran.transition.from);
@@ -57,10 +57,10 @@ var generateRules = () => {
         symbolsGeneratedFor.add(derivedTran.from);
 
         if (currTran.next && !symbolsGeneratedFor.has(currTran.next)) {
-          var nextCurrTransitions = getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
-          currTransArray.concat(nextCurrTransitions);
+          var nextCurrTransitions =
+              getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
+          currTransArray = currTransArray.concat(nextCurrTransitions);
         }
-
       }
 
       return currTransArray;
@@ -69,10 +69,10 @@ var generateRules = () => {
     return [];
   };
 
-  var genreateRuleForNextSymbol = (sym, currTransitions) => {
+  var generateRuleForNextSymbol = (sym, currTransitions) => {
     // generate a new rule node
 
-    var newNode = { id: 0, currTransitions: [], rules: [] };
+    var newNode = {id: 0, currTransitions: [], rules: []};
     var currTransArray = JSON.parse(JSON.stringify(currTransitions));
     var nextSymbol = null;
 
@@ -82,39 +82,41 @@ var generateRules = () => {
       nextSymbol = currTran.next;
     }
 
-    // recursively get all non terminal
-    newNode.currTransitions.concat(getAllCurrTransitions(nextSymbol, new Set()));
+    newNode.currTransitions = newNode.currTransitions.concat(currTransArray);
+
+    if (nextSymbol) {
+      // recursively get all non terminal
+      newNode.currTransitions = newNode.currTransitions.concat(
+          getAllCurrTransitions(nextSymbol, new Set()));
+    }
+
 
     var existingRuleNode = graph.filter((e) => {
-      e.currTransitions === newNode.currTransitions;
+      return JSON.stringify(e.currTransitions) ===
+          JSON.stringify(newNode.currTransitions);
     });
 
     if (existingRuleNode.length > 0) {
       // existing rule node already exists
-      var rule = {
-        symbol: sym,
-        nextRuleId: existingRuleNode[0].id
-      };
+      var rule = {symbol: sym, nextRuleId: existingRuleNode[0].id};
       return rule;
     }
 
     newNode.id = graph.length;
     graph.push(newNode);
 
-    newNode.rules = generateRuleForCurrTransitions(newNode, newNode.currTransitions);
+    newNode.rules =
+        generateRuleForCurrTransitions(newNode, newNode.currTransitions);
 
-    return {
-      symbol: sym,
-      nextRuleId: newNode.id
-    };
+    return {symbol: sym, nextRuleId: newNode.id};
   };
 
   var generateRuleForCurrTransitions = (node, currTransitions) => {
     var nextDict = {};
     for (var currTran of currTransitions) {
-      if (nextDict.hasOwnProperty(currTran.next)) {
+      if (currTran.next && nextDict.hasOwnProperty(currTran.next)) {
         nextDict[currTran.next].push(currTran);
-      } else {
+      } else if (currTran.next) {
         nextDict[currTran.next] = [currTran];
       }
     }
@@ -122,7 +124,7 @@ var generateRules = () => {
     var rules = [];
     for (var next in nextDict) {
       if (!nextDict.hasOwnProperty(next)) continue;
-      var rule = genreateRuleForNextSymbol(next, nextDict[next]);
+      var rule = generateRuleForNextSymbol(next, nextDict[next]);
       rules.push(rule);
     }
 
@@ -130,7 +132,8 @@ var generateRules = () => {
   };
 
   // start from "markx"
-  var markxRules = transitions.filter((e) => e.from === 'markx');
+  var startSymbol = 's';
+  var markxRules = transitions.filter((e) => e.from === startSymbol);
   var trans = markxRules.reduce((acc, curr) => {
     var tran = {
       transition: curr,
@@ -143,7 +146,8 @@ var generateRules = () => {
 
   graph[0].currTransitions = trans;
 
-  graph[0].rules = generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
+  graph[0].rules =
+      generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
 
   console.log(graph);
 };
