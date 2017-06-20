@@ -45,40 +45,6 @@
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
-* statement -> table
-
-* table -> tableheads tablerows
-
-* tableheads -> tablehead subtableheads
-
-* subtableheads -> tablehead subtableheads
-* subtableheads -> {NEWLINE}
-
-* tablehead -> NEWLINE headcols BAR ENDLINE
-
-* headcols -> headcol  subheadcols
-
-* subheadcols -> headcol  subheadcols
-* subheadcols -> {BAR}
-
-* headcol -> BAR COLON COLON inlines COLON COLON
-* headcol -> BAR
-
-* tablerows -> tablerow subtablerows
-
-* subtablerows -> tablerow subtablerows
-* subtablerows -> {NEWLINE}
-
-* tablerow -> NEWLINE rowcols BAR ENDLINE
-
-* rowcols -> rowcol subrowcols
-
-* subrowcols -> rowcol subrowcols
-* subrowcols -> {BAR}
-
-* rowcol -> BAR inlines
-* rowcol -> BAR
-* rowcol -> BAR SEMICOLON SEMICOLON
 
 * lines -> line lines
 * lines -> {LEFTANGLE,NEWLINE}
