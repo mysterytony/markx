@@ -244,12 +244,19 @@ var generateRules = () => {
   // id term action id
   for (var node of graph) {
     for (var rule of node.rules) {
-      console.log('' + node.id + ' ' + rule.symbol + ' ' + rule.nextRuleId);
+      console.log('' + node.id + ' ' + rule.symbol + ' shift ' + rule.nextRuleId);
     }
     for (var currtran of node.currTransitions) {
       if (!currtran.next) {
         for (var token of currtran.transition.lookAheadToken) {
-          console.log('' + node.id + ' ' + rule.token + ' ' + rule.nextRuleId); // it is the transition id
+          var i = -1;
+          for (var index in transitions) {
+            if (JSON.stringify(currtran.transition) === JSON.stringify(transitions[index])) {
+              i = index;
+              break;
+            }
+          }
+          console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is the transition id
         }
       }
     }
