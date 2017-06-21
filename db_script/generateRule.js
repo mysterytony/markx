@@ -1,5 +1,52 @@
+// data types
+
+class Transition {
+  /**
+   * @constructor
+   * @param {string[]} from 
+   * @param {string[]} to 
+   * @param {string[]} lookAheadTokens 
+   */
+  constructor(from, to, lookAheadTokens) {
+    this.from = from;
+    this.to = to;
+    this.lookAheadTokens = lookAheadTokens;
+  }
+}
+
+class IntermediateTransition {
+  /**
+   * @param {Transition[]} transition 
+   * @param {number} position 
+   * @param {string} next 
+   */
+  constructor(transition, position, next) {
+    this.transition = transition;
+    this.position = position;
+    this.next = next;
+  }
+}
+
+class Rule {
+  /**
+   * @param {number} fromId 
+   * @param {string} symbol 
+   * @param {number} toId 
+   */
+  constructor(fromId, symbol, toId) {
+    this.fromId = fromId;
+    this.symbol = symbol;
+    this.toId = toId;
+  }
+}
+
 // read transitions
+
+/** @type {Transition[]} */
 var transitions = [];
+
+/** @type {Rule[]} */
+var ruleArray = [];
 
 var graph = [{ id: 0, currTransitions: [], rules: [] }];
 
@@ -43,15 +90,12 @@ var generateRules = () => {
       var derivedTransitions =
         transitions.filter((e) => { return e.from === nextSymbol; });
 
+      
       var currTransArray = [];
       // symbolsGeneratedFor.push(currTran.transition.from);
 
       for (var derivedTran of derivedTransitions) {
-        var currTran = {
-          transition: derivedTran,
-          position: 0,
-          next: derivedTran.to[0] ? derivedTran.to[0] : null
-        };
+        var currTran = new IntermediateTransition(derivedTran, 0,derivedTran.to[0] ? derivedTran.to[0] : null);
 
         currTransArray.push(currTran);
         symbolsGeneratedFor.add(derivedTran.from);
@@ -69,7 +113,7 @@ var generateRules = () => {
     return [];
   };
 
-  var generateRuleForNextSymbol = (sym, currTransitions) => {
+  var generateRuleForNextSymbol = (fromId, sym, currTransitions) => {
     // generate a new rule node
 
     var newNode = { id: 0, currTransitions: [], rules: [] };
@@ -98,7 +142,7 @@ var generateRules = () => {
 
     if (existingRuleNode.length > 0) {
       // existing rule node already exists
-      var rule = { symbol: sym, nextRuleId: existingRuleNode[0].id };
+      var rule = { fromId: fromId, symbol: sym, nextRuleId: existingRuleNode[0].id };
       return rule;
     }
 
@@ -108,7 +152,7 @@ var generateRules = () => {
     newNode.rules =
       generateRuleForCurrTransitions(newNode, newNode.currTransitions);
 
-    return { symbol: sym, nextRuleId: newNode.id };
+    return {fromId: fromId, symbol: sym, nextRuleId: newNode.id };
   };
 
   var generateRuleForCurrTransitions = (node, currTransitions) => {
@@ -124,10 +168,11 @@ var generateRules = () => {
     var rules = [];
     for (var next in nextDict) {
       if (!nextDict.hasOwnProperty(next)) continue;
-      var rule = generateRuleForNextSymbol(next, nextDict[next]);
+      var rule = generateRuleForNextSymbol(node.id, next, nextDict[next]);
       rules.push(rule);
     }
 
+    ruleArray = ruleArray.concat(rules);
     return rules;
   };
 
@@ -181,6 +226,20 @@ var generateRules = () => {
     }
   }
 
+  // var findReduceStateId = (symbol, nextStateId, reduceNum) => {
+  //   if (reduceNum === 0) {
+  //     var rules = ruleArray.filter((e) => {
+  //       return e.symbol === symbol && e.nextRuleId === nextStateId;
+  //     }).reduce((acc, curr) => {
+  //       return acc.concat(curr.fromId);
+  //     }, []);
+  //     return rules[0].fromId;
+  //   }
+
+  //   var fromIds = findReduceStateId()
+
+  // };
+
   // output transition rules
   // id term action id
   for (var node of graph) {
@@ -190,7 +249,7 @@ var generateRules = () => {
     for (var currtran of node.currTransitions) {
       if (!currtran.next) {
         for (var token of currtran.transition.lookAheadToken) {
-          console.log('' + node.id + ' ' + rule.token + ' ' + rule.nextRuleId); // need reduce state id
+          console.log('' + node.id + ' ' + rule.token + ' ' + rule.nextRuleId); // it is the transition id
         }
       }
     }
