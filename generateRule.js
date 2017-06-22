@@ -46,11 +46,13 @@ class Rule {
 var transitions = [];
 
 /** @type {Rule[]} */
+// var ruleArray = [];
+
 var ruleArray = [];
 
 var graph = [{ id: 0, currTransitions: [], rules: [] }];
 
-var readTransitions = (doneCallback) => {
+var readTransitions = (doneCallback, generateCallback) => {
   var fs = require('fs');
   var readline = require('readline');
   var stream = require('stream');
@@ -79,10 +81,10 @@ var readTransitions = (doneCallback) => {
     transitions.push({ from: from, to: to, lookAheadToken: lookAheadToken });
   });
 
-  rl.on('close', function () { doneCallback(); });
+  rl.on('close', function () { doneCallback(generateCallback); });
 };
 
-var generateRules = () => {
+var generateRules = (generateCallback) => {
   // helper functions
   var getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
@@ -149,6 +151,8 @@ var generateRules = () => {
     newNode.id = graph.length;
     graph.push(newNode);
 
+    console.info('pushing new node: ' + (newNode.id / 439 * 100) + '%');
+
     newNode.rules =
       generateRuleForCurrTransitions(newNode, newNode.currTransitions);
 
@@ -172,7 +176,7 @@ var generateRules = () => {
       rules.push(rule);
     }
 
-    ruleArray = ruleArray.concat(rules);
+    // ruleArray = ruleArray.concat(rules);
     return rules;
   };
 
@@ -209,20 +213,20 @@ var generateRules = () => {
     var conflict = false;
 
     if (transitionReducePair.reduces > 1) {
-      console.log('reduce-reduce conflict');
+      console.warn('reduce-reduce conflict');
       conflict = true;
     }
     if (transitionReducePair.reduces > 0 && transitionReducePair.transitions > 0) {
-      console.log('reduce-transition conflict');
+      console.warn('reduce-transition conflict');
       conflict = true;
     }
 
     if (conflict) {
-      console.log('node id: ' + node.id);
+      console.warn('node id: ' + node.id);
       for (var tran of node.currTransitions) {
-        console.log(tran)
+        console.warn(tran)
       }
-      console.log('======');
+      console.warn('======');
     }
   }
 
@@ -242,9 +246,19 @@ var generateRules = () => {
 
   // output transition rules
   // id term action id
+
+  
+
   for (var node of graph) {
     for (var rule of node.rules) {
-      console.log('' + node.id + ' ' + rule.symbol + ' shift ' + rule.nextRuleId);
+      // console.log('' + node.id + ' ' + rule.symbol + ' shift ' + rule.nextRuleId);
+      ruleArray.push({
+        state: node.id,
+        token: rule.symbol,
+        action: 1, // 1 is shift, 0 is reduce
+        num: rule.nextRuleId
+      });
+      console.info('pushing new rule: ' + ((ruleArray.length - 1) /2726 * 100) + '%');
     }
     for (var currtran of node.currTransitions) {
       if (!currtran.next) {
@@ -256,13 +270,22 @@ var generateRules = () => {
               break;
             }
           }
-          console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is the transition id
+          // console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is the transition id
+          ruleArray.push({
+            state: node.id,
+            token: token,
+            action: 0, // 1 is shift, 0 is reduce
+            num: i
+          });
+          console.info('pushing new rule: ' + ((ruleArray.length - 1) /2726 * 100) + '%');
         }
       }
     }
   }
 
-
+  generateCallback(transitions, ruleArray);
 };
 
-readTransitions(generateRules);
+module.exports.readTransitions = (callback) => {
+  readTransitions(generateRules, callback);
+}

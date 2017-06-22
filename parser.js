@@ -1,22 +1,33 @@
-var MongoClient = require('mongodb').MongoClient;
+// var MongoClient = require('mongodb').MongoClient;
 
-// Connection URL
-var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
+// // Connection URL
+// var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
 
-var parseRules = [];
-// var tokens = [];
+// var parseRules = [];
+// // var tokens = [];
 
-// Use connect method to connect to the server
-MongoClient.connect(url, function(err, db) {
-  var collection = db.collection('parserule');
-  // Find some documents
-  collection.find({}).toArray(function(err, docs) {
-    parseRules = docs;
-    parse();
-  });
-  db.close();
+// // Use connect method to connect to the server
+// MongoClient.connect(url, function(err, db) {
+//   var collection = db.collection('parserule');
+//   // Find some documents
+//   collection.find({}).toArray(function(err, docs) {
+//     parseRules = docs;
+//     parse();
+//   });
+//   db.close();
+// });
+
+var transitions = [];
+
+var ruleArray = [];
+
+var {readTransitions} = require('./generateRule');
+
+readTransitions((trans, rules) => {
+  transitions = trans;
+  ruleArray = rules;
+  main();
 });
-
 
 // ======================
 
