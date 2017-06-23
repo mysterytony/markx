@@ -60,8 +60,8 @@ class Scanner {
     this._currentStateIndex = this._startIndex;
   }
   /**
-   * input a single char, and the functrion
-   * will keep track of currecntStateIndex
+   * input a single char, and the function
+   * will keep track of currentStateIndex
    * and return the array of TOKENS
    * @private
    * @param {string} chr - next character to process
@@ -101,7 +101,7 @@ class Scanner {
    * takes in a string and callback function
    * the result of scanning will be passed by callback function
    * warning: non-BMP char is not considered yet
-   * @alias scanFunc
+   * @name scanFunc
    * @param {string} string - the string to be scanned
    * @param {doneScanCallBack} doneScanCallBack - a callback function to pass the result
    */
@@ -150,15 +150,15 @@ class Scanner {
   /**
    * callback function to return the result
    * @callback doneScanCallBack
-   * @param {TOKENTYPE_value[]} reuslt - a list of tokens scanned from the input string
+   * @param {TOKENTYPE_value[]} result - a list of tokens scanned from the input string
    */
 
   /**
    * @param {callback} callback - callback function to return the entry function and enum object
-   * @description 
+   * @description
    * Usage:
    * <pre>
-   * <code> 
+   * <code>
    * var Scanner = require('./scanner');
    * var scanner = new Scanner(function(TOKENTYPE, scanFunc) {
    *   try {
@@ -172,8 +172,6 @@ class Scanner {
    * });
    * </code>
    * </pre>
-   *
-   * 
    */
   constructor(callback) {
     var self = this;
@@ -186,7 +184,7 @@ class Scanner {
       self._endfileIndex = result.endfileIndex;
       self._dollarMarkReplacement = result.dollarMarkReplacement;
       /**
-       * the actual value of a TOKENTYPE for comaprasion
+       * the actual value of a TOKENTYPE for comparison
        * @typedef {number} TOKENTYPE_value
        */
       /**
