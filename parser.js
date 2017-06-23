@@ -1,25 +1,22 @@
-// var MongoClient = require('mongodb').MongoClient;
+const {Term, Terminal, NonTerminal, Transition, Rule} = require('./domain');
 
-// // Connection URL
-// var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
+/** @type {Terminal[]} */
+var terminals = [];
 
-// var parseRules = [];
-// // var tokens = [];
+/** @type {NonTerminal[]} */
+var nonterminals = [];
 
-// // Use connect method to connect to the server
-// MongoClient.connect(url, function(err, db) {
-//   var collection = db.collection('parserule');
-//   // Find some documents
-//   collection.find({}).toArray(function(err, docs) {
-//     parseRules = docs;
-//     parse();
-//   });
-//   db.close();
-// });
-
+/** @type {Transition[]} */
 var transitions = [];
 
-var ruleArray = [];
+/** @type {Rule[]} */
+var rules = [];
+
+/** @type {Array.<{first: String, second: String}>} */
+var tokens = [];
+
+/** @type {string[][]} */
+var output = [];
 
 var {readTransitions} = require('./generateRule');
 
@@ -29,135 +26,9 @@ readTransitions((trans, rules) => {
   main();
 });
 
-// ======================
-
 /**
- * @class
- */
-class Term {
-  /**
-   * takes a string as the term's state name
-   * @param {String} s
-   */
-  constructor(s) {
-    this.state = s;
-  }
-}
-
-/**
- * @class
- */
-class Terminal extends Term {
-  /**
-   * @param {String} s
-   */
-  constructor(s) {
-    super(s);
-  }
-
-  /**
-   * @method
-   * @param {String} s
-   * @return {Boolean}
-   */
-  equals(s) {
-    return s === this.state;
-  }
-}
-
-/**
- * @class
- */
-class NonTerminal extends Term {
-  /**
-   * @param {String} s
-   */
-  constructor(s) {
-    super(s)
-  }
-}
-
-/**
- * @class
- */
-class Transition {
-  /**
-   * @param {String} f
-   */
-  constructor(f) {
-    this.from = f;
-    /**
-     * @type {Array.<String>}
-     */
-    this.to = [];
-  }
-
-  /**
-   * @method
-   * @return {Array.<String>}
-   */
-  getTransitionExpressions() {
-    var exps = [];
-    exps.push(this.from);
-    to.forEach(s => {
-      exps.push(s);
-    });
-    return exps;
-  }
-}
-
-/**
- * @typedef Pair
- * @property {Number} first
- * @property {String} second
- */
-
-/**
- * @typedef RuleType
- * @property {Number} reduce
- * @property {Number} shift
- */
-
-/**
- * @readonly
- * @enum {Number}
- */
-const rule_type = {
-  reduce: 0,
-  shift: 1
-};
-
-/** @class */
-class Rule {
-  /**
-   * @constructor
-   * @param {Number} s
-   * @param {String} t
-   * @param {String} a
-   * @param {Number} n
-   */
-  constructor(s, t, a, n) {
-    this.state = s;
-    this.token = t;
-    /** @type {RuleType} */
-    this.action = a === 'reduce' ? rule_type.reduce: rule_type.shift;
-    this.num = n;
-  }
-
-  /**
-   * copy the rule r
-   * @static
-   * @method
-   * @param {Rule} r
-   * @return {Rule}
-   */
-  static copyRule(r) {
-    return new Rule(r.state, r.token, r.action, r.num);
-  }
-}
-
-/**
- * compare if the state of the rule is equal to the pair's first property and the token of the rule equal to the pair's second property
+ * compare if the state of the rule is equal to the pair's first 
+ * and the token of the rule equal to the pair's second
  * @param {Rule} r
  * @param {Pair} p
  * @returns {Boolean}
@@ -166,23 +37,7 @@ var compareRuleWithPair = (r, p) => {
   return r.state === p.first && r.token === p.second;
 };
 
-/** @type {Array.<Terminal>} */
-var terminals = [];
 
-/** @type {Array.<NonTerminal>} */
-var nonterminals = [];
-
-/** @type {Array.<Transition>} */
-var transitions = [];
-
-/** @type {Array.<Rule>} */
-var rules = [];
-
-/** @type {Array.<{first: String, second: String}>} */
-var tokens = [];
-
-/** @type {Array.<Array.<String>>} */
-var output = [];
 
 /** 
  * @class 
