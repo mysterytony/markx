@@ -1,45 +1,3 @@
-## Tokens
-
-| ID | Literal | Notes |
-|---|---|---|
-| POUND | # | |
-| ESC | ` | |
-| ASTERISK | * | |
-| UNDERSCORE | _ | |
-| RIGHTANGLE | > | |
-| LEFTANGLE | < | |
-| CARET | ^ | |
-| NUM | 0 ~ 9 | combination of numbers, from 0 to 9 |
-| NUMONE | 0 | number 0 |
-| WORD | a ~ z | combination of alphabets, no spaces |
-| UPPERROMAN | I | |
-| LOWERROMAN | i | |
-| PLUS | + | |
-| MINUS | - | |
-| EQUAL | = | |
-| SQUIGGLY | ~ | |
-| LEFTSQUAREBRACKET | [ | |
-| RIGHTSQUAREBRACKET | ] | |
-| LEFTPAREN | ( | |
-| RIGHTPAREN | ) | |
-| EXCLAMATION | ! | |
-| LEFTBRACKET | { | |
-| RIGHTBRACKET | } | |
-| PERCENT | % | |
-| BAR | \| | |
-| SLASH | \ | |
-| DOLLAR | $ | |
-| SPACES | continues of spaces or tabs ||
-| SINGLESPACE | one space or one tab ||
-| ENDLINE | end of line symbol "\n" | |
-| NEWLINE | beginning of line ||
-| COLON | : ||
-| SEMICOLON | ; ||
-| UPPERA | A ||
-| LOWERA | a ||
-
-## Context-Free Grammar
-
 * markx -> NEWFILE statements ENDFILE
 
 * statements -> statement statements
@@ -87,50 +45,16 @@
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
 * statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE
-* statement -> table
-
-* table -> tableheads tablerows
-
-* tableheads -> tablehead subtableheads
-
-* subtableheads -> tablehead subtableheads
-* subtableheads -> {NEWLINE}
-
-* tablehead -> NEWLINE headcols BAR ENDLINE
-
-* headcols -> headcol  subheadcols
-
-* subheadcols -> headcol  subheadcols
-* subheadcols -> {BAR}
-
-* headcol -> BAR COLON COLON inlines COLON COLON
-* headcol -> BAR
-
-* tablerows -> tablerow subtablerows
-
-* subtablerows -> tablerow subtablerows
-* subtablerows -> {NEWLINE}
-
-* tablerow -> NEWLINE rowcols BAR ENDLINE
-
-* rowcols -> rowcol subrowcols
-
-* subrowcols -> rowcol subrowcols
-* subrowcols -> {BAR}
-
-* rowcol -> BAR inlines
-* rowcol -> BAR
-* rowcol -> BAR SEMICOLON SEMICOLON
 
 * lines -> line lines
-* lines -> {LEFTANGLE NEWLINE}
+* lines -> {LEFTANGLE,NEWLINE}
 
 * line -> NEWLINE inlines ENDLINE
 
 * inlines -> inline subinlines
 
 * subinlines -> inline subinlines
-* subinlines -> {ENDLINE COLON BAR}
+* subinlines -> {ENDLINE,COLON,BAR}
 
 * inline -> LEFTSQUAREBRACKET inlines RIGHTSQUAREBRACKET LEFTPAREN url RIGHTPAREN
 * inline -> LEFTANGLE url RIGHTANGLE
@@ -212,7 +136,7 @@
 * url -> EXCLAMATION url
 * url -> SLASH url
 * url -> POUND url
-* url -> {RIGHTPAREN, RIGHTANGLE}
+* url -> {RIGHTPAREN,RIGHTANGLE}
 
 * words -> WORD subwords
 * words -> NUMONE subwords
@@ -233,18 +157,4 @@
 * subwords -> LOWERROMAN subwords
 * subwords -> SPACES subwords
 * subwords -> SINGLESPACE subwords
-* subwords -> {ENDLINE RIGHTBRACKET COLON BAR}
-
-## Context-Sensitive Grammar
-
-## Additional Rules
-
-## Parse Table
-
-## Order of Scan
-
-| scan for | parse |
-|---|---|
-| `\`...\``||
-| `<...>` | |
-| `![...](...)` ||
+* subwords -> {ENDLINE,RIGHTBRACKET,COLON,BAR}
