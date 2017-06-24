@@ -234,7 +234,7 @@ var generateRules = (generateCallback) => {
     if (conflict) {
       console.warn('node id: ' + node.id);
       for (var tran of node.currTransitions) {
-        console.warn(tran)
+        console.warn(tran);
       }
       console.warn('======');
     }
@@ -256,8 +256,6 @@ var generateRules = (generateCallback) => {
 
   // output transition rules
   // id term action id
-
-
 
   for (var node of graph) {
     for (var rule of node.rules) {
@@ -304,4 +302,4 @@ var generateRules = (generateCallback) => {
 
 module.exports.readTransitions = (callback) => {
   readTransitions(generateRules, callback);
-}
+};

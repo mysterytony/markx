@@ -232,7 +232,6 @@ var generateTreeHelper = (tree) => {
   }
 };
 
-
 /**
  * @function
  */
