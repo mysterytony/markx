@@ -26,7 +26,10 @@ var {readTransitions} = require('./generateRule');
 readTransitions((trans, rules) => {
   transitions = trans;
   ruleArray = rules;
-  main();
+  readInput((result) => {
+    tokens = result;
+    main();
+  });
 });
 
 // ======================
@@ -39,9 +42,7 @@ class Term {
    * takes a string as the term's state name
    * @param {String} s
    */
-  constructor(s) {
-    this.state = s;
-  }
+  constructor(s) { this.state = s; }
 }
 
 /**
@@ -51,18 +52,14 @@ class Terminal extends Term {
   /**
    * @param {String} s
    */
-  constructor(s) {
-    super(s);
-  }
+  constructor(s) { super(s); }
 
   /**
    * @method
    * @param {String} s
    * @return {Boolean}
    */
-  equals(s) {
-    return s === this.state;
-  }
+  equals(s) { return s === this.state; }
 }
 
 /**
@@ -72,9 +69,7 @@ class NonTerminal extends Term {
   /**
    * @param {String} s
    */
-  constructor(s) {
-    super(s)
-  }
+  constructor(s) { super(s) }
 }
 
 /**
@@ -99,9 +94,7 @@ class Transition {
   getTransitionExpressions() {
     var exps = [];
     exps.push(this.from);
-    to.forEach(s => {
-      exps.push(s);
-    });
+    to.forEach(s => { exps.push(s); });
     return exps;
   }
 }
@@ -140,7 +133,7 @@ class Rule {
     this.state = s;
     this.token = t;
     /** @type {RuleType} */
-    this.action = a === 'reduce' ? rule_type.reduce: rule_type.shift;
+    this.action = a === 'reduce' ? rule_type.reduce : rule_type.shift;
     this.num = n;
   }
 
@@ -151,13 +144,12 @@ class Rule {
    * @param {Rule} r
    * @return {Rule}
    */
-  static copyRule(r) {
-    return new Rule(r.state, r.token, r.action, r.num);
-  }
+  static copyRule(r) { return new Rule(r.state, r.token, r.action, r.num); }
 }
 
 /**
- * compare if the state of the rule is equal to the pair's first property and the token of the rule equal to the pair's second property
+ * compare if the state of the rule is equal to the pair's first property and
+ * the token of the rule equal to the pair's second property
  * @param {Rule} r
  * @param {Pair} p
  * @returns {Boolean}
@@ -184,14 +176,14 @@ var tokens = [];
 /** @type {Array.<Array.<String>>} */
 var output = [];
 
-/** 
- * @class 
+/**
+ * @class
  * @property {String} str
  * @property {Array.<parseTree>} nodes
 */
 class parseTree {
   constructor() {
-    this.str = "";
+    this.str = '';
     /** @type {Array.<parseTree>} */
     this.nodes = [];
   }
@@ -210,20 +202,19 @@ var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
   for (var it = output[tempIndex].length - 1; it != 0; --it) {
     if (terminals.find((v) => v.equals(output[it]))) {
-      var ss = "";
-      ss += tokens[tokenIndex].first + " " + tokens[tokenIndex].second;
+      var ss = '';
+      ss += tokens[tokenIndex].first + ' ' + tokens[tokenIndex].second;
       var newtree = new parseTree();
       newtree.str = ss;
       tree.nodes.push(newtree);
       tokenIndex++;
-    }
-    else {
+    } else {
       var newtree = new parseTree();
-      outputIndex ++;
-      var ss = "";
+      outputIndex++;
+      var ss = '';
       ss += output[outputIndex][0];
       for (var i = 1; i < output[outputIndex].length; ++i) {
-        ss += " " + output[outputIndex][i];
+        ss += ' ' + output[outputIndex][i];
       }
       newtree.str = ss;
       tree.nodes.push(newtree);
@@ -237,16 +228,31 @@ var generateTreeHelper = (tree) => {
  * @function
  */
 var generateTree = () => {
-  var str = "";
+  var str = '';
   for (var i = 1; i < output[0].length; ++i) {
-    str += (" " + output[0][i]);
+    str += (' ' + output[0][i]);
   }
   tree.str = str;
 
   generateTreeHelper(tree);
 };
 
-// TODO: read inputs
+// read inputs
+function readInput(donecallback) {
+  let fs = require('fs');
+  let mxcontent = fs.readFileSync('./mock.mx').toString();
+  var Scanner = require('./scanner');
+  var myscanner = new Scanner((TOKENTYPE, scanFunc) => {
+    try {
+      scanFunc(mxcontent, (result) => {
+        console.log(result);
+        donecallback(result);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+}
 
 /**
  * @param {Pair} p
@@ -261,12 +267,15 @@ var findRule = (p) => {
   return null;
 };
 
+
 /**
  * the main function
  * @function
  * @throws {String}
  */
 var main = () => {
+
+
   var states = [0];
   var i = 0;
   for (var token of tokens) {
@@ -298,8 +307,7 @@ var main = () => {
           rule = findRule(states[0], token.first);
           states.push(rule.num);
           break;
-        }
-        else if (it.action === rule_type.shift) {
+        } else if (it.action === rule_type.shift) {
           states.push(it.num);
           rule = findRule({first: states[0], second: token.first});
           if (!rule) {
@@ -311,8 +319,7 @@ var main = () => {
           }
         }
       }
-    }
-    else {
+    } else {
       states.push(it.num);
     }
     ++i;
