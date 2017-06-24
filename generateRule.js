@@ -3,9 +3,9 @@
 class Transition {
   /**
    * @constructor
-   * @param {string[]} from 
-   * @param {string[]} to 
-   * @param {string[]} lookAheadTokens 
+   * @param {string[]} from
+   * @param {string[]} to
+   * @param {string[]} lookAheadTokens
    */
   constructor(from, to, lookAheadTokens) {
     this.from = from;
@@ -16,9 +16,9 @@ class Transition {
 
 class IntermediateTransition {
   /**
-   * @param {Transition[]} transition 
-   * @param {number} position 
-   * @param {string} next 
+   * @param {Transition[]} transition
+   * @param {number} position
+   * @param {string} next
    */
   constructor(transition, position, next) {
     this.transition = transition;
@@ -29,9 +29,9 @@ class IntermediateTransition {
 
 class Rule {
   /**
-   * @param {number} fromId 
-   * @param {string} symbol 
-   * @param {number} toId 
+   * @param {number} fromId
+   * @param {string} symbol
+   * @param {number} toId
    */
   constructor(fromId, symbol, toId) {
     this.fromId = fromId;
@@ -50,20 +50,21 @@ var transitions = [];
 
 var ruleArray = [];
 
-var graph = [{ id: 0, currTransitions: [], rules: [] }];
+var graph = [{id: 0, currTransitions: [], rules: []}];
 
 var readTransitions = (doneCallback, generateCallback) => {
   var fs = require('fs');
   var readline = require('readline');
-  var stream = require('stream');
+  var Stream = require('stream');
 
-  var instream = fs.createReadStream(
-    '.\\db_script\\transitions');
-  var outstream = new stream;
+  var instream = fs.createReadStream('.\\db_script\\transitions');
+  var outstream = new Stream;
   var rl = readline.createInterface(instream, outstream);
 
-  rl.on('line', function (line) {
-    if (!line || line === '') return;
+  rl.on('line', function(line) {
+    if (!line || line === '') {
+      return;
+    }
     var terms = line.split(' ');
 
     terms = terms.filter((e) => e !== '*' && e !== '->');
@@ -78,10 +79,12 @@ var readTransitions = (doneCallback, generateCallback) => {
         to.push(terms[i]);
       }
     }
-    transitions.push({ from: from, to: to, lookAheadToken: lookAheadToken });
+    transitions.push({from: from, to: to, lookAheadToken: lookAheadToken});
   });
 
-  rl.on('close', function () { doneCallback(generateCallback); });
+  rl.on('close', function() {
+    doneCallback(generateCallback);
+  });
 };
 
 var generateRules = (generateCallback) => {
@@ -89,22 +92,23 @@ var generateRules = (generateCallback) => {
   var getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
     if (nextSymbol === nextSymbol.toLowerCase()) {
-      var derivedTransitions =
-        transitions.filter((e) => { return e.from === nextSymbol; });
+      var derivedTransitions = transitions.filter((e) => {
+        return e.from === nextSymbol;
+      });
 
-      
       var currTransArray = [];
       // symbolsGeneratedFor.push(currTran.transition.from);
 
       for (var derivedTran of derivedTransitions) {
-        var currTran = new IntermediateTransition(derivedTran, 0,derivedTran.to[0] ? derivedTran.to[0] : null);
+        var currTran = new IntermediateTransition(
+            derivedTran, 0, derivedTran.to[0] ? derivedTran.to[0] : null);
 
         currTransArray.push(currTran);
         symbolsGeneratedFor.add(derivedTran.from);
 
         if (currTran.next && !symbolsGeneratedFor.has(currTran.next)) {
           var nextCurrTransitions =
-            getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
+              getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray = currTransArray.concat(nextCurrTransitions);
         }
       }
@@ -118,7 +122,7 @@ var generateRules = (generateCallback) => {
   var generateRuleForNextSymbol = (fromId, sym, currTransitions) => {
     // generate a new rule node
 
-    var newNode = { id: 0, currTransitions: [], rules: [] };
+    var newNode = {id: 0, currTransitions: [], rules: []};
     var currTransArray = JSON.parse(JSON.stringify(currTransitions));
     var nextSymbol = null;
 
@@ -133,18 +137,21 @@ var generateRules = (generateCallback) => {
     if (nextSymbol) {
       // recursively get all non terminal
       newNode.currTransitions = newNode.currTransitions.concat(
-        getAllCurrTransitions(nextSymbol, new Set()));
+          getAllCurrTransitions(nextSymbol, new Set()));
     }
-
 
     var existingRuleNode = graph.filter((e) => {
       return JSON.stringify(e.currTransitions) ===
-        JSON.stringify(newNode.currTransitions);
+          JSON.stringify(newNode.currTransitions);
     });
 
     if (existingRuleNode.length > 0) {
       // existing rule node already exists
-      var rule = { fromId: fromId, symbol: sym, nextRuleId: existingRuleNode[0].id };
+      var rule = {
+        fromId: fromId,
+        symbol: sym,
+        nextRuleId: existingRuleNode[0].id
+      };
       return rule;
     }
 
@@ -154,9 +161,9 @@ var generateRules = (generateCallback) => {
     console.info('pushing new node: ' + (newNode.id / 439 * 100) + '%');
 
     newNode.rules =
-      generateRuleForCurrTransitions(newNode, newNode.currTransitions);
+        generateRuleForCurrTransitions(newNode, newNode.currTransitions);
 
-    return {fromId: fromId, symbol: sym, nextRuleId: newNode.id };
+    return {fromId: fromId, symbol: sym, nextRuleId: newNode.id};
   };
 
   var generateRuleForCurrTransitions = (node, currTransitions) => {
@@ -171,7 +178,9 @@ var generateRules = (generateCallback) => {
 
     var rules = [];
     for (var next in nextDict) {
-      if (!nextDict.hasOwnProperty(next)) continue;
+      if (!nextDict.hasOwnProperty(next)) {
+        continue;
+      }
       var rule = generateRuleForNextSymbol(node.id, next, nextDict[next]);
       rules.push(rule);
     }
@@ -196,7 +205,7 @@ var generateRules = (generateCallback) => {
   graph[0].currTransitions = trans;
 
   graph[0].rules =
-    generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
+      generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
 
   // console.log(graph);
 
@@ -208,7 +217,7 @@ var generateRules = (generateCallback) => {
         acc.reduces++;
       }
       return acc;
-    }, { transitions: 0, reduces: 0 });
+    }, {transitions: 0, reduces: 0});
 
     var conflict = false;
 
@@ -216,7 +225,8 @@ var generateRules = (generateCallback) => {
       console.warn('reduce-reduce conflict');
       conflict = true;
     }
-    if (transitionReducePair.reduces > 0 && transitionReducePair.transitions > 0) {
+    if (transitionReducePair.reduces > 0 &&
+        transitionReducePair.transitions > 0) {
       console.warn('reduce-transition conflict');
       conflict = true;
     }
@@ -247,37 +257,43 @@ var generateRules = (generateCallback) => {
   // output transition rules
   // id term action id
 
-  
+
 
   for (var node of graph) {
     for (var rule of node.rules) {
-      // console.log('' + node.id + ' ' + rule.symbol + ' shift ' + rule.nextRuleId);
+      // console.log('' + node.id + ' ' + rule.symbol + ' shift ' +
+      // rule.nextRuleId);
       ruleArray.push({
         state: node.id,
         token: rule.symbol,
-        action: 1, // 1 is shift, 0 is reduce
+        action: 1,  // 1 is shift, 0 is reduce
         num: rule.nextRuleId
       });
-      console.info('pushing new rule: ' + ((ruleArray.length - 1) /2726 * 100) + '%');
+      console.info(
+          'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) + '%');
     }
     for (var currtran of node.currTransitions) {
       if (!currtran.next) {
         for (var token of currtran.transition.lookAheadToken) {
           var i = -1;
           for (var index in transitions) {
-            if (JSON.stringify(currtran.transition) === JSON.stringify(transitions[index])) {
+            if (JSON.stringify(currtran.transition) ===
+                JSON.stringify(transitions[index])) {
               i = index;
               break;
             }
           }
-          // console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is the transition id
+          // console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is
+          // the transition id
           ruleArray.push({
             state: node.id,
             token: token,
-            action: 0, // 1 is shift, 0 is reduce
+            action: 0,  // 1 is shift, 0 is reduce
             num: i
           });
-          console.info('pushing new rule: ' + ((ruleArray.length - 1) /2726 * 100) + '%');
+          console.info(
+              'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) +
+              '%');
         }
       }
     }
