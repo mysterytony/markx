@@ -73,7 +73,7 @@ class NonTerminal extends Term {
    * @param {String} s
    */
   constructor(s) {
-    super(s)
+    super(s);
   }
 }
 
@@ -122,7 +122,7 @@ class Transition {
  * @readonly
  * @enum {Number}
  */
-const rule_type = {
+const RULE_TYPE = {
   reduce: 0,
   shift: 1
 };
@@ -140,7 +140,7 @@ class Rule {
     this.state = s;
     this.token = t;
     /** @type {RuleType} */
-    this.action = a === 'reduce' ? rule_type.reduce: rule_type.shift;
+    this.action = a === 'reduce' ? RULE_TYPE.reduce : RULE_TYPE.shift;
     this.num = n;
   }
 
@@ -157,7 +157,8 @@ class Rule {
 }
 
 /**
- * compare if the state of the rule is equal to the pair's first property and the token of the rule equal to the pair's second property
+ * compare if the state of the rule is equal to the pair's first property and
+ * the token of the rule equal to the pair's second property
  * @param {Rule} r
  * @param {Pair} p
  * @returns {Boolean}
@@ -184,46 +185,45 @@ var tokens = [];
 /** @type {Array.<Array.<String>>} */
 var output = [];
 
-/** 
- * @class 
+/**
+ * @class
  * @property {String} str
- * @property {Array.<parseTree>} nodes
-*/
-class parseTree {
+ * @property {Array.<ParseTree>} nodes
+ */
+class ParseTree {
   constructor() {
-    this.str = "";
-    /** @type {Array.<parseTree>} */
+    this.str = '';
+    /** @type {Array.<ParseTree>} */
     this.nodes = [];
   }
 }
 
-var tree = new parseTree();
+var tree = new ParseTree();
 
 var tokenIndex = 0;
 var outputIndex = 0;
 
 /**
  * @function
- * @param {parseTree} tree
+ * @param {ParseTree} tree
  */
 var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
   for (var it = output[tempIndex].length - 1; it != 0; --it) {
     if (terminals.find((v) => v.equals(output[it]))) {
-      var ss = "";
-      ss += tokens[tokenIndex].first + " " + tokens[tokenIndex].second;
-      var newtree = new parseTree();
+      var ss = '';
+      ss += tokens[tokenIndex].first + ' ' + tokens[tokenIndex].second;
+      var newtree = new ParseTree();
       newtree.str = ss;
       tree.nodes.push(newtree);
       tokenIndex++;
-    }
-    else {
-      var newtree = new parseTree();
-      outputIndex ++;
-      var ss = "";
+    } else {
+      var newtree = new ParseTree();
+      outputIndex++;
+      var ss = '';
       ss += output[outputIndex][0];
       for (var i = 1; i < output[outputIndex].length; ++i) {
-        ss += " " + output[outputIndex][i];
+        ss += ' ' + output[outputIndex][i];
       }
       newtree.str = ss;
       tree.nodes.push(newtree);
@@ -232,14 +232,13 @@ var generateTreeHelper = (tree) => {
   }
 };
 
-
 /**
  * @function
  */
 var generateTree = () => {
-  var str = "";
+  var str = '';
   for (var i = 1; i < output[0].length; ++i) {
-    str += (" " + output[0][i]);
+    str += (' ' + output[0][i]);
   }
   tree.str = str;
 
@@ -276,7 +275,7 @@ var main = () => {
       throw 'cannot find a rule';
     }
 
-    if (rule.action === rule_type.reduce) {
+    if (rule.action === RULE_TYPE.reduce) {
       while (true) {
         if (rule.num >= transitions.length) {
           throw 'num is longer than transition length';
@@ -298,21 +297,19 @@ var main = () => {
           rule = findRule(states[0], token.first);
           states.push(rule.num);
           break;
-        }
-        else if (it.action === rule_type.shift) {
+        } else if (it.action === RULE_TYPE.shift) {
           states.push(it.num);
           rule = findRule({first: states[0], second: token.first});
           if (!rule) {
             throw 'cant find rule';
           }
-          if (rule.action === rule_type.shift) {
+          if (rule.action === RULE_TYPE.shift) {
             states.push(it.num);
             break;
           }
         }
       }
-    }
-    else {
+    } else {
       states.push(it.num);
     }
     ++i;
