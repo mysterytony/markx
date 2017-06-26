@@ -12,7 +12,7 @@ var transitions = [];
 /** @type {Rule[]} */
 var rules = [];
 
-/** @type {Array.<{first: String, second: String}>} */
+/** @type {Tokens[]} */
 var tokens = [];
 
 /** @type {string[][]} */
@@ -23,10 +23,29 @@ var {readTransitions} = require('./generateRule');
 readTransitions((trans, rules) => {
   transitions = trans;
   ruleArray = rules;
-  readInput((result) => {
-    tokens = result;
-    main();
-  });
+
+  tokens = [
+    new tokens('NEWFILE', 'NEWFILE'),
+    new tokens('NEWLINE', 'NEWLINE'),
+    new tokens('POUND', '#'),
+    new tokens('POUND', '#'),
+    new tokens('SINGLESPACE', ' '),
+    new tokens('WORD', 'Hello'),
+    new tokens('SINGLESPACE', ' '),
+    new tokens('WORD', 'World'),
+    new tokens('ENDLINE', 'ENDLINE'),
+    new tokens('ENDFILE', 'ENDFILE'),
+  ];
+
+  main();
+
+  // setup mock terminals
+
+
+  // readInput((result) => {
+  //   tokens = result;
+  //   main();
+  // });
 });
 
 /**
@@ -39,8 +58,6 @@ readTransitions((trans, rules) => {
 var compareRuleWithPair = (r, p) => {
   return r.state === p.first && r.token === p.second;
 };
-
-
 
 /**
  * @class
@@ -69,7 +86,7 @@ var generateTreeHelper = (tree) => {
   for (var it = output[tempIndex].length - 1; it != 0; --it) {
     if (terminals.find((v) => v.equals(output[it]))) {
       var ss = '';
-      ss += tokens[tokenIndex].first + ' ' + tokens[tokenIndex].second;
+      ss += tokens[tokenIndex].state + ' ' + tokens[tokenIndex].lex;
       var newtree = new parseTree();
       newtree.str = ss;
       tree.nodes.push(newtree);

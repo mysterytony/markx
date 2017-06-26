@@ -12,3 +12,52 @@ const MongodbSetting = {
 const MongodbCollections = {
   scannerRuleCollection: 'scannerrule'
 };
+
+function GetAllFromCollection(collectionString, successCallback, failureCallback) {
+  let MongoClient = require('mongodb').MongoClient;
+  MongoClient.connect(MongodbSetting.connectionString, function(err, db) {
+    if (err) {
+      failureCallback(err);
+    }
+    db.collection(collectionString).find({}, function(err, result) {
+      if (err) {
+        failureCallback(err);
+      }
+      db.close();
+      successCallback(result);
+    });
+  });
+  
+}
+
+/**
+ * @typedef successcallback
+ * @param {string} result
+ */
+
+/**
+ * Get one entry from the collection
+ * @param {string} collectionString 
+ * @param {successcallback} successCallback 
+ * @param {failcallback} failureCallback 
+ */
+function GetOneFromCollection(collectionString, successCallback, failureCallback) {
+  let MongoClient = require('mongodb').MongoClient;
+  MongoClient.connect(MongodbSetting.connectionString, function(err, db) {
+    if (err) {
+      failureCallback(err);
+    }
+    db.collection(collectionString).findOne({}, function(err, result) {
+      if (err) {
+        failureCallback(err);
+      }
+      db.close();
+      successCallback(result);
+    });
+  });
+}
+
+module.exports.MongodbCollections = MongodbCollections;
+module.exports.GetAllFromCollection = GetAllFromCollection;
+module.exports.GetOneFromCollection = GetOneFromCollection;
+

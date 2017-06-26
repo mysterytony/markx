@@ -1,20 +1,23 @@
 'use strict';
 var getRules = function(callback) {
-  var http = require('http');
-  var MongoClient = require('mongodb').MongoClient;
-  var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
-  MongoClient.connect(url, function(err, db) {
-    if (err) {
-      throw err;
-    }
-    db.collection('scannerrule').findOne({}, function(err, result) {
-      if (err) {
-        throw err;
-      }
-      db.close();
-      callback(result);
-    });
+  let mongoer = require('./mongor');
+  mongoer.GetOneFromCollection(mongoer.MongodbCollections.scannerRuleCollection,callback, function(err) {
+    throw err;
   });
+  // var MongoClient = require('mongodb').MongoClient;
+  // var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
+  // MongoClient.connect(url, function(err, db) {
+  //   if (err) {
+  //     throw err;
+  //   }
+  //   db.collection('scannerrule').findOne({}, function(err, result) {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //     db.close();
+  //     callback(result);
+  //   });
+  // });
 };
 
 var enumGenerator = function(rules) {

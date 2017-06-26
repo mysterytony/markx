@@ -1,56 +1,11 @@
-// data types
-
-class Transition {
-  /**
-   * @constructor
-   * @param {string[]} from
-   * @param {string[]} to
-   * @param {string[]} lookAheadTokens
-   */
-  constructor(from, to, lookAheadTokens) {
-    this.from = from;
-    this.to = to;
-    this.lookAheadTokens = lookAheadTokens;
-  }
-}
-
-class IntermediateTransition {
-  /**
-   * @param {Transition[]} transition
-   * @param {number} position
-   * @param {string} next
-   */
-  constructor(transition, position, next) {
-    this.transition = transition;
-    this.position = position;
-    this.next = next;
-  }
-}
-
-class Rule {
-  /**
-   * @param {number} fromId
-   * @param {string} symbol
-   * @param {number} toId
-   */
-  constructor(fromId, symbol, toId) {
-    this.fromId = fromId;
-    this.symbol = symbol;
-    this.toId = toId;
-  }
-}
-
-// read transitions
+const {Transition, Rule, IntermediateTransition, State} = require('./domain')
 
 /** @type {Transition[]} */
 var transitions = [];
-
 /** @type {Rule[]} */
-// var ruleArray = [];
-
 var ruleArray = [];
-
-var graph = [{id: 0, currTransitions: [], rules: []}];
+/** @type {State[]} */
+var graph = [];
 
 var readTransitions = (doneCallback, generateCallback) => {
   var fs = require('fs');
@@ -71,15 +26,16 @@ var readTransitions = (doneCallback, generateCallback) => {
 
     var from = terms[0];
     var to = [];
-    var lookAheadToken = [];
+    var lookAheadTokens = [];
     for (var i = 1; i < terms.length; ++i) {
       if (terms[i].indexOf('{') > -1 && terms[i].indexOf('}') > -1) {
-        lookAheadToken.push(terms[i]);
+        lookAheadTokens.push(terms[i]);
       } else {
         to.push(terms[i]);
       }
     }
-    transitions.push({from: from, to: to, lookAheadToken: lookAheadToken});
+    let newTran = new Transition(from, to, lookAheadTokens);
+    transitions.push(newTran);
   });
 
   rl.on('close', function() {
@@ -119,11 +75,11 @@ var generateRules = (generateCallback) => {
     return [];
   };
 
-  var generateRuleForNextSymbol = (fromId, sym, currTransitions) => {
+  var generateRuleForNextSymbol = (fromId, sym, intermediateTransitions) => {
     // generate a new rule node
 
-    var newNode = {id: 0, currTransitions: [], rules: []};
-    var currTransArray = JSON.parse(JSON.stringify(currTransitions));
+    var newNode = {id: 0, intermediateTransitions: [], rules: []};
+    var currTransArray = JSON.parse(JSON.stringify(intermediateTransitions));
     var nextSymbol = null;
 
     for (var currTran of currTransArray) {
@@ -132,17 +88,17 @@ var generateRules = (generateCallback) => {
       nextSymbol = currTran.next;
     }
 
-    newNode.currTransitions = newNode.currTransitions.concat(currTransArray);
+    newNode.intermediateTransitions = newNode.intermediateTransitions.concat(currTransArray);
 
     if (nextSymbol) {
       // recursively get all non terminal
-      newNode.currTransitions = newNode.currTransitions.concat(
+      newNode.intermediateTransitions = newNode.intermediateTransitions.concat(
           getAllCurrTransitions(nextSymbol, new Set()));
     }
 
     var existingRuleNode = graph.filter((e) => {
-      return JSON.stringify(e.currTransitions) ===
-          JSON.stringify(newNode.currTransitions);
+      return JSON.stringify(e.intermediateTransitions) ===
+          JSON.stringify(newNode.intermediateTransitions);
     });
 
     if (existingRuleNode.length > 0) {
@@ -158,17 +114,15 @@ var generateRules = (generateCallback) => {
     newNode.id = graph.length;
     graph.push(newNode);
 
-    console.info('pushing new node: ' + (newNode.id / 439 * 100) + '%');
-
     newNode.rules =
-        generateRuleForCurrTransitions(newNode, newNode.currTransitions);
+        generateRuleForCurrTransitions(newNode, newNode.intermediateTransitions);
 
     return {fromId: fromId, symbol: sym, nextRuleId: newNode.id};
   };
 
-  var generateRuleForCurrTransitions = (node, currTransitions) => {
+  var generateRuleForCurrTransitions = (node, intermediateTransitions) => {
     var nextDict = {};
-    for (var currTran of currTransitions) {
+    for (var currTran of intermediateTransitions) {
       if (currTran.next && nextDict.hasOwnProperty(currTran.next)) {
         nextDict[currTran.next].push(currTran);
       } else if (currTran.next) {
@@ -184,8 +138,6 @@ var generateRules = (generateCallback) => {
       var rule = generateRuleForNextSymbol(node.id, next, nextDict[next]);
       rules.push(rule);
     }
-
-    // ruleArray = ruleArray.concat(rules);
     return rules;
   };
 
@@ -202,18 +154,17 @@ var generateRules = (generateCallback) => {
     return acc;
   }, []);
 
-  graph[0].currTransitions = trans;
-
+  let n = new State(0);
+  graph[0] = n;
+  graph[0].intermediateTransitions = trans;
   graph[0].rules =
-      generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
-
-  // console.log(graph);
+      generateRuleForCurrTransitions(graph[0], graph[0].intermediateTransitions);
 
   for (var node of graph) {
-    var transitionReducePair = node.currTransitions.reduce((acc, curr) => {
+    var transitionReducePair = node.intermediateTransitions.reduce((acc, curr) => {
       if (curr.next) {
         acc.transitions++;
-      } else if (curr.transition.lookAheadToken.length === 0) {
+      } else if (curr.transition.lookAheadTokens.length === 0) {
         acc.reduces++;
       }
       return acc;
@@ -233,46 +184,22 @@ var generateRules = (generateCallback) => {
 
     if (conflict) {
       console.warn('node id: ' + node.id);
-      for (var tran of node.currTransitions) {
+      for (var tran of node.intermediateTransitions) {
         console.warn(tran);
       }
       console.warn('======');
     }
   }
 
-  // var findReduceStateId = (symbol, nextStateId, reduceNum) => {
-  //   if (reduceNum === 0) {
-  //     var rules = ruleArray.filter((e) => {
-  //       return e.symbol === symbol && e.nextRuleId === nextStateId;
-  //     }).reduce((acc, curr) => {
-  //       return acc.concat(curr.fromId);
-  //     }, []);
-  //     return rules[0].fromId;
-  //   }
-
-  //   var fromIds = findReduceStateId()
-
-  // };
-
-  // output transition rules
-  // id term action id
 
   for (var node of graph) {
     for (var rule of node.rules) {
-      // console.log('' + node.id + ' ' + rule.symbol + ' shift ' +
-      // rule.nextRuleId);
-      ruleArray.push({
-        state: node.id,
-        token: rule.symbol,
-        action: 1,  // 1 is shift, 0 is reduce
-        num: rule.nextRuleId
-      });
-      console.info(
-          'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) + '%');
+      let newRule = new Rule(node.id, rule.symbol, 'shift', rule.nextRuleId);
+      ruleArray.push(newRule);
     }
-    for (var currtran of node.currTransitions) {
+    for (var currtran of node.intermediateTransitions) {
       if (!currtran.next) {
-        for (var token of currtran.transition.lookAheadToken) {
+        for (var token of currtran.transition.lookAheadTokens) {
           var i = -1;
           for (var index in transitions) {
             if (JSON.stringify(currtran.transition) ===
@@ -281,17 +208,8 @@ var generateRules = (generateCallback) => {
               break;
             }
           }
-          // console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is
-          // the transition id
-          ruleArray.push({
-            state: node.id,
-            token: token,
-            action: 0,  // 1 is shift, 0 is reduce
-            num: i
-          });
-          console.info(
-              'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) +
-              '%');
+          let newRule = new Rule(node.id, token, 'reduce', i);
+          ruleArray.push(newRule);
         }
       }
     }
