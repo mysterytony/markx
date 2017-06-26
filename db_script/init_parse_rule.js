@@ -4,14 +4,14 @@ var transitions = [];
 var readTransitions = (doneCallback) => {
   var fs = require('fs');
   var readline = require('readline');
-  var stream = require('stream');
+  var Stream = require('stream');
 
   var instream = fs.createReadStream('./transitions');
-  var outstream = new stream;
+  var outstream = new Stream;
   var rl = readline.createInterface(instream, outstream);
 
   rl.on('line', function(line) {
-    if (!line || line === '') return;
+    if (!line || line === '') { return; }
     var terms = line.split(' ');
     var from = terms[1];
     var to = [];
@@ -21,7 +21,9 @@ var readTransitions = (doneCallback) => {
     transitions.push({from: from, to: to});
   });
 
-  rl.on('close', function() { doneCallback(); });
+  rl.on('close', function() {
+    doneCallback();
+  });
 };
 
 var inserting = () => {
@@ -43,9 +45,7 @@ var inserting = () => {
       });
     });
 
-
   });
 };
-
 
 readTransitions(inserting);

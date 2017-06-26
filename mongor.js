@@ -5,3 +5,10 @@
  * all over place
  */
 
+const MongodbSetting = {
+  connectionString: 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb'
+};
+
+const MongodbCollections = {
+  scannerRuleCollection: 'scannerrule'
+};

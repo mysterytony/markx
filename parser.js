@@ -45,9 +45,9 @@ var compareRuleWithPair = (r, p) => {
 /**
  * @class
  * @property {String} str
- * @property {Array.<parseTree>} nodes
-*/
-class parseTree {
+ * @property {Array.<ParseTree>} nodes
+ */
+class ParseTree {
   constructor() {
     this.str = '';
     /** @type {Array.<parseTree>} */
@@ -55,14 +55,14 @@ class parseTree {
   }
 }
 
-var tree = new parseTree();
+var tree = new ParseTree();
 
 var tokenIndex = 0;
 var outputIndex = 0;
 
 /**
  * @function
- * @param {parseTree} tree
+ * @param {ParseTree} tree
  */
 var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
@@ -88,7 +88,6 @@ var generateTreeHelper = (tree) => {
     }
   }
 };
-
 
 /**
  * @function
@@ -151,7 +150,7 @@ var main = () => {
       throw 'cannot find a rule';
     }
 
-    if (rule.action === rule_type.reduce) {
+    if (rule.action === RULE_TYPE.reduce) {
       while (true) {
         if (rule.num >= transitions.length) {
           throw 'num is longer than transition length';
@@ -179,7 +178,7 @@ var main = () => {
           if (!rule) {
             throw 'cant find rule';
           }
-          if (rule.action === rule_type.shift) {
+          if (rule.action === RULE_TYPE.shift) {
             states.push(it.num);
             break;
           }

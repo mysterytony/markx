@@ -120,7 +120,6 @@ class Scanner {
 
       for (let aKey of keys) {
         this._outputList.push(aKey);
-        console.log(this._tokenTypeKeys[aKey]);
       }
 
       // if the state is reseted then last character needs to be processed
