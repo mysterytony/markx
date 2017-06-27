@@ -9,49 +9,50 @@
 export class Term {
   /**
    * takes a string as the term's state name
-   * @param {String} s
+   * @param {String} termName
    */
-  constructor(s) {
-    this.state = s;
+  constructor(termName) {
+    this.termName = termName;
   }
 }
 
 /** @class */
 export class Terminal extends Term {
   /**
-   * @param {String} s
+   * @param {String} termName
    */
-  constructor(s) {
-    super(s);
+  constructor(termName) {
+    super(termName);
   }
 
   /**
    * @method
-   * @param {String} s
+   * @param {String} termName
    * @return {Boolean}
    */
-  equals(s) {
-    return s === this.state;
+  equals(termName) {
+    return termName === this.termName;
   }
 }
 
 /** @class */
 export class NonTerminal extends Term {
   /**
-   * @param {String} s
+   * @param {String} termName
    */
-  constructor(s) {
-    super(s)
+  constructor(termName) {
+    super(termName)
   }
 }
 
+/** @class */
 export class Token {
   /**
    * 
    * @param {Term} term 
    * @param {string} lex 
    */
-  constructor(term, lex = "") {
+  constructor(term, lex) {
     this.term = term;
     this.lex = lex;
   }
@@ -72,7 +73,7 @@ export class Transition {
 
   /**
    * @method
-   * @return {Array.<String>}
+   * @return {string[]}
    */
   getTransitionExpressions() {
     var exps = [];
@@ -100,27 +101,26 @@ export class Transition {
  * @readonly
  * @enum {Number}
  */
-export const rule_type = {
+export const RuleType = {
   reduce: 0,
   shift: 1
 };
 
-/** @class
- */
+/** @class */
 export class Rule {
   /**
    * @constructor
-   * @param {Number} s
-   * @param {String} t
-   * @param {String} a
-   * @param {Number} n
+   * @param {Number} fromStateId
+   * @param {String} token
+   * @param {RuleType} action one of 'reduce' or 'shift' of RuleType enum
+   * @param {Number} num represent the transition to reduce or next state to shift
    */
-  constructor(s, t, a, n) {
-    this.state = s;
-    this.token = t;
+  constructor(fromStateId, token, action, num) {
+    this.fromStateId = fromStateId;
+    this.token = token;
     /** @type {RuleType} */
-    this.action = a === 'reduce' ? rule_type.reduce: rule_type.shift;
-    this.num = n;
+    this.action = action;
+    this.num = num;
   }
 
   /**
@@ -135,6 +135,7 @@ export class Rule {
   }
 }
 
+/** @class */
 export class IntermediateTransition {
   /**
    * @param {Transition} transition
@@ -148,6 +149,7 @@ export class IntermediateTransition {
   }
 }
 
+/** @class */
 export class State {
   /**
    * 
@@ -161,13 +163,3 @@ export class State {
     this.intermediateTransitions = intermediateTransitions;
   }
 }
-
-// module.exports.Term = Term;
-// module.exports.Terminal = Terminal;
-// module.exports.NonTerminal = NonTerminal;
-// module.exports.Transition = Transition;
-// module.exports.Rule = Rule;
-// module.exports.IntermediateTransition = IntermediateTransition;
-// module.exports.State = State;
-// module.exports.rule_type = rule_type;
-// module.exports.Token = Token;
