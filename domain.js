@@ -2,11 +2,11 @@
  * This file contain all and only the data types that are used
  * across the project. Don't define any top level function or
  * top level function calls in this module.
- * @module domain
+ * @module Domain
  */
 
 /** @class */
-class Term {
+export class Term {
   /**
    * takes a string as the term's state name
    * @param {String} s
@@ -17,14 +17,12 @@ class Term {
 }
 
 /** @class */
-class Terminal extends Term {
+export class Terminal extends Term {
   /**
    * @param {String} s
-   * @param {String} lex
    */
-  constructor(s, lex) {
+  constructor(s) {
     super(s);
-    this.lex = lex;
   }
 
   /**
@@ -38,7 +36,7 @@ class Terminal extends Term {
 }
 
 /** @class */
-class NonTerminal extends Term {
+export class NonTerminal extends Term {
   /**
    * @param {String} s
    */
@@ -47,30 +45,27 @@ class NonTerminal extends Term {
   }
 }
 
-class Token {
+export class Token {
   /**
    * 
    * @param {Term} term 
    * @param {string} lex 
    */
-  constructor(term, lex) {
+  constructor(term, lex = "") {
     this.term = term;
     this.lex = lex;
   }
 }
 
 /** @class */
-class Transition {
+export class Transition {
   /**
-   * @param {String} f
-   * @param {string[]} to
+   * @param {Term} from
+   * @param {Term[]} to
    * @param {string[]} lookAheadTokens
    */
   constructor(from, to = [], lookAheadTokens = []) {
     this.from = from;
-    /**
-     * @type {Array.<String>}
-     */
     this.to = to;
     this.lookAheadTokens = lookAheadTokens;
   }
@@ -105,14 +100,14 @@ class Transition {
  * @readonly
  * @enum {Number}
  */
-const rule_type = {
+export const rule_type = {
   reduce: 0,
   shift: 1
 };
 
 /** @class
  */
-class Rule {
+export class Rule {
   /**
    * @constructor
    * @param {Number} s
@@ -140,11 +135,11 @@ class Rule {
   }
 }
 
-class IntermediateTransition {
+export class IntermediateTransition {
   /**
-   * @param {Transition[]} transition
+   * @param {Transition} transition
    * @param {number} position
-   * @param {string} next
+   * @param {Term} next
    */
   constructor(transition, position, next) {
     this.transition = transition;
@@ -153,25 +148,26 @@ class IntermediateTransition {
   }
 }
 
-class State {
+export class State {
   /**
    * 
    * @param {number} id 
-   * @param {IntermediateTransition} intermediateTransitions 
+   * @param {IntermediateTransition[]} intermediateTransitions 
    * @param {Rule[]} rules 
    */
   constructor(id, intermediateTransitions = [], rules = []) {
     this.id = id;
     this.rules = rules;
+    this.intermediateTransitions = intermediateTransitions;
   }
 }
 
-module.exports.Term = Term;
-module.exports.Terminal = Terminal;
-module.exports.NonTerminal = NonTerminal;
-module.exports.Transition = Transition;
-module.exports.Rule = Rule;
-module.exports.IntermediateTransition = IntermediateTransition;
-module.exports.State = State;
-module.exports.rule_type = rule_type;
-module.exports.Token = Token;
+// module.exports.Term = Term;
+// module.exports.Terminal = Terminal;
+// module.exports.NonTerminal = NonTerminal;
+// module.exports.Transition = Transition;
+// module.exports.Rule = Rule;
+// module.exports.IntermediateTransition = IntermediateTransition;
+// module.exports.State = State;
+// module.exports.rule_type = rule_type;
+// module.exports.Token = Token;
