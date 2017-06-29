@@ -1,3 +1,4 @@
+'use strict'
 /**
  * This file contain all and only the data types that are used
  * across the project. Don't define any top level function or
@@ -6,7 +7,7 @@
  */
 
 /** @class */
-export class Term {
+class Term {
   /**
    * takes a string as the term's state name
    * @param {String} termName
@@ -14,10 +15,18 @@ export class Term {
   constructor(termName) {
     this.termName = termName;
   }
+
+  /**
+   * @param {Term} anotherTerm
+   * @return {boolean}
+   */
+  static equal(anotherTerm) {
+    return this.termName === anotherTerm.termName;
+  }
 }
 
 /** @class */
-export class Terminal extends Term {
+class Terminal extends Term {
   /**
    * @param {String} termName
    */
@@ -25,18 +34,18 @@ export class Terminal extends Term {
     super(termName);
   }
 
-  /**
-   * @method
-   * @param {String} termName
-   * @return {Boolean}
-   */
-  equals(termName) {
-    return termName === this.termName;
-  }
+  // /**
+  //  * @method
+  //  * @param {String} termName
+  //  * @return {Boolean}
+  //  */
+  // equals(termName) {
+  //   return termName === this.termName;
+  // }
 }
 
 /** @class */
-export class NonTerminal extends Term {
+class NonTerminal extends Term {
   /**
    * @param {String} termName
    */
@@ -46,7 +55,7 @@ export class NonTerminal extends Term {
 }
 
 /** @class */
-export class Token {
+class Token {
   /**
    * 
    * @param {Term} term 
@@ -59,7 +68,7 @@ export class Token {
 }
 
 /** @class */
-export class Transition {
+class Transition {
   /**
    * @param {Term} from
    * @param {Term[]} to
@@ -101,13 +110,13 @@ export class Transition {
  * @readonly
  * @enum {Number}
  */
-export const RuleType = {
-  reduce: 0,
-  shift: 1
+const RuleType = {
+  reduce: 'reduce',
+  shift: 'shift'
 };
 
 /** @class */
-export class Rule {
+class Rule {
   /**
    * @constructor
    * @param {Number} fromStateId
@@ -136,7 +145,7 @@ export class Rule {
 }
 
 /** @class */
-export class IntermediateTransition {
+class IntermediateTransition {
   /**
    * @param {Transition} transition
    * @param {number} position
@@ -150,7 +159,7 @@ export class IntermediateTransition {
 }
 
 /** @class */
-export class State {
+class State {
   /**
    * 
    * @param {number} id 
@@ -163,3 +172,24 @@ export class State {
     this.intermediateTransitions = intermediateTransitions;
   }
 }
+
+module.exports.Term = Term;
+module.exports.Terminal = Terminal;
+module.exports.NonTerminal = NonTerminal;
+module.exports.Token = Token;
+module.exports.Transition = Transition;
+module.exports.Rule = Rule;
+module.exports.IntermediateTransition = IntermediateTransition;
+module.exports.State = State;
+module.exports.RuleType = RuleType;
+
+// let Domain = {
+//   Term: Term,
+//   Terminal: Terminal,
+//   NonTerminal: NonTerminal,
+//   Token: Token,
+//   Transition: Transition,
+//   Rule: Rule,
+//   IntermediateTransition: IntermediateTransition,
+//   State: State
+// };

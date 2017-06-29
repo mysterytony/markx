@@ -1,4 +1,6 @@
-import * as Domain from './domain';
+'use strict'
+
+let Domain = require('./domain');
 
 /** @type {Domain.Terminal[]} */
 var terminals = [];
@@ -18,7 +20,7 @@ var tokens = [];
 /** @type {string[][]} */
 var output = [];
 
-var {readTransitions} = require('./generateRule');
+var readTransitions = require('./generateRule');
 
 readTransitions((t, nt, tran, r) => {
   terminals = t;
@@ -26,18 +28,18 @@ readTransitions((t, nt, tran, r) => {
   transitions = tran;
   rules = r;
 
-  // tokens = [
-  //   new tokens('NEWFILE', 'NEWFILE'),
-  //   new tokens('NEWLINE', 'NEWLINE'),
-  //   new tokens('POUND', '#'),
-  //   new tokens('POUND', '#'),
-  //   new tokens('SINGLESPACE', ' '),
-  //   new tokens('WORD', 'Hello'),
-  //   new tokens('SINGLESPACE', ' '),
-  //   new tokens('WORD', 'World'),
-  //   new tokens('ENDLINE', 'ENDLINE'),
-  //   new tokens('ENDFILE', 'ENDFILE'),
-  // ];
+  tokens = [
+    new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
+    new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
+    new Domain.Token(new Domain.Terminal('POUND'), '#'),
+    new Domain.Token(new Domain.Terminal('POUND'), '#'),
+    new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+    new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
+    new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+    new Domain.Token(new Domain.Terminal('WORD'), 'World'),
+    new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
+    new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
+  ];
 
   main();
 
@@ -163,7 +165,7 @@ var main = () => {
   var states = [0];
   var i = 0;
   for (var token of tokens) {
-    var rule = findRule({first: states[0], second: token.first});
+    var rule = findRule({first: states[0], second: token.term});
 
     if (!rule) {
       throw 'cannot find a rule';

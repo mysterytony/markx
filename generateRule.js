@@ -1,4 +1,6 @@
-import * as Domain from './domain';
+'use strict'
+
+const Domain = require('./domain');
 
 /** @type {Domain.Transition[]} */
 let transitions = [];
@@ -12,14 +14,14 @@ let terminals = [];
 let nonterminals = [];
 
 /** @type {string} Start symbol default markx */
-const startSymbol = 's';
+const startSymbol = 'markx';
 
 let readTransitions = (doneCallback) => {
   let fs = require('fs');
   let readline = require('readline');
   let Stream = require('stream');
 
-  let instream = fs.createReadStream('.\\db_script\\mocktransitions');
+  let instream = fs.createReadStream('./db_script/transitions');
   let outstream = new Stream;
   let rl = readline.createInterface(instream, outstream);
 
@@ -35,21 +37,22 @@ let readTransitions = (doneCallback) => {
     let to = [];
     let lookAheadTokens = [];
 
-    if (nonterminals.indexOf(from) === -1) {
-      nonterminals.push(new Domain.NonTerminal(from));
+    if (nonterminals.findIndex(Domain.Term.equal, from) === -1) {
+      nonterminals.push(from);
     }
 
     for (let i = 1; i < terms.length; ++i) {
       if (terms[i].indexOf('{') > -1 && terms[i].indexOf('}') > -1) {
-        lookAheadTokens.push(new Domain.Token(terms[i]));
+        
+        lookAheadTokens = lookAheadTokens.concat(terms[i].replace('{','').replace('}','').split(','));
       } else if (terms[i].toLowerCase() === terms[i]) { // non terminal
         to.push(new Domain.NonTerminal(terms[i]));
-        if (nonterminals.indexOf(new Domain.NonTerminal(terms[i])) === -1) {
+        if (nonterminals.findIndex(Domain.Term.equal, new Domain.NonTerminal(terms[i])) === -1) {
           nonterminals.push(new Domain.NonTerminal(terms[i]));
         }
       } else { // terminal
         to.push(new Domain.Terminal(terms[i]));
-        if (terminals.indexOf(terms[i]) === -1) {
+        if (terminals.findIndex(Domain.Term.equal, new Domain.Terminal(terms[i])) === -1) {
           terminals.push(new Domain.Terminal(terms[i]));
         }
       }
@@ -66,24 +69,24 @@ let readTransitions = (doneCallback) => {
 
 let generateRules = () => {
   // helper functions
-  let getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
+  let getAllCurrTransitions = (nextTerm, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
-    if (nextSymbol === nextSymbol.toLowerCase()) {
+    if (nextTerm.termName === nextTerm.termName.toLowerCase()) {
       let derivedTransitions = transitions.filter((e) => {
-        return e.from === nextSymbol;
+        return e.from.termName === nextTerm.termName;
       });
 
       let currTransArray = [];
       // symbolsGeneratedFor.push(currTran.transition.from);
 
       for (let derivedTran of derivedTransitions) {
-        let currTran = new IntermediateTransition(
+        let currTran = new Domain.IntermediateTransition(
           derivedTran, 0, derivedTran.to[0] ? derivedTran.to[0] : null);
 
         currTransArray.push(currTran);
-        symbolsGeneratedFor.add(derivedTran.from);
+        symbolsGeneratedFor.add(derivedTran.from.termName);
 
-        if (currTran.next && !symbolsGeneratedFor.has(currTran.next)) {
+        if (currTran.next && !symbolsGeneratedFor.has(currTran.next.termName)) {
           let nextCurrTransitions =
             getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray = currTransArray.concat(nextCurrTransitions);
@@ -107,7 +110,7 @@ let generateRules = () => {
     // generate a new rule node
 
     let newState = new Domain.State(0); //{ id: 0, intermediateTransitions: [], rules: [] };
-    let currTransArray = intermediateTransitions;
+    let currTransArray = JSON.parse(JSON.stringify(intermediateTransitions));
     let nextSymbol = null;
 
     for (let currTran of currTransArray) {
@@ -131,7 +134,7 @@ let generateRules = () => {
 
     if (existingRuleNode.length > 0) {
       // existing rule node already exists
-      let rule = new Domain.Rule(fromId, sym, 'shift', existingRuleNode[0].id);
+      let rule = new Domain.Rule(fromId, sym, Domain.RuleType.shift, existingRuleNode[0].id);
       // let rule = {
       //   fromId: fromId,
       //   symbol: sym,
@@ -146,22 +149,23 @@ let generateRules = () => {
     newState.rules =
       generateRuleForCurrTransitions(newState, newState.intermediateTransitions);
 
-    let newRule = new Domain.Rule(fromId, sym)
-    return { fromId: fromId, symbol: sym, nextRuleId: newState.id };
+    let newRule = new Domain.Rule(fromId, sym, Domain.RuleType.shift, newState.id);
+    return newRule;
+    // return { fromId: fromId, symbol: sym, nextRuleId: newState.id };
   };
 
   /**
    * 
-   * @param {Domain.State} node 
+   * @param {domain.State} node 
    * @param {Domain.IntermediateTransition[]} intermediateTransitions 
    */
   let generateRuleForCurrTransitions = (node, intermediateTransitions) => {
     let nextDict = {};
     for (let currTran of intermediateTransitions) {
-      if (currTran.next && nextDict.hasOwnProperty(currTran.next)) {
-        nextDict[currTran.next].push(currTran);
+      if (currTran.next && nextDict.hasOwnProperty(currTran.next.termName)) {
+        nextDict[currTran.next.termName].push(currTran);
       } else if (currTran.next) {
-        nextDict[currTran.next] = [currTran];
+        nextDict[currTran.next.termName] = [currTran];
       }
     }
 
@@ -176,9 +180,9 @@ let generateRules = () => {
     return rules;
   };
 
-  let markxRules = transitions.filter((e) => e.from.state === startSymbol);
+  let markxRules = transitions.filter((e) => e.from.termName === startSymbol);
   let markxIntermediateTransitions = markxRules.reduce((acc, curr) => {
-    let intermediateTransition = new Domain.IntermediateTransition(curr, 0, new Domain.Token(curr.to[0] ? curr.to[0] : null));
+    let intermediateTransition = new Domain.IntermediateTransition(curr, 0, curr.to[0]);
     // let tran = {
     //   transition: curr,
     //   position: 0,
@@ -241,7 +245,7 @@ let generateRules = () => {
               break;
             }
           }
-          let newRule = new Domain.Rule(node.id, token, 'reduce', i);
+          let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, i);
           ruleArray.push(newRule);
         }
       }
@@ -249,7 +253,7 @@ let generateRules = () => {
   }
 };
 
-module.exports.readTransitions = (callback) => {
+module.exports = (callback) => {
   readTransitions(() => {
     generateRules();
     callback(terminals, nonterminals, transitions, ruleArray);
