@@ -78,7 +78,7 @@ export class Transition {
   getTransitionExpressions() {
     var exps = [];
     exps.push(this.from);
-    to.forEach(s => {
+    this.to.forEach(s => {
       exps.push(s);
     });
     return exps;

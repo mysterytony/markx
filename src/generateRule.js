@@ -12,14 +12,14 @@ let terminals = [];
 let nonterminals = [];
 
 /** @type {string} Start symbol default markx */
-const startSymbol = 'markx';
+const startSymbol = 's';
 
 let readTransitions = (doneCallback) => {
   let fs = require('fs');
   let readline = require('readline');
   let Stream = require('stream');
 
-  let instream = fs.createReadStream('.\\db_script\\transitions');
+  let instream = fs.createReadStream('.\\db_script\\mocktransitions');
   let outstream = new Stream;
   let rl = readline.createInterface(instream, outstream);
 
@@ -31,31 +31,31 @@ let readTransitions = (doneCallback) => {
 
     terms = terms.filter((e) => e !== '*' && e !== '->');
 
-    let from = new NonTerminal(terms[0]);
+    let from = new Domain.NonTerminal(terms[0]);
     let to = [];
     let lookAheadTokens = [];
 
     if (nonterminals.indexOf(from) === -1) {
-      nonterminals.push(from);
+      nonterminals.push(new Domain.NonTerminal(from));
     }
 
     for (let i = 1; i < terms.length; ++i) {
       if (terms[i].indexOf('{') > -1 && terms[i].indexOf('}') > -1) {
-        lookAheadTokens.push(new Token(terms[i]));
-      } else if (term[i].toLowerCase() === term[i]) { // non terminal
-        to.push(new NonTerminal(terms[i]));
-        if (nonterminals.indexOf(terms[i]) === -1) {
-          nonterminals.push(terms[i]);
+        lookAheadTokens.push(new Domain.Token(terms[i]));
+      } else if (terms[i].toLowerCase() === terms[i]) { // non terminal
+        to.push(new Domain.NonTerminal(terms[i]));
+        if (nonterminals.indexOf(new Domain.NonTerminal(terms[i])) === -1) {
+          nonterminals.push(new Domain.NonTerminal(terms[i]));
         }
       } else { // terminal
-        to.push(new Terminal(terms[i]));
+        to.push(new Domain.Terminal(terms[i]));
         if (terminals.indexOf(terms[i]) === -1) {
-          terminals.push(terms[i]);
+          terminals.push(new Domain.Terminal(terms[i]));
         }
       }
     }
 
-    let newTran = new Transition(from, to, lookAheadTokens);
+    let newTran = new Domain.Transition(from, to, lookAheadTokens);
     transitions.push(newTran);
   });
 
@@ -188,7 +188,7 @@ let generateRules = () => {
     return acc;
   }, []);
 
-  graph[0] = new State(0);
+  graph[0] = new Domain.State(0);
   graph[0].intermediateTransitions = markxIntermediateTransitions;
   graph[0].rules = generateRuleForCurrTransitions(graph[0], graph[0].intermediateTransitions);
 
@@ -241,7 +241,7 @@ let generateRules = () => {
               break;
             }
           }
-          let newRule = new Rule(node.id, token, 'reduce', i);
+          let newRule = new Domain.Rule(node.id, token, 'reduce', i);
           ruleArray.push(newRule);
         }
       }

@@ -1,18 +1,18 @@
-const {Term, Terminal, NonTerminal, Transition, Rule} = require('./domain');
+import * as Domain from './domain';
 
-/** @type {Terminal[]} */
+/** @type {Domain.Terminal[]} */
 var terminals = [];
 
-/** @type {NonTerminal[]} */
+/** @type {Domain.NonTerminal[]} */
 var nonterminals = [];
 
-/** @type {Transition[]} */
+/** @type {Domain.Transition[]} */
 var transitions = [];
 
-/** @type {Rule[]} */
+/** @type {Domain.Rule[]} */
 var rules = [];
 
-/** @type {Tokens[]} */
+/** @type {Domain.Tokens[]} */
 var tokens = [];
 
 /** @type {string[][]} */
@@ -20,22 +20,24 @@ var output = [];
 
 var {readTransitions} = require('./generateRule');
 
-readTransitions((trans, rules) => {
-  transitions = trans;
-  ruleArray = rules;
+readTransitions((t, nt, tran, r) => {
+  terminals = t;
+  nonterminals = nt;
+  transitions = tran;
+  rules = r;
 
-  tokens = [
-    new tokens('NEWFILE', 'NEWFILE'),
-    new tokens('NEWLINE', 'NEWLINE'),
-    new tokens('POUND', '#'),
-    new tokens('POUND', '#'),
-    new tokens('SINGLESPACE', ' '),
-    new tokens('WORD', 'Hello'),
-    new tokens('SINGLESPACE', ' '),
-    new tokens('WORD', 'World'),
-    new tokens('ENDLINE', 'ENDLINE'),
-    new tokens('ENDFILE', 'ENDFILE'),
-  ];
+  // tokens = [
+  //   new tokens('NEWFILE', 'NEWFILE'),
+  //   new tokens('NEWLINE', 'NEWLINE'),
+  //   new tokens('POUND', '#'),
+  //   new tokens('POUND', '#'),
+  //   new tokens('SINGLESPACE', ' '),
+  //   new tokens('WORD', 'Hello'),
+  //   new tokens('SINGLESPACE', ' '),
+  //   new tokens('WORD', 'World'),
+  //   new tokens('ENDLINE', 'ENDLINE'),
+  //   new tokens('ENDFILE', 'ENDFILE'),
+  // ];
 
   main();
 
@@ -92,7 +94,7 @@ var generateTreeHelper = (tree) => {
       tree.nodes.push(newtree);
       tokenIndex++;
     } else {
-      var newtree = new parseTree();
+      var newtree = new ParseTree();
       outputIndex++;
       var ss = '';
       ss += output[outputIndex][0];
