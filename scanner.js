@@ -163,7 +163,7 @@ class Scanner {
    * <pre>
    * <code>
    * var Scanner = require('./scanner');
-   * var scanner = new Scanner(function(TOKENTYPE, scanFunc) {
+   * var scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
    *       console.log(result[0] == TOKENTYPE.WORD); // true
@@ -205,15 +205,14 @@ class Scanner {
       Object.freeze(self._TOKENTYPE);
       Object.freeze(self._scan);
       if (typeof callback == 'function') {
-        callback(self._TOKENTYPE, scanFunc);
+        callback(scanFunc);
       }
     });
   }
   /**
    * callback function to return the entry function and enum object
    * @callback callback
-   * @param {TOKENTYPE} TOKENTYPE - 123
-   * @param {scanFunc}  scanFunc - 123
+   * @param {scanFunc}  scanFunc - the entry function
    */
 }
 
