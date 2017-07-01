@@ -21,10 +21,11 @@ var getRules = function(callback) {
 };
 
 var enumGenerator = function(rules) {
+  let Term = require('./domain').Term;
   var enumResult = {};
   var numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
-    enumResult[rules[i].state] = rules[i].state;
+    enumResult[rules[i].state] = new Term(rules[i].state);
   }
   return enumResult;
 };
@@ -187,7 +188,7 @@ class Scanner {
       self._dollarMarkReplacement = result.dollarMarkReplacement;
       /**
        * the actual value of a TOKENTYPE for comparison
-       * @typedef {string} TOKENTYPE_value
+       * @typedef {Term} TOKENTYPE_value
        */
       /**
        * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to compare the result
