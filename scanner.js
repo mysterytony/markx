@@ -24,7 +24,7 @@ var enumGenerator = function(rules) {
   var enumResult = {};
   var numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
-    enumResult[rules[i].state] = i;
+    enumResult[rules[i].state] = rules[i].state;
   }
   return enumResult;
 };
@@ -187,7 +187,7 @@ class Scanner {
       self._dollarMarkReplacement = result.dollarMarkReplacement;
       /**
        * the actual value of a TOKENTYPE for comparison
-       * @typedef {number} TOKENTYPE_value
+       * @typedef {string} TOKENTYPE_value
        */
       /**
        * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to compare the result
