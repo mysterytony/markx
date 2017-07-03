@@ -34,14 +34,14 @@ class Terminal extends Term {
     super(termName);
   }
 
-  // /**
-  //  * @method
-  //  * @param {String} termName
-  //  * @return {Boolean}
-  //  */
-  // equals(termName) {
-  //   return termName === this.termName;
-  // }
+  /**
+   * @method
+   * @param {Term} aterm
+   * @return {Boolean}
+   */
+  equal(aterm) {
+    return aterm.termName === this.termName;
+  }
 }
 
 /** @class */

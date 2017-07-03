@@ -41,6 +41,14 @@ readTransitions((t, nt, tran, r) => {
     new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
   ];
 
+  // tokens = [
+  //   new Domain.Token(new Domain.Terminal('BOF'), 'BOF'),
+  //   new Domain.Token(new Domain.Terminal('ID'), '1'),
+  //   new Domain.Token(new Domain.Terminal('PLUS'), '+'),
+  //   new Domain.Token(new Domain.Terminal('ID'), '2'),
+  //   new Domain.Token(new Domain.Terminal('EOF'), 'EOF')
+  // ];
+
   main();
 
   // setup mock terminals
@@ -60,7 +68,7 @@ readTransitions((t, nt, tran, r) => {
  * @returns {Boolean}
  */
 var compareRuleWithPair = (r, p) => {
-  return r.state === p.first && r.token === p.second;
+  return r.fromStateId === p.first && r.token === p.second.termName;
 };
 
 /**
@@ -88,24 +96,27 @@ var outputIndex = 0;
 var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
   for (var it = output[tempIndex].length - 1; it != 0; --it) {
-    if (terminals.find((v) => v.equals(output[it]))) {
+    if (terminals.find((v) => v.equal(output[tempIndex][it]))) {
       var ss = '';
-      ss += tokens[tokenIndex].state + ' ' + tokens[tokenIndex].lex;
-      var newtree = new parseTree();
-      newtree.str = ss;
-      tree.nodes.push(newtree);
-      tokenIndex++;
-    } else {
+      ss += tokens[tokenIndex].term.termName + ' ' + tokens[tokenIndex].lex;
       var newtree = new ParseTree();
-      outputIndex++;
+      newtree.str = ss;
+      tree.nodes.unshift(newtree);
+      tokenIndex--;
+    } else {
+      outputIndex--;
+      var newtree = new ParseTree();
+      
       var ss = '';
-      ss += output[outputIndex][0];
+      ss += output[outputIndex][0].termName;
       for (var i = 1; i < output[outputIndex].length; ++i) {
-        ss += ' ' + output[outputIndex][i];
+        ss += ' ' + output[outputIndex][i].termName;
       }
       newtree.str = ss;
-      tree.nodes.push(newtree);
+      tree.nodes.unshift(newtree);
+      // outputIndex--;
       generateTreeHelper(newtree);
+      
     }
   }
 };
@@ -114,12 +125,15 @@ var generateTreeHelper = (tree) => {
  * @function
  */
 var generateTree = () => {
+  tokenIndex = tokens.length - 1;
+  outputIndex = output.length - 1;
   var str = '';
-  for (var i = 1; i < output[0].length; ++i) {
-    str += (' ' + output[0][i]);
+  str += output[outputIndex][0].termName;
+  for (var i = 1; i < output[outputIndex].length; ++i) {
+    str += (' ' + output[outputIndex][i].termName);
   }
   tree.str = str;
-
+  // outputIndex --;
   generateTreeHelper(tree);
 };
 
@@ -171,17 +185,17 @@ var main = () => {
       throw 'cannot find a rule';
     }
 
-    if (rule.action === RULE_TYPE.reduce) {
+    if (rule.action === Domain.RuleType.reduce) {
       while (true) {
         if (rule.num >= transitions.length) {
           throw 'num is longer than transition length';
         }
 
         for (var j = 0; j < transitions[rule.num].to.length; ++j) {
-          states.pop();
+          states.shift();
         }
 
-        output.push(transitions[it.num].getTransitionExpressions());
+        output.push(transitions[rule.num].getTransitionExpressions());
 
         if (states.length <= 0) {
           throw 'states array is empty';
@@ -190,23 +204,23 @@ var main = () => {
         rule = findRule({first: states[0], second: transitions[rule.num].from});
 
         if (!rule) {
-          rule = findRule(states[0], token.first);
-          states.push(rule.num);
+          rule = findRule(states[0], token.term);
+          states.unshift(rule.num);
           break;
-        } else if (it.action === rule_type.shift) {
-          states.push(it.num);
-          rule = findRule({first: states[0], second: token.first});
+        } else if (rule.action === Domain.RuleType.shift) {
+          states.unshift(rule.num);
+          rule = findRule({first: states[0], second: token.term});
           if (!rule) {
             throw 'cant find rule';
           }
-          if (rule.action === RULE_TYPE.shift) {
-            states.push(it.num);
+          if (rule.action === Domain.RuleType.shift) {
+            states.unshift(rule.num);
             break;
           }
         }
       }
     } else {
-      states.push(it.num);
+      states.unshift(rule.num);
     }
     ++i;
   }

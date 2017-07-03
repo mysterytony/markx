@@ -198,33 +198,24 @@ let generateRules = () => {
 
   // generate rules for graph
   for (let node of graph) {
-    let transitionReducePair = node.intermediateTransitions.reduce((acc, curr) => {
-      if (curr.next) {
-        acc.transitions++;
-      } else if (curr.transition.lookAheadTokens.length === 0) {
-        acc.reduces++;
+    let needLookAheadTokens = node.intermediateTransitions.reduce((acc, curr) => {
+      if (!curr.next && curr.transition.lookAheadTokens.length === 0) {
+        acc++;
       }
       return acc;
-    }, { transitions: 0, reduces: 0 });
-
-    let conflict = false;
-
-    if (transitionReducePair.reduces > 1) {
-      console.warn('reduce-reduce conflict');
-      conflict = true;
-    }
-    if (transitionReducePair.reduces > 0 &&
-      transitionReducePair.transitions > 0) {
-      console.warn('reduce-transition conflict');
-      conflict = true;
-    }
-
-    if (conflict) {
+    }, 0);
+    
+    if (needLookAheadTokens > 0) {
+      console.warn('need look ahead token');
       console.warn('node id: ' + node.id);
-      for (let tran of node.intermediateTransitions) {
-        console.warn(tran);
+      for (let inter of node.intermediateTransitions) {
+        console.warn("position: " + inter.position);
+        console.warn("transition from: " + inter.transition.from.termName);
+        for (let tran of inter.transition.to) {
+          console.warn(tran.termName);
+        }
       }
-      console.warn('======');
+      console.warn('===================');
     }
   }
 
@@ -245,7 +236,7 @@ let generateRules = () => {
               break;
             }
           }
-          let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, i);
+          let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, parseInt(i));
           ruleArray.push(newRule);
         }
       }

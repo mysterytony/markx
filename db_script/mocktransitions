@@ -1,4 +1,4 @@
 * s -> BOF e EOF
-* e -> t PLUS e
+* e -> t PLUS e {EOF,PLUS}
 * e -> t {EOF}
-* t -> ID
+* t -> ID {EOF,PLUS}
