@@ -4,20 +4,6 @@ var getRules = function(callback) {
   mongoer.GetOneFromCollection(mongoer.MongodbCollections.scannerRuleCollection,callback, function(err) {
     throw err;
   });
-  // var MongoClient = require('mongodb').MongoClient;
-  // var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
-  // MongoClient.connect(url, function(err, db) {
-  //   if (err) {
-  //     throw err;
-  //   }
-  //   db.collection('scannerrule').findOne({}, function(err, result) {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //     db.close();
-  //     callback(result);
-  //   });
-  // });
 };
 
 var enumGenerator = function(rules) {
@@ -160,11 +146,6 @@ class Scanner {
         // and reset the currentLex too;
         currentLex = "";
       }
-
-      // if (this._currentStateIndex == this._startIndex) {
-      //   i--;
-      //   console.log("</test>");
-      // }
     }
     var keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
     this._outputList.push(new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
@@ -197,8 +178,7 @@ class Scanner {
    * var scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
-   *       console.log(result[0] == TOKENTYPE.WORD); // true
-   *       console.log(result[1] == TOKENTYPE.SINGLESPACE); //true
+   *       console.log(result[2]); // Token { term: Term { termName: 'WORD' }, lex: 'Hello' }
    *     });
    *   } catch (err) {
    *     console.log(err);
