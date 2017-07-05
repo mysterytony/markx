@@ -22,46 +22,43 @@ var output = [];
 
 var readTransitions = require('./generateRule');
 
-readTransitions((t, nt, tran, r) => {
-  terminals = t;
-  nonterminals = nt;
-  transitions = tran;
-  rules = r;
+let parser = (callback) => {
+  readTransitions((t, nt, tran, r) => {
+    terminals = t;
+    nonterminals = nt;
+    transitions = tran;
+    rules = r;
 
-  tokens = [
-    new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
-    new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
-    new Domain.Token(new Domain.Terminal('POUND'), '#'),
-    new Domain.Token(new Domain.Terminal('POUND'), '#'),
-    new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
-    new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
-    new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
-    new Domain.Token(new Domain.Terminal('WORD'), 'World'),
-    new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
-    new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
-  ];
+    tokens = [
+      new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
+      new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
+      new Domain.Token(new Domain.Terminal('POUND'), '#'),
+      new Domain.Token(new Domain.Terminal('POUND'), '#'),
+      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+      new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
+      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+      new Domain.Token(new Domain.Terminal('WORD'), 'World'),
+      new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
+      new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
+    ];
 
-  // tokens = [
-  //   new Domain.Token(new Domain.Terminal('BOF'), 'BOF'),
-  //   new Domain.Token(new Domain.Terminal('ID'), '1'),
-  //   new Domain.Token(new Domain.Terminal('PLUS'), '+'),
-  //   new Domain.Token(new Domain.Terminal('ID'), '2'),
-  //   new Domain.Token(new Domain.Terminal('EOF'), 'EOF')
-  // ];
+    // tokens = [
+    //   new Domain.Token(new Domain.Terminal('BOF'), 'BOF'),
+    //   new Domain.Token(new Domain.Terminal('ID'), '1'),
+    //   new Domain.Token(new Domain.Terminal('PLUS'), '+'),
+    //   new Domain.Token(new Domain.Terminal('ID'), '2'),
+    //   new Domain.Token(new Domain.Terminal('EOF'), 'EOF')
+    // ];
 
-  main();
+    main();
+    callback(tree);
+  });
+};
 
-  // setup mock terminals
-
-
-  // readInput((result) => {
-  //   tokens = result;
-  //   main();
-  // });
-});
+module.exports = parser;
 
 /**
- * compare if the state of the rule is equal to the pair's first 
+ * compare if the state of the rule is equal to the pair's first
  * and the token of the rule equal to the pair's second
  * @param {Rule} r
  * @param {Pair} p
@@ -71,27 +68,16 @@ var compareRuleWithPair = (r, p) => {
   return r.fromStateId === p.first && r.token === p.second.termName;
 };
 
-/**
- * @class
- * @property {String} str
- * @property {Array.<ParseTree>} nodes
- */
-class ParseTree {
-  constructor() {
-    this.str = '';
-    /** @type {Array.<parseTree>} */
-    this.nodes = [];
-  }
-}
 
-var tree = new ParseTree();
+
+var tree = new Domain.ParseTree();
 
 var tokenIndex = 0;
 var outputIndex = 0;
 
 /**
  * @function
- * @param {ParseTree} tree
+ * @param {Domain.ParseTree} tree
  */
 var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
@@ -99,16 +85,16 @@ var generateTreeHelper = (tree) => {
     if (terminals.find((v) => v.equal(output[tempIndex][it]))) {
       var ss = '';
       ss += tokens[tokenIndex].term.termName + ' ' + tokens[tokenIndex].lex;
-      var newtree = new ParseTree();
+      var newtree = new Domain.ParseTree();
       newtree.str = ss;
       tree.nodes.unshift(newtree);
       tokenIndex--;
     } else {
       outputIndex--;
-      var newtree = new ParseTree();
-      
+      var newtree = new Domain.ParseTree();
+
       var ss = '';
-      ss += output[outputIndex][0].termName;
+      ss += output[outputIndex][0].termName + ' ->';
       for (var i = 1; i < output[outputIndex].length; ++i) {
         ss += ' ' + output[outputIndex][i].termName;
       }
@@ -116,7 +102,6 @@ var generateTreeHelper = (tree) => {
       tree.nodes.unshift(newtree);
       // outputIndex--;
       generateTreeHelper(newtree);
-      
     }
   }
 };
@@ -128,7 +113,7 @@ var generateTree = () => {
   tokenIndex = tokens.length - 1;
   outputIndex = output.length - 1;
   var str = '';
-  str += output[outputIndex][0].termName;
+  str += output[outputIndex][0].termName + ' ->';
   for (var i = 1; i < output[outputIndex].length; ++i) {
     str += (' ' + output[outputIndex][i].termName);
   }

@@ -173,6 +173,17 @@ class State {
   }
 }
 
+/**
+ * @class
+ */
+class ParseTree {
+  constructor() {
+    this.str = '';
+    /** @type {ParseTree[]} */
+    this.nodes = [];
+  }
+}
+
 module.exports.Term = Term;
 module.exports.Terminal = Terminal;
 module.exports.NonTerminal = NonTerminal;
@@ -182,6 +193,7 @@ module.exports.Rule = Rule;
 module.exports.IntermediateTransition = IntermediateTransition;
 module.exports.State = State;
 module.exports.RuleType = RuleType;
+module.exports.ParseTree = ParseTree;
 
 // let Domain = {
 //   Term: Term,
