@@ -2,6 +2,11 @@ var express = require('express');
 
 var app = express();
 
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
@@ -20,5 +25,12 @@ MongoClient.connect(url, function(err, db) {
 });
 
 app.get('/', function(req, res) { res.send(greetingMsg); });
+
+app.post('/' , function(req, res) {
+  let compile = require('./codegen');
+  compile(req.body.markx, (out) => {
+    res.send(out);
+  });
+});
 
 app.listen(8080, function() {});

@@ -22,25 +22,27 @@ var output = [];
 
 var readTransitions = require('./generateRule');
 
-let parser = (callback) => {
+let parser = (callback, tokenList) => {
   readTransitions((t, nt, tran, r) => {
     terminals = t;
     nonterminals = nt;
     transitions = tran;
     rules = r;
 
-    tokens = [
-      new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
-      new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
-      new Domain.Token(new Domain.Terminal('POUND'), '#'),
-      new Domain.Token(new Domain.Terminal('POUND'), '#'),
-      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
-      new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
-      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
-      new Domain.Token(new Domain.Terminal('WORD'), 'World'),
-      new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
-      new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
-    ];
+    tokens = tokenList;
+
+    // tokens = [
+    //   new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
+    //   new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
+    //   new Domain.Token(new Domain.Terminal('POUND'), '#'),
+    //   new Domain.Token(new Domain.Terminal('POUND'), '#'),
+    //   new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+    //   new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
+    //   new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+    //   new Domain.Token(new Domain.Terminal('WORD'), 'World'),
+    //   new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
+    //   new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
+    // ];
 
     // tokens = [
     //   new Domain.Token(new Domain.Terminal('BOF'), 'BOF'),
