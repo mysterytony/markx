@@ -154,8 +154,12 @@
       list-style-type: decimal;
     }
 
-    .mx-body ol.alphabet {
+    .mx-body ol.lower-alpha {
       list-style-type: lower-alpha;
+    }
+
+    .mx-body ol.upper-alpha {
+      list-style-type: upper-alpha;
     }
 
     .mx-body ol.upper-roman {
@@ -431,7 +435,13 @@ MathJax.Hub.Config({
     <li>Item 3</li>
   </ol>
 
-  <ol class="alphabet">
+  <ol class="lower-alphabet">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ol>
+
+  <ol class="upper-alphabet">
     <li>Item 1</li>
     <li>Item 2</li>
     <li>Item 3</li>
@@ -504,7 +514,7 @@ MathJax.Hub.Config({
   <h2>Footnote</h2>
 
   <p>
-    Here is some text<sup><a href="#1">[1]</a></sup><br />
+    Here is some text<sup><a id="1" href="#1">[1]</a></sup><br />
     <a id="1" href="#1">[1]</a> Refer to some links to read more.
   </p>
 

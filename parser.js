@@ -1,232 +1,106 @@
-// var MongoClient = require('mongodb').MongoClient;
+'use strict'
 
-// // Connection URL
-// var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
+let Domain = require('./domain');
 
-// var parseRules = [];
-// // var tokens = [];
+/** @type {Domain.Terminal[]} */
+var terminals = [];
 
-// // Use connect method to connect to the server
-// MongoClient.connect(url, function(err, db) {
-//   var collection = db.collection('parserule');
-//   // Find some documents
-//   collection.find({}).toArray(function(err, docs) {
-//     parseRules = docs;
-//     parse();
-//   });
-//   db.close();
-// });
+/** @type {Domain.NonTerminal[]} */
+var nonterminals = [];
 
+/** @type {Domain.Transition[]} */
 var transitions = [];
 
-var ruleArray = [];
+/** @type {Domain.Rule[]} */
+var rules = [];
 
-var {readTransitions} = require('./generateRule');
+/** @type {Domain.Tokens[]} */
+var tokens = [];
 
-readTransitions((trans, rules) => {
-  transitions = trans;
-  ruleArray = rules;
-  main();
-});
+/** @type {string[][]} */
+var output = [];
 
-// ======================
+var readTransitions = require('./generateRule');
 
-/**
- * @class
- */
-class Term {
-  /**
-   * takes a string as the term's state name
-   * @param {String} s
-   */
-  constructor(s) {
-    this.state = s;
-  }
-}
+let parser = (callback) => {
+  readTransitions((t, nt, tran, r) => {
+    terminals = t;
+    nonterminals = nt;
+    transitions = tran;
+    rules = r;
 
-/**
- * @class
- */
-class Terminal extends Term {
-  /**
-   * @param {String} s
-   */
-  constructor(s) {
-    super(s);
-  }
+    tokens = [
+      new Domain.Token(new Domain.Terminal('NEWFILE'), 'NEWFILE'),
+      new Domain.Token(new Domain.Terminal('NEWLINE'), 'NEWLINE'),
+      new Domain.Token(new Domain.Terminal('POUND'), '#'),
+      new Domain.Token(new Domain.Terminal('POUND'), '#'),
+      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+      new Domain.Token(new Domain.Terminal('WORD'), 'Hello'),
+      new Domain.Token(new Domain.Terminal('SINGLESPACE'), ' '),
+      new Domain.Token(new Domain.Terminal('WORD'), 'World'),
+      new Domain.Token(new Domain.Terminal('ENDLINE'), 'ENDLINE'),
+      new Domain.Token(new Domain.Terminal('ENDFILE'), 'ENDFILE'),
+    ];
 
-  /**
-   * @method
-   * @param {String} s
-   * @return {Boolean}
-   */
-  equals(s) {
-    return s === this.state;
-  }
-}
+    // tokens = [
+    //   new Domain.Token(new Domain.Terminal('BOF'), 'BOF'),
+    //   new Domain.Token(new Domain.Terminal('ID'), '1'),
+    //   new Domain.Token(new Domain.Terminal('PLUS'), '+'),
+    //   new Domain.Token(new Domain.Terminal('ID'), '2'),
+    //   new Domain.Token(new Domain.Terminal('EOF'), 'EOF')
+    // ];
 
-/**
- * @class
- */
-class NonTerminal extends Term {
-  /**
-   * @param {String} s
-   */
-  constructor(s) {
-    super(s);
-  }
-}
-
-/**
- * @class
- */
-class Transition {
-  /**
-   * @param {String} f
-   */
-  constructor(f) {
-    this.from = f;
-    /**
-     * @type {Array.<String>}
-     */
-    this.to = [];
-  }
-
-  /**
-   * @method
-   * @return {Array.<String>}
-   */
-  getTransitionExpressions() {
-    var exps = [];
-    exps.push(this.from);
-    to.forEach(s => {
-      exps.push(s);
-    });
-    return exps;
-  }
-}
-
-/**
- * @typedef Pair
- * @property {Number} first
- * @property {String} second
- */
-
-/**
- * @typedef RuleType
- * @property {Number} reduce
- * @property {Number} shift
- */
-
-/**
- * @readonly
- * @enum {Number}
- */
-const RULE_TYPE = {
-  reduce: 0,
-  shift: 1
+    main();
+    callback(tree);
+  });
 };
 
-/** @class */
-class Rule {
-  /**
-   * @constructor
-   * @param {Number} s
-   * @param {String} t
-   * @param {String} a
-   * @param {Number} n
-   */
-  constructor(s, t, a, n) {
-    this.state = s;
-    this.token = t;
-    /** @type {RuleType} */
-    this.action = a === 'reduce' ? RULE_TYPE.reduce : RULE_TYPE.shift;
-    this.num = n;
-  }
-
-  /**
-   * copy the rule r
-   * @static
-   * @method
-   * @param {Rule} r
-   * @return {Rule}
-   */
-  static copyRule(r) {
-    return new Rule(r.state, r.token, r.action, r.num);
-  }
-}
+module.exports = parser;
 
 /**
- * compare if the state of the rule is equal to the pair's first property and
- * the token of the rule equal to the pair's second property
+ * compare if the state of the rule is equal to the pair's first
+ * and the token of the rule equal to the pair's second
  * @param {Rule} r
  * @param {Pair} p
  * @returns {Boolean}
  */
 var compareRuleWithPair = (r, p) => {
-  return r.state === p.first && r.token === p.second;
+  return r.fromStateId === p.first && r.token === p.second.termName;
 };
 
-/** @type {Array.<Terminal>} */
-var terminals = [];
 
-/** @type {Array.<NonTerminal>} */
-var nonterminals = [];
 
-/** @type {Array.<Transition>} */
-var transitions = [];
-
-/** @type {Array.<Rule>} */
-var rules = [];
-
-/** @type {Array.<{first: String, second: String}>} */
-var tokens = [];
-
-/** @type {Array.<Array.<String>>} */
-var output = [];
-
-/**
- * @class
- * @property {String} str
- * @property {Array.<ParseTree>} nodes
- */
-class ParseTree {
-  constructor() {
-    this.str = '';
-    /** @type {Array.<ParseTree>} */
-    this.nodes = [];
-  }
-}
-
-var tree = new ParseTree();
+var tree = new Domain.ParseTree();
 
 var tokenIndex = 0;
 var outputIndex = 0;
 
 /**
  * @function
- * @param {ParseTree} tree
+ * @param {Domain.ParseTree} tree
  */
 var generateTreeHelper = (tree) => {
   var tempIndex = outputIndex;
   for (var it = output[tempIndex].length - 1; it != 0; --it) {
-    if (terminals.find((v) => v.equals(output[it]))) {
+    if (terminals.find((v) => v.equal(output[tempIndex][it]))) {
       var ss = '';
-      ss += tokens[tokenIndex].first + ' ' + tokens[tokenIndex].second;
-      var newtree = new ParseTree();
+      ss += tokens[tokenIndex].term.termName + ' ' + tokens[tokenIndex].lex;
+      var newtree = new Domain.ParseTree();
       newtree.str = ss;
-      tree.nodes.push(newtree);
-      tokenIndex++;
+      tree.nodes.unshift(newtree);
+      tokenIndex--;
     } else {
-      var newtree = new ParseTree();
-      outputIndex++;
+      outputIndex--;
+      var newtree = new Domain.ParseTree();
+
       var ss = '';
-      ss += output[outputIndex][0];
+      ss += output[outputIndex][0].termName + ' ->';
       for (var i = 1; i < output[outputIndex].length; ++i) {
-        ss += ' ' + output[outputIndex][i];
+        ss += ' ' + output[outputIndex][i].termName;
       }
       newtree.str = ss;
-      tree.nodes.push(newtree);
+      tree.nodes.unshift(newtree);
+      // outputIndex--;
       generateTreeHelper(newtree);
     }
   }
@@ -236,16 +110,34 @@ var generateTreeHelper = (tree) => {
  * @function
  */
 var generateTree = () => {
+  tokenIndex = tokens.length - 1;
+  outputIndex = output.length - 1;
   var str = '';
-  for (var i = 1; i < output[0].length; ++i) {
-    str += (' ' + output[0][i]);
+  str += output[outputIndex][0].termName + ' ->';
+  for (var i = 1; i < output[outputIndex].length; ++i) {
+    str += (' ' + output[outputIndex][i].termName);
   }
   tree.str = str;
-
+  // outputIndex --;
   generateTreeHelper(tree);
 };
 
-// TODO: read inputs
+// read inputs
+function readInput(donecallback) {
+  let fs = require('fs');
+  let mxcontent = fs.readFileSync('./mock.mx').toString();
+  var Scanner = require('./scanner');
+  var myscanner = new Scanner((TOKENTYPE, scanFunc) => {
+    try {
+      scanFunc(mxcontent, (result) => {
+        console.log(result);
+        donecallback(result);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+}
 
 /**
  * @param {Pair} p
@@ -260,32 +152,35 @@ var findRule = (p) => {
   return null;
 };
 
+
 /**
  * the main function
  * @function
  * @throws {String}
  */
 var main = () => {
+
+
   var states = [0];
   var i = 0;
   for (var token of tokens) {
-    var rule = findRule({first: states[0], second: token.first});
+    var rule = findRule({first: states[0], second: token.term});
 
     if (!rule) {
       throw 'cannot find a rule';
     }
 
-    if (rule.action === RULE_TYPE.reduce) {
+    if (rule.action === Domain.RuleType.reduce) {
       while (true) {
         if (rule.num >= transitions.length) {
           throw 'num is longer than transition length';
         }
 
         for (var j = 0; j < transitions[rule.num].to.length; ++j) {
-          states.pop();
+          states.shift();
         }
 
-        output.push(transitions[it.num].getTransitionExpressions());
+        output.push(transitions[rule.num].getTransitionExpressions());
 
         if (states.length <= 0) {
           throw 'states array is empty';
@@ -294,23 +189,23 @@ var main = () => {
         rule = findRule({first: states[0], second: transitions[rule.num].from});
 
         if (!rule) {
-          rule = findRule(states[0], token.first);
-          states.push(rule.num);
+          rule = findRule(states[0], token.term);
+          states.unshift(rule.num);
           break;
-        } else if (it.action === RULE_TYPE.shift) {
-          states.push(it.num);
-          rule = findRule({first: states[0], second: token.first});
+        } else if (rule.action === Domain.RuleType.shift) {
+          states.unshift(rule.num);
+          rule = findRule({first: states[0], second: token.term});
           if (!rule) {
             throw 'cant find rule';
           }
-          if (rule.action === RULE_TYPE.shift) {
-            states.push(it.num);
+          if (rule.action === Domain.RuleType.shift) {
+            states.unshift(rule.num);
             break;
           }
         }
       }
     } else {
-      states.push(it.num);
+      states.unshift(rule.num);
     }
     ++i;
   }

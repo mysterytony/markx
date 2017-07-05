@@ -1,114 +1,94 @@
-// data types
+'use strict'
 
-class Transition {
-  /**
-   * @constructor
-   * @param {string[]} from
-   * @param {string[]} to
-   * @param {string[]} lookAheadTokens
-   */
-  constructor(from, to, lookAheadTokens) {
-    this.from = from;
-    this.to = to;
-    this.lookAheadTokens = lookAheadTokens;
-  }
-}
+const Domain = require('./domain');
 
-class IntermediateTransition {
-  /**
-   * @param {Transition[]} transition
-   * @param {number} position
-   * @param {string} next
-   */
-  constructor(transition, position, next) {
-    this.transition = transition;
-    this.position = position;
-    this.next = next;
-  }
-}
+/** @type {Domain.Transition[]} */
+let transitions = [];
+/** @type {Domain.Rule[]} */
+let ruleArray = [];
+/** @type {Domain.State[]} */
+let graph = [];
+/** @type {Domain.Terminal[]} */
+let terminals = [];
+/** @type {Domain.NonTerminal[]} */
+let nonterminals = [];
 
-class Rule {
-  /**
-   * @param {number} fromId
-   * @param {string} symbol
-   * @param {number} toId
-   */
-  constructor(fromId, symbol, toId) {
-    this.fromId = fromId;
-    this.symbol = symbol;
-    this.toId = toId;
-  }
-}
+/** @type {string} Start symbol default markx */
+const startSymbol = 'markx';
 
-// read transitions
+let readTransitions = (doneCallback) => {
+  let fs = require('fs');
+  let readline = require('readline');
+  let Stream = require('stream');
 
-/** @type {Transition[]} */
-var transitions = [];
+  let instream = fs.createReadStream('./db_script/transitions');
+  let outstream = new Stream;
+  let rl = readline.createInterface(instream, outstream);
 
-/** @type {Rule[]} */
-// var ruleArray = [];
-
-var ruleArray = [];
-
-var graph = [{id: 0, currTransitions: [], rules: []}];
-
-var readTransitions = (doneCallback, generateCallback) => {
-  var fs = require('fs');
-  var readline = require('readline');
-  var Stream = require('stream');
-
-  var instream = fs.createReadStream('.\\db_script\\transitions');
-  var outstream = new Stream;
-  var rl = readline.createInterface(instream, outstream);
-
-  rl.on('line', function(line) {
+  rl.on('line', (line) => {
     if (!line || line === '') {
       return;
     }
-    var terms = line.split(' ');
+    let terms = line.split(' ');
 
     terms = terms.filter((e) => e !== '*' && e !== '->');
 
-    var from = terms[0];
-    var to = [];
-    var lookAheadToken = [];
-    for (var i = 1; i < terms.length; ++i) {
+    let from = new Domain.NonTerminal(terms[0]);
+    let to = [];
+    let lookAheadTokens = [];
+
+    if (nonterminals.findIndex(Domain.Term.equal, from) === -1) {
+      nonterminals.push(from);
+    }
+
+    for (let i = 1; i < terms.length; ++i) {
       if (terms[i].indexOf('{') > -1 && terms[i].indexOf('}') > -1) {
-        lookAheadToken.push(terms[i]);
-      } else {
-        to.push(terms[i]);
+        
+        lookAheadTokens = lookAheadTokens.concat(terms[i].replace('{','').replace('}','').split(','));
+      } else if (terms[i].toLowerCase() === terms[i]) { // non terminal
+        to.push(new Domain.NonTerminal(terms[i]));
+        if (nonterminals.findIndex(Domain.Term.equal, new Domain.NonTerminal(terms[i])) === -1) {
+          nonterminals.push(new Domain.NonTerminal(terms[i]));
+        }
+      } else { // terminal
+        to.push(new Domain.Terminal(terms[i]));
+        if (terminals.findIndex(Domain.Term.equal, new Domain.Terminal(terms[i])) === -1) {
+          terminals.push(new Domain.Terminal(terms[i]));
+        }
       }
     }
-    transitions.push({from: from, to: to, lookAheadToken: lookAheadToken});
+
+    let newTran = new Domain.Transition(from, to, lookAheadTokens);
+    transitions.push(newTran);
   });
 
-  rl.on('close', function() {
-    doneCallback(generateCallback);
+  rl.on('close', () => {
+    doneCallback();
   });
 };
 
-var generateRules = (generateCallback) => {
+let generateRules = () => {
   // helper functions
-  var getAllCurrTransitions = (nextSymbol, symbolsGeneratedFor) => {
+  let getAllCurrTransitions = (nextTerm, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
-    if (nextSymbol === nextSymbol.toLowerCase()) {
-      var derivedTransitions = transitions.filter((e) => {
-        return e.from === nextSymbol;
+    if (nextTerm.termName === nextTerm.termName.toLowerCase()) {
+      let derivedTransitions = transitions.filter((e) => {
+        return e.from.termName === nextTerm.termName;
       });
 
-      var currTransArray = [];
+      let currTransArray = [];
       // symbolsGeneratedFor.push(currTran.transition.from);
 
-      for (var derivedTran of derivedTransitions) {
-        var currTran = new IntermediateTransition(
-            derivedTran, 0, derivedTran.to[0] ? derivedTran.to[0] : null);
+      for (let derivedTran of derivedTransitions) {
+        let currTran = new Domain.IntermediateTransition(
+          derivedTran, 0, derivedTran.to[0] ? derivedTran.to[0] : null);
 
         currTransArray.push(currTran);
-        symbolsGeneratedFor.add(derivedTran.from);
+        symbolsGeneratedFor.add(derivedTran.from.termName);
 
-        if (currTran.next && !symbolsGeneratedFor.has(currTran.next)) {
-          var nextCurrTransitions =
-              getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
+        if (currTran.next && !symbolsGeneratedFor.has(currTran.next.termName)) {
+          let nextCurrTransitions =
+            getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray = currTransArray.concat(nextCurrTransitions);
         }
       }
@@ -119,187 +99,154 @@ var generateRules = (generateCallback) => {
     return [];
   };
 
-  var generateRuleForNextSymbol = (fromId, sym, currTransitions) => {
+  /**
+   * generate rules for next symbol
+   * @param {number} fromId 
+   * @param {Domain.Term} sym 
+   * @param {Domain.IntermediateTransition[]} intermediateTransitions 
+   * @return {Domain.Rule}
+   */
+  let generateRuleForNextSymbol = (fromId, sym, intermediateTransitions) => {
     // generate a new rule node
 
-    var newNode = {id: 0, currTransitions: [], rules: []};
-    var currTransArray = JSON.parse(JSON.stringify(currTransitions));
-    var nextSymbol = null;
+    let newState = new Domain.State(0); //{ id: 0, intermediateTransitions: [], rules: [] };
+    let currTransArray = JSON.parse(JSON.stringify(intermediateTransitions));
+    let nextSymbol = null;
 
-    for (var currTran of currTransArray) {
+    for (let currTran of currTransArray) {
       currTran.position++;
       currTran.next = currTran.transition.to[currTran.position];
       nextSymbol = currTran.next;
     }
 
-    newNode.currTransitions = newNode.currTransitions.concat(currTransArray);
+    newState.intermediateTransitions = newState.intermediateTransitions.concat(currTransArray);
 
     if (nextSymbol) {
       // recursively get all non terminal
-      newNode.currTransitions = newNode.currTransitions.concat(
-          getAllCurrTransitions(nextSymbol, new Set()));
+      newState.intermediateTransitions = newState.intermediateTransitions.concat(
+        getAllCurrTransitions(nextSymbol, new Set()));
     }
 
-    var existingRuleNode = graph.filter((e) => {
-      return JSON.stringify(e.currTransitions) ===
-          JSON.stringify(newNode.currTransitions);
+    let existingRuleNode = graph.filter((e) => {
+      return JSON.stringify(e.intermediateTransitions) ===
+        JSON.stringify(newState.intermediateTransitions);
     });
 
     if (existingRuleNode.length > 0) {
       // existing rule node already exists
-      var rule = {
-        fromId: fromId,
-        symbol: sym,
-        nextRuleId: existingRuleNode[0].id
-      };
+      let rule = new Domain.Rule(fromId, sym, Domain.RuleType.shift, existingRuleNode[0].id);
+      // let rule = {
+      //   fromId: fromId,
+      //   symbol: sym,
+      //   nextRuleId: existingRuleNode[0].id
+      // };
       return rule;
     }
 
-    newNode.id = graph.length;
-    graph.push(newNode);
+    newState.id = graph.length;
+    graph.push(newState);
 
-    console.info('pushing new node: ' + (newNode.id / 439 * 100) + '%');
+    newState.rules =
+      generateRuleForCurrTransitions(newState, newState.intermediateTransitions);
 
-    newNode.rules =
-        generateRuleForCurrTransitions(newNode, newNode.currTransitions);
-
-    return {fromId: fromId, symbol: sym, nextRuleId: newNode.id};
+    let newRule = new Domain.Rule(fromId, sym, Domain.RuleType.shift, newState.id);
+    return newRule;
+    // return { fromId: fromId, symbol: sym, nextRuleId: newState.id };
   };
 
-  var generateRuleForCurrTransitions = (node, currTransitions) => {
-    var nextDict = {};
-    for (var currTran of currTransitions) {
-      if (currTran.next && nextDict.hasOwnProperty(currTran.next)) {
-        nextDict[currTran.next].push(currTran);
+  /**
+   * 
+   * @param {domain.State} node 
+   * @param {Domain.IntermediateTransition[]} intermediateTransitions 
+   */
+  let generateRuleForCurrTransitions = (node, intermediateTransitions) => {
+    let nextDict = {};
+    for (let currTran of intermediateTransitions) {
+      if (currTran.next && nextDict.hasOwnProperty(currTran.next.termName)) {
+        nextDict[currTran.next.termName].push(currTran);
       } else if (currTran.next) {
-        nextDict[currTran.next] = [currTran];
+        nextDict[currTran.next.termName] = [currTran];
       }
     }
 
-    var rules = [];
-    for (var next in nextDict) {
+    let rules = [];
+    for (let next in nextDict) {
       if (!nextDict.hasOwnProperty(next)) {
         continue;
       }
-      var rule = generateRuleForNextSymbol(node.id, next, nextDict[next]);
+      let rule = generateRuleForNextSymbol(node.id, next, nextDict[next]);
       rules.push(rule);
     }
-
-    // ruleArray = ruleArray.concat(rules);
     return rules;
   };
 
-  // start from "markx"
-  var startSymbol = 'markx';
-  var markxRules = transitions.filter((e) => e.from === startSymbol);
-  var trans = markxRules.reduce((acc, curr) => {
-    var tran = {
-      transition: curr,
-      position: 0,
-      next: curr.to[0] ? curr.to[0] : null
-    };
-    acc.push(tran);
+  let markxRules = transitions.filter((e) => e.from.termName === startSymbol);
+  let markxIntermediateTransitions = markxRules.reduce((acc, curr) => {
+    let intermediateTransition = new Domain.IntermediateTransition(curr, 0, curr.to[0]);
+    // let tran = {
+    //   transition: curr,
+    //   position: 0,
+    //   next: curr.to[0] ? curr.to[0] : null
+    // };
+    acc.push(intermediateTransition);
     return acc;
   }, []);
 
-  graph[0].currTransitions = trans;
+  graph[0] = new Domain.State(0);
+  graph[0].intermediateTransitions = markxIntermediateTransitions;
+  graph[0].rules = generateRuleForCurrTransitions(graph[0], graph[0].intermediateTransitions);
 
-  graph[0].rules =
-      generateRuleForCurrTransitions(graph[0], graph[0].currTransitions);
-
-  // console.log(graph);
-
-  for (var node of graph) {
-    var transitionReducePair = node.currTransitions.reduce((acc, curr) => {
-      if (curr.next) {
-        acc.transitions++;
-      } else if (curr.transition.lookAheadToken.length === 0) {
-        acc.reduces++;
+  // generate rules for graph
+  for (let node of graph) {
+    let needLookAheadTokens = node.intermediateTransitions.reduce((acc, curr) => {
+      if (!curr.next && curr.transition.lookAheadTokens.length === 0) {
+        acc++;
       }
       return acc;
-    }, {transitions: 0, reduces: 0});
-
-    var conflict = false;
-
-    if (transitionReducePair.reduces > 1) {
-      console.warn('reduce-reduce conflict');
-      conflict = true;
-    }
-    if (transitionReducePair.reduces > 0 &&
-        transitionReducePair.transitions > 0) {
-      console.warn('reduce-transition conflict');
-      conflict = true;
-    }
-
-    if (conflict) {
+    }, 0);
+    
+    if (needLookAheadTokens > 0) {
+      console.warn('need look ahead token');
       console.warn('node id: ' + node.id);
-      for (var tran of node.currTransitions) {
-        console.warn(tran);
+      for (let inter of node.intermediateTransitions) {
+        console.warn("position: " + inter.position);
+        console.warn("transition from: " + inter.transition.from.termName);
+        for (let tran of inter.transition.to) {
+          console.warn(tran.termName);
+        }
       }
-      console.warn('======');
+      console.warn('===================');
     }
   }
 
-  // var findReduceStateId = (symbol, nextStateId, reduceNum) => {
-  //   if (reduceNum === 0) {
-  //     var rules = ruleArray.filter((e) => {
-  //       return e.symbol === symbol && e.nextRuleId === nextStateId;
-  //     }).reduce((acc, curr) => {
-  //       return acc.concat(curr.fromId);
-  //     }, []);
-  //     return rules[0].fromId;
-  //   }
 
-  //   var fromIds = findReduceStateId()
-
-  // };
-
-  // output transition rules
-  // id term action id
-
-  for (var node of graph) {
-    for (var rule of node.rules) {
-      // console.log('' + node.id + ' ' + rule.symbol + ' shift ' +
-      // rule.nextRuleId);
-      ruleArray.push({
-        state: node.id,
-        token: rule.symbol,
-        action: 1,  // 1 is shift, 0 is reduce
-        num: rule.nextRuleId
-      });
-      console.info(
-          'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) + '%');
+  for (let node of graph) {
+    for (let rule of node.rules) {
+      // let newRule = new Rule(node.id, rule.symbol, 'shift', rule.nextRuleId);
+      ruleArray.push(rule);
     }
-    for (var currtran of node.currTransitions) {
+    for (let currtran of node.intermediateTransitions) {
       if (!currtran.next) {
-        for (var token of currtran.transition.lookAheadToken) {
-          var i = -1;
-          for (var index in transitions) {
+        for (let token of currtran.transition.lookAheadTokens) {
+          let i = -1;
+          for (let index in transitions) {
             if (JSON.stringify(currtran.transition) ===
-                JSON.stringify(transitions[index])) {
+              JSON.stringify(transitions[index])) {
               i = index;
               break;
             }
           }
-          // console.log('' + node.id + ' ' + token + ' reduce ' + i); // it is
-          // the transition id
-          ruleArray.push({
-            state: node.id,
-            token: token,
-            action: 0,  // 1 is shift, 0 is reduce
-            num: i
-          });
-          console.info(
-              'pushing new rule: ' + ((ruleArray.length - 1) / 2726 * 100) +
-              '%');
+          let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, parseInt(i));
+          ruleArray.push(newRule);
         }
       }
     }
   }
-
-  generateCallback(transitions, ruleArray);
 };
 
-module.exports.readTransitions = (callback) => {
-  readTransitions(generateRules, callback);
+module.exports = (callback) => {
+  readTransitions(() => {
+    generateRules();
+    callback(terminals, nonterminals, transitions, ruleArray);
+  });
 };

@@ -23,9 +23,6 @@
     "mongodb": "^2.2.27"
   },
   "devDependencies": {
-    "eslint": "^4.0.0",
-    "eslint-config-google": "^0.8.0",
-    "eslint-plugin-react": "^7.1.0",
     "gulp": "^3.9.1"
   }
 }

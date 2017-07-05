@@ -44,6 +44,7 @@
                 "dollar$": 29,
                 " ": 31,
                 "\n": 32,
+                "\r": 38,
                 ":": 34,
                 ";": 35
             },
@@ -137,6 +138,7 @@
                 "dollar$": null,
                 " ": null,
                 "\n":null,
+                "\r": null,
                 ":": null,
                 ";": null
             },
@@ -180,6 +182,7 @@
                 "dollar$": null,
                 " ": null,
                 "\n":null,
+                "\r": null,
                 ":": null,
                 ";": null
             },
@@ -223,6 +226,7 @@
                 "dollar$": null,
                 " ": null,
                 "\n":null,
+                "\r": null,
                 ":": null,
                 ";": null
             },
@@ -266,6 +270,7 @@
                 "dollar$": null,
                 " ": null,
                 "\n":null,
+                "\r": null,
                 ":": null,
                 ";": null
             },
@@ -309,6 +314,7 @@
                 "dollar$": null,
                 " ": null,
                 "\n":null,
+                "\r": null,
                 ":": null,
                 ";": null
             },
@@ -389,6 +395,13 @@
         },        
         {
             "state": "ENDFILE"
+        },
+        {
+            "state": "CARRIAGERETURN",
+            "alias": "NEWLINE",
+            "next": {
+                "\n": 32
+            }
         }
     ],
     "startIndex": 0,
