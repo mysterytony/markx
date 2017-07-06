@@ -26,6 +26,13 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use( function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  next();
+});
+
 // var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
@@ -43,7 +50,10 @@ var greetingMsg = 'hello world';
 //   db.close();
 // });
 
-app.get('/', function(req, res) { res.send(greetingMsg); });
+app.get('/', function(req, res) { 
+  res.status(200);
+  res.send(greetingMsg); 
+});
 
 app.post('/', function(req, res) {
   if (!parserInitCompleted) {
