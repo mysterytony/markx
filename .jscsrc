@@ -1,0 +1,10 @@
+{
+  "jsDoc": {
+    "checkAnnotations": {
+      "preset": "jsdoc3",
+      "extra": {
+        "callback": true
+      }
+    }
+  }
+}
