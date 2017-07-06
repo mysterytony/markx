@@ -1,4 +1,3 @@
-let parser = require('./parser');
 let Domain = require('./domain');
 
 let outputHtml = [];
@@ -136,7 +135,7 @@ let codegenStatement = (tree) => {
 };
 
 let codegenList = (tree) => {
-  switch(tree.str) {
+  switch (tree.str) {
     case 'list -> NEWLINE LOWERROMAN SINGLESPACE inlines ENDLINE sublist':
       outputHtml.push('<ol class="lower-roman">');
       outputHtml.push('<li>');
@@ -213,7 +212,7 @@ let codegenList = (tree) => {
 };
 
 let codegenSublist = (tree) => {
-  switch(tree.str) {
+  switch (tree.str) {
     case 'sublist -> NEWLINE LOWERROMAN SINGLESPACE inlines ENDLINE sublist':
       outputHtml.push('<ol class="lower-roman">');
       outputHtml.push('<li>');
@@ -309,7 +308,7 @@ let codegenLines = (tree) => {
     case 'lines ->':
       break;
   }
-}
+};
 
 let codegenLine = (tree) => {
   switch (tree.str) {
@@ -317,7 +316,7 @@ let codegenLine = (tree) => {
       codegen(tree.nodes[1]);
       break;
   }
-}
+};
 
 let codegenInlines = (tree) => {
   switch (tree.str) {
@@ -452,10 +451,10 @@ let codegenCodeline = (tree) => {
       codegen(tree.nodes[1]);
       break;
   }
-}
+};
 
 let codegenString = (tree) => {
-    switch (tree.str) {
+  switch (tree.str) {
     case 'string -> words':
     case 'string -> PERCENT':
     case 'string -> SLASH':
@@ -506,30 +505,30 @@ let codegenMath = (tree) => {
 
 let codegenUrl = (tree) => {
   switch (tree.str) {
-  case 'url -> WORD url':
-  case 'url -> UNDERSCORE url':
-  case 'url -> NUMONE url':
-  case 'url -> NUM url':
-  case 'url -> UPPERA url':
-  case 'url -> LOWERA url':
-  case 'url -> UPPERROMAN url':
-  case 'url -> LOWERROMAN url':
-  case 'url -> PLUS url':
-  case 'url -> MINUS url':
-  case 'url -> EQUAL url':
-  case 'url -> SQUIGGLY url':
-  case 'url -> LEFTSQUAREBRACKET url':
-  case 'url -> RIGHTSQUAREBRACKET url':
-  case 'url -> LEFTPAREN url':
-  case 'url -> RIGHTPAREN url':
-  case 'url -> EXCLAMATION url':
-  case 'url -> SLASH url':
-  case 'url -> POUND url':
-    outputHtml.push(tree.nodes[0].str.split(' ')[1]);
-    codegen(tree.nodes[1]);
-    break;
-  case 'url ->':
-    break;
+    case 'url -> WORD url':
+    case 'url -> UNDERSCORE url':
+    case 'url -> NUMONE url':
+    case 'url -> NUM url':
+    case 'url -> UPPERA url':
+    case 'url -> LOWERA url':
+    case 'url -> UPPERROMAN url':
+    case 'url -> LOWERROMAN url':
+    case 'url -> PLUS url':
+    case 'url -> MINUS url':
+    case 'url -> EQUAL url':
+    case 'url -> SQUIGGLY url':
+    case 'url -> LEFTSQUAREBRACKET url':
+    case 'url -> RIGHTSQUAREBRACKET url':
+    case 'url -> LEFTPAREN url':
+    case 'url -> RIGHTPAREN url':
+    case 'url -> EXCLAMATION url':
+    case 'url -> SLASH url':
+    case 'url -> POUND url':
+      outputHtml.push(tree.nodes[0].str.split(' ')[1]);
+      codegen(tree.nodes[1]);
+      break;
+    case 'url ->':
+      break;
   }
 };
 
@@ -636,16 +635,51 @@ let codegen = (tree) => {
   }
 };
 
-let output = () => {
-  let fs = require('fs');
-  fs.writeFileSync('output.html', outputHtml.join('\n'));
-};
+// let output = () => {
+//   let fs = require('fs');
+//   fs.writeFileSync('output.html', outputHtml.join('\n'));
+// };
 
-parser((tree) => {
-  readPresetHeader();
-  readPresetFooter();
-  outputHtml = outputHtml.concat(presetHeader);
-  codegen(tree);
-  outputHtml = outputHtml.concat(presetFooter);
-  output();
-});
+
+
+// let compile = (filelines, cb) => {
+//   try {
+//     let Scanner = require('./scanner');
+//     let myScanner = new Scanner((scanFunc) => {
+//       scanFunc(filelines, function(result) {
+//         parser((tree) => {
+//           readPresetHeader();
+//           readPresetFooter();
+//           outputHtml = outputHtml.concat(presetHeader);
+//           codegen(tree);
+//           outputHtml = outputHtml.concat(presetFooter);
+//           // output();
+//           cb(outputHtml.join(''));
+//         }, result);
+//       });
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+class CodeGenerator {
+  constructor() {
+    readPresetHeader();
+    readPresetFooter();
+  }
+
+  _clean() {
+    outputHtml = [];
+  }
+
+  GenerateCode(tree) {
+    this._clean();
+    outputHtml = outputHtml.concat(presetHeader);
+    codegen(tree);
+    outputHtml = outputHtml.concat(presetFooter);
+    return outputHtml.join('');
+  }
+}
+
+module.exports = CodeGenerator;
