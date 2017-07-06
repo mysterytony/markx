@@ -1,4 +1,3 @@
-let parser = require('./parser');
 let Domain = require('./domain');
 
 let outputHtml = [];
@@ -636,32 +635,51 @@ let codegen = (tree) => {
   }
 };
 
-let output = () => {
-  let fs = require('fs');
-  fs.writeFileSync('output.html', outputHtml.join('\n'));
-};
+// let output = () => {
+//   let fs = require('fs');
+//   fs.writeFileSync('output.html', outputHtml.join('\n'));
+// };
 
 
 
-let compile = (filelines, cb) => {
-  try {
-    let Scanner = require('./scanner');
-    let myScanner = new Scanner((scanFunc) => {
-      scanFunc(filelines, function(result) {
-        parser((tree) => {
-          readPresetHeader();
-          readPresetFooter();
-          outputHtml = outputHtml.concat(presetHeader);
-          codegen(tree);
-          outputHtml = outputHtml.concat(presetFooter);
-          // output();
-          cb(outputHtml.join(''));
-        }, result);
-      });
-    });
-  } catch (err) {
-    console.log(err);
+// let compile = (filelines, cb) => {
+//   try {
+//     let Scanner = require('./scanner');
+//     let myScanner = new Scanner((scanFunc) => {
+//       scanFunc(filelines, function(result) {
+//         parser((tree) => {
+//           readPresetHeader();
+//           readPresetFooter();
+//           outputHtml = outputHtml.concat(presetHeader);
+//           codegen(tree);
+//           outputHtml = outputHtml.concat(presetFooter);
+//           // output();
+//           cb(outputHtml.join(''));
+//         }, result);
+//       });
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+class CodeGenerator {
+  constructor() {
+    readPresetHeader();
+    readPresetFooter();
   }
-};
 
-module.exports = compile;
+  _clean() {
+    outputHtml = [];
+  }
+
+  GenerateCode(tree) {
+    this._clean();
+    outputHtml = outputHtml.concat(presetHeader);
+    codegen(tree);
+    outputHtml = outputHtml.concat(presetFooter);
+    return outputHtml.join('');
+  }
+}
+
+module.exports = CodeGenerator;
