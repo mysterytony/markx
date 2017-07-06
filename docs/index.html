@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>MarkX</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="script.js"></script>
+  <style>
+    .title {
+      width: 100%;
+      background: #614789;
+      padding: 20px 100px;
+      color: white;
+    }
+
+    .title .subtitle {
+      color: #CDBFE3;
+      font-size: 1.5em;
+    }
+
+    .paragraph {
+      padding: 10px 100px;
+    }
+
+    button:hover {
+      box-shadow: 3px 3px 10px #dbdbdb;
+    }
+
+    button {
+      transition-duration: 0.5s;
+    }
+
+    #demo-input {
+      width: 100%;
+    }
+  </style>
+
+  
+</head>
+
+<body>
+  <div class="title">
+    <h1>The MarkX Project</h1>
+    <br />
+    <p class="subtitle">
+      The best substitute of markdown. Lightweight and fast. Yet more powerful.
+      <a class="github-button" href="https://github.com/mysterytony/markx" data-size="large" data-show-count="true" aria-label="Star mysterytony/markx on GitHub">Star</a>
+    </p>
+  </div>
+
+  <div class="paragraph">
+    <div class="page-header">
+      <h3>About</h3>
+    </div>
+
+    <div>
+      <p>
+        Current Release 0.2.0
+      </p>
+    </div>
+
+    <div class="page-header">
+      <h3>Get Started</h3>
+    </div>
+
+    <div>
+      <p>
+        Almost nothing works
+      </p>
+    </div>
+
+    <div class="page-header">
+      <h3>Demo</h3>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="demo-input">MarkX: 
+              <button type="button" class="btn btn-default" aria-label="Left Align" id="demo-submit">
+                <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Compile
+              </button></label>
+            <textarea class="form-control" rows="5" id="demo-input"></textarea>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <label for="demo-output">Result:</label>
+          <div id="demo-output" class="mx-body"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</body>
+
+</html>
