@@ -81,11 +81,9 @@ class Scanner {
         currentState = this._rules[currentState.continuousState];
       }
       result.push(this._TOKENTYPE[currentState.state]);
-      this._resetCurrentStateIndex();
       return result;
     }
     result = [this._TOKENTYPE[currentState.state]];
-    this._resetCurrentStateIndex();
     return result;
   }
 
@@ -118,31 +116,33 @@ class Scanner {
       throw 'Scanner Error: input is not string type letiable.';
     }
     let currentLex = '';
-    for (let i = 0, keys, chr, addChar; i < string.length; i++) {
-      addChar = true;
+    for (let i = 0, keys, chr, hasNewToken; i < string.length; i++) {
       chr = string.charAt(i);
-      keys = this._charToTokenTypeKey(chr);
 
-      for (let aKey of keys) {
-        addChar = false;
-        if (aKey.equal(termOfEndline) || aKey.equal(termOfNewline)) {
-          this._outputList.push(new Token(aKey, aKey.termName));
-        } else {
-          this._outputList.push(new Token(aKey, currentLex));
+      do {
+        hasNewToken = false; // if ture the last character needs to be precessed again.
+        keys = this._charToTokenTypeKey(chr);
+
+        for (let aKey of keys) {
+          hasNewToken = true;
+          if (aKey.equal(termOfEndline) || aKey.equal(termOfNewline)) {
+            this._outputList.push(new Token(aKey, aKey.termName));
+          } else {
+            this._outputList.push(new Token(aKey, currentLex));
+          }
         }
-      }
 
-      if (addChar) {
-        currentLex += chr;
-      } else {
-        // if the state is reseted then last character needs to be processed
-        // again.
-        i--;
-
-        // and reset the currentLex too;
-        currentLex = '';
-      }
+        if (hasNewToken) {
+          // if a new token is founded, then reset the current state index
+          // and reset the currentLex.
+          this._resetCurrentStateIndex();
+          currentLex = '';
+        } else {
+          currentLex += chr;
+        }
+      } while (hasNewToken); 
     }
+
     let keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
     this._outputList.push(
         new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
@@ -176,7 +176,7 @@ class Scanner {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
    *       console.log(result[2]); // Token { term: Terminal { termName: 'WORD'
-   * }, lex: 'Hello' }
+   *                               // }, lex: 'Hello' }
    *     });
    *   } catch (err) {
    *     console.log(err);
