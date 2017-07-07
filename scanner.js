@@ -106,11 +106,13 @@ class Scanner {
     let keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
     let keyOfNewfile = this._tokenTypeKeys[this._newfileIndex];
     let keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
+    let keyOfStart   = this._tokenTypeKeys[this._startIndex];
 
     let termOfEndline = this._TOKENTYPE[keyOfEndline];
     let termOfNewline = this._TOKENTYPE[keyOfNewline];
     let termOfNewfile = this._TOKENTYPE[keyOfNewfile];
     let termOfEndfile = this._TOKENTYPE[keyOfEndfile];
+    let termofStart   = this._TOKENTYPE[keyOfStart];
     // this function only scans the first letiable which must be a string
     if (typeof string != 'string') {
       throw 'Scanner Error: input is not string type letiable.';
@@ -120,7 +122,8 @@ class Scanner {
       chr = string.charAt(i);
 
       do {
-        hasNewToken = false; // if ture the last character needs to be precessed again.
+        hasNewToken =
+            false;  // if ture the last character needs to be precessed again.
         keys = this._charToTokenTypeKey(chr);
 
         for (let aKey of keys) {
@@ -140,12 +143,20 @@ class Scanner {
         } else {
           currentLex += chr;
         }
-      } while (hasNewToken); 
+      } while (hasNewToken);
     }
 
-    let keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
-    this._outputList.push(
-        new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
+    let termOfLastState =
+        this._TOKENTYPE[this._tokenTypeKeys[this._currentStateIndex]];
+
+    // todo: refactoring should make this no longer depend on the variable
+    //       make it depend on the rules
+    if (termOfLastState.equal(termOfEndline)) {
+      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+      this._outputList.push(new Token(termOfNewline, termOfNewline.termName));
+    } else if (!termOfLastState.equal(termofStart)) {
+      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+    }
 
     // finish up process: adding ENDLIND to the end,
     //                and adding NEWLINE to the beginning.
