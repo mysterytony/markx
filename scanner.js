@@ -61,15 +61,7 @@ class Scanner {
   _charToTokenTypeKey(chr) {
     let result = [];
     let currentState = this._rules[this._currentStateIndex];
-    if ('continuousState' in currentState) {
-      while ('continuousState' in currentState) {
-        result.push(this._TOKENTYPE[currentState.state]);
-        currentState = this._rules[currentState.continuousState];
-      }
-      result.push(this._TOKENTYPE[currentState.state]);
-      this._resetCurrentStateIndex();
-      return result;
-    }
+
     if ('next' in currentState) {
       if (chr in currentState.next) {
         if (currentState.next[chr] != null) {
@@ -82,6 +74,15 @@ class Scanner {
         this._currentStateIndex = currentState.otherwiseNext;
         return result;
       }
+    }
+    if ('continuousState' in currentState) {
+      while ('continuousState' in currentState) {
+        result.push(this._TOKENTYPE[currentState.state]);
+        currentState = this._rules[currentState.continuousState];
+      }
+      result.push(this._TOKENTYPE[currentState.state]);
+      this._resetCurrentStateIndex();
+      return result;
     }
     result = [this._TOKENTYPE[currentState.state]];
     this._resetCurrentStateIndex();
@@ -174,8 +175,8 @@ class Scanner {
    * let scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
-   *       console.log(result[2]); // Token { term: Terminal { termName: 'WORD' },
-   * lex: 'Hello' }
+   *       console.log(result[2]); // Token { term: Terminal { termName: 'WORD'
+   * }, lex: 'Hello' }
    *     });
    *   } catch (err) {
    *     console.log(err);
