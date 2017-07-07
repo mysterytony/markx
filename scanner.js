@@ -1,15 +1,15 @@
 'use strict';
-var getRules = function(callback) {
+let getRules = function(callback) {
   let mongoer = require('./mongor');
   mongoer.GetOneFromCollection(mongoer.MongodbCollections.scannerRuleCollection,callback, function(err) {
     throw err;
   });
 };
 
-var enumGenerator = function(rules) {
+let enumGenerator = function(rules) {
   let Term = require('./domain').Term;
-  var enumResult = {};
-  var numOfRules = rules.length;
+  let enumResult = {};
+  let numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
     if ('alias' in rules[i]) {
       enumResult[rules[i].state] = new Term(rules[i].alias);
@@ -22,11 +22,11 @@ var enumGenerator = function(rules) {
 };
 
 // to correct the dollar marks caused by mongodb's restriction
-var rulesCorrector = function(original) {
-  var rules = original.rules;
+let rulesCorrector = function(original) {
+  let rules = original.rules;
 
-  var dollarMarkReplacement = original.dollarMarkReplacement;
-  var correctedRules = [];
+  let dollarMarkReplacement = original.dollarMarkReplacement;
+  let correctedRules = [];
   for (let aRule of rules) {
     if ('next' in aRule) {
       if (dollarMarkReplacement in aRule.next) {
@@ -62,7 +62,7 @@ class Scanner {
    * @param {string} chr - next character to process
    */
   _charToTokenTypeKey(chr) {
-    var result = [];
+    let result = [];
     let currentState = this._rules[this._currentStateIndex];
     if ('continuousState' in currentState) {
       while ('continuousState' in currentState) {
@@ -106,18 +106,18 @@ class Scanner {
 
     let Token = require('./domain').Token;
 
-    var keyOfEndline = this._tokenTypeKeys[this._endlineIndex];
-    var keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
-    var keyOfNewfile = this._tokenTypeKeys[this._newfileIndex];
-    var keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
+    let keyOfEndline = this._tokenTypeKeys[this._endlineIndex];
+    let keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
+    let keyOfNewfile = this._tokenTypeKeys[this._newfileIndex];
+    let keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
 
-    var termOfEndline = this._TOKENTYPE[keyOfEndline];
-    var termOfNewline = this._TOKENTYPE[keyOfNewline];
-    var termOfNewfile = this._TOKENTYPE[keyOfNewfile];
-    var termOfEndfile = this._TOKENTYPE[keyOfEndfile];
-    // this function only scans the first variable which must be a string
+    let termOfEndline = this._TOKENTYPE[keyOfEndline];
+    let termOfNewline = this._TOKENTYPE[keyOfNewline];
+    let termOfNewfile = this._TOKENTYPE[keyOfNewfile];
+    let termOfEndfile = this._TOKENTYPE[keyOfEndfile];
+    // this function only scans the first letiable which must be a string
     if (typeof string != 'string') {
-      throw 'Scanner Error: input is not string type variable.';
+      throw 'Scanner Error: input is not string type letiable.';
     }
     let currentLex = "";
     for (let i = 0, keys, chr, addChar; i < string.length; i++) {
@@ -147,7 +147,7 @@ class Scanner {
         currentLex = "";
       }
     }
-    var keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
+    let keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
     this._outputList.push(new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
 
     // finish up process: adding ENDLIND to the end,
@@ -174,8 +174,8 @@ class Scanner {
    * Usage:
    * <pre>
    * <code>
-   * var Scanner = require('./scanner');
-   * var scanner = new Scanner(function(scanFunc) {
+   * let Scanner = require('./scanner');
+   * let scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
    *       console.log(result[2]); // Token { term: Term { termName: 'WORD' }, lex: 'Hello' }
@@ -188,7 +188,7 @@ class Scanner {
    * </pre>
    */
   constructor(callback) {
-    var self = this;
+    let self = this;
     getRules(function(result) {
       self._rules = rulesCorrector(result);
       self._startIndex = result.startIndex;
@@ -212,7 +212,7 @@ class Scanner {
       self._TOKENTYPE = enumGenerator(result.rules);
       self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
 
-      var scanFunc = self._scan.bind(self);
+      let scanFunc = self._scan.bind(self);
       Object.freeze(self._TOKENTYPE);
       Object.freeze(self._scan);
       if (typeof callback == 'function') {
