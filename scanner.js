@@ -1,9 +1,7 @@
 'use strict';
-let getRules = function(callback) {
-  let mongoer = require('./mongor');
-  mongoer.GetOneFromCollection(mongoer.MongodbCollections.scannerRuleCollection,callback, function(err) {
-    throw err;
-  });
+let getRules = function() {
+  let result = require('./db_script/tokenList.json');
+  return result;
 };
 
 let enumGenerator = function(rules) {
@@ -13,8 +11,7 @@ let enumGenerator = function(rules) {
   for (let i = 0; i < numOfRules; i++) {
     if ('alias' in rules[i]) {
       enumResult[rules[i].state] = new Term(rules[i].alias);
-    }
-    else {
+    } else {
       enumResult[rules[i].state] = new Term(rules[i].state);
     }
   }
@@ -119,7 +116,7 @@ class Scanner {
     if (typeof string != 'string') {
       throw 'Scanner Error: input is not string type letiable.';
     }
-    let currentLex = "";
+    let currentLex = '';
     for (let i = 0, keys, chr, addChar; i < string.length; i++) {
       addChar = true;
       chr = string.charAt(i);
@@ -129,26 +126,25 @@ class Scanner {
         addChar = false;
         if (aKey == termOfEndline || aKey == termOfNewline) {
           this._outputList.push(new Token(aKey, aKey.termName));
-        }
-        else {
+        } else {
           this._outputList.push(new Token(aKey, currentLex));
         }
       }
 
-      if(addChar) {
+      if (addChar) {
         currentLex += chr;
-      }
-      else {
+      } else {
         // if the state is reseted then last character needs to be processed
         // again.
         i--;
 
         // and reset the currentLex too;
-        currentLex = "";
+        currentLex = '';
       }
     }
     let keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
-    this._outputList.push(new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
+    this._outputList.push(
+        new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
 
     // finish up process: adding ENDLIND to the end,
     //                and adding NEWLINE to the beginning.
@@ -178,7 +174,8 @@ class Scanner {
    * let scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
-   *       console.log(result[2]); // Token { term: Term { termName: 'WORD' }, lex: 'Hello' }
+   *       console.log(result[2]); // Token { term: Term { termName: 'WORD' },
+   * lex: 'Hello' }
    *     });
    *   } catch (err) {
    *     console.log(err);
@@ -189,36 +186,36 @@ class Scanner {
    */
   constructor(callback) {
     let self = this;
-    getRules(function(result) {
-      self._rules = rulesCorrector(result);
-      self._startIndex = result.startIndex;
-      self._endlineIndex = result.endlineIndex;
-      self._newlineIndex = result.newlineIndex;
-      self._newfileIndex = result.newfileIndex;
-      self._endfileIndex = result.endfileIndex;
-      self._dollarMarkReplacement = result.dollarMarkReplacement;
-      /**
-       * the actual value of a TOKENTYPE for comparison
-       * @typedef {Term} TOKENTYPE_value
-       */
-      /**
-       * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to compare the result
-       * @typedef {string} TOKENTYPE_key
-       */
-      /**
-       * A enum of the types of tokens
-       * @typedef {Object.<TOKENTYPE_key, TOKENTYPE_value>} TOKENTYPE
-       */
-      self._TOKENTYPE = enumGenerator(result.rules);
-      self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
+    let result = getRules();
+    self._rules = rulesCorrector(result);
+    self._startIndex = result.startIndex;
+    self._endlineIndex = result.endlineIndex;
+    self._newlineIndex = result.newlineIndex;
+    self._newfileIndex = result.newfileIndex;
+    self._endfileIndex = result.endfileIndex;
+    self._dollarMarkReplacement = result.dollarMarkReplacement;
+    /**
+     * the actual value of a TOKENTYPE for comparison
+     * @typedef {Term} TOKENTYPE_value
+     */
+    /**
+     * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to
+     * compare the result
+     * @typedef {string} TOKENTYPE_key
+     */
+    /**
+     * A enum of the types of tokens
+     * @typedef {Object.<TOKENTYPE_key, TOKENTYPE_value>} TOKENTYPE
+     */
+    self._TOKENTYPE = enumGenerator(result.rules);
+    self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
 
-      let scanFunc = self._scan.bind(self);
-      Object.freeze(self._TOKENTYPE);
-      Object.freeze(self._scan);
-      if (typeof callback == 'function') {
-        callback(scanFunc);
-      }
-    });
+    let scanFunc = self._scan.bind(self);
+    Object.freeze(self._TOKENTYPE);
+    Object.freeze(self._scan);
+    if (typeof callback == 'function') {
+      callback(scanFunc);
+    }
   }
   /**
    * callback function to return the entry function and enum object
