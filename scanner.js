@@ -5,14 +5,14 @@ let getRules = function() {
 };
 
 let enumGenerator = function(rules) {
-  let Term = require('./domain').Term;
+  let Terminal = require('./domain').Terminal;
   let enumResult = {};
   let numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
     if ('alias' in rules[i]) {
-      enumResult[rules[i].state] = new Term(rules[i].alias);
+      enumResult[rules[i].state] = new Terminal(rules[i].alias);
     } else {
-      enumResult[rules[i].state] = new Term(rules[i].state);
+      enumResult[rules[i].state] = new Terminal(rules[i].state);
     }
   }
   return enumResult;
@@ -121,10 +121,10 @@ class Scanner {
       addChar = true;
       chr = string.charAt(i);
       keys = this._charToTokenTypeKey(chr);
-      // console.log(chr);
+
       for (let aKey of keys) {
         addChar = false;
-        if (aKey == termOfEndline || aKey == termOfNewline) {
+        if (aKey.equal(termOfEndline) || aKey.equal(termOfNewline)) {
           this._outputList.push(new Token(aKey, aKey.termName));
         } else {
           this._outputList.push(new Token(aKey, currentLex));
@@ -174,7 +174,7 @@ class Scanner {
    * let scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
-   *       console.log(result[2]); // Token { term: Term { termName: 'WORD' },
+   *       console.log(result[2]); // Token { term: Terminal { termName: 'WORD' },
    * lex: 'Hello' }
    *     });
    *   } catch (err) {
@@ -196,7 +196,7 @@ class Scanner {
     self._dollarMarkReplacement = result.dollarMarkReplacement;
     /**
      * the actual value of a TOKENTYPE for comparison
-     * @typedef {Term} TOKENTYPE_value
+     * @typedef {Terminal} TOKENTYPE_value
      */
     /**
      * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to
