@@ -398,10 +398,11 @@
         },
         {
             "state": "CARRIAGERETURN",
-            "alias": "NEWLINE",
+            "alias": "ENDLINE",
             "next": {
                 "\n": 32
-            }
+            },
+            "continuousState": 33
         }
     ],
     "startIndex": 0,
