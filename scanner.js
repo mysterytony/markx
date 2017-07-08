@@ -113,7 +113,8 @@ class Scanner {
     let termOfNewfile = this._TOKENTYPE[keyOfNewfile];
     let termOfEndfile = this._TOKENTYPE[keyOfEndfile];
     let termofStart   = this._TOKENTYPE[keyOfStart];
-    // this function only scans the first letiable which must be a string
+
+    // this function only scans the first variable which must be a string
     if (typeof string != 'string') {
       throw 'Scanner Error: input is not string type letiable.';
     }
@@ -155,7 +156,7 @@ class Scanner {
       this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
       this._outputList.push(new Token(termOfNewline, termOfNewline.termName));
     } else if (!termOfLastState.equal(termofStart)) {
-      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+      this._outputList.push(new Token(termOfLastState, currentLex));
     }
 
     // finish up process: adding ENDLIND to the end,
