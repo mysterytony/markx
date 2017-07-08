@@ -1,32 +1,29 @@
 'use strict';
-var getRules = function(callback) {
-  let mongoer = require('./mongor');
-  mongoer.GetOneFromCollection(mongoer.MongodbCollections.scannerRuleCollection,callback, function(err) {
-    throw err;
-  });
+let getRules = function() {
+  let result = require('./db_script/tokenList.json');
+  return result;
 };
 
-var enumGenerator = function(rules) {
-  let Term = require('./domain').Term;
-  var enumResult = {};
-  var numOfRules = rules.length;
+let enumGenerator = function(rules) {
+  let Terminal = require('./domain').Terminal;
+  let enumResult = {};
+  let numOfRules = rules.length;
   for (let i = 0; i < numOfRules; i++) {
     if ('alias' in rules[i]) {
-      enumResult[rules[i].state] = new Term(rules[i].alias);
-    }
-    else {
-      enumResult[rules[i].state] = new Term(rules[i].state);
+      enumResult[rules[i].state] = new Terminal(rules[i].alias);
+    } else {
+      enumResult[rules[i].state] = new Terminal(rules[i].state);
     }
   }
   return enumResult;
 };
 
 // to correct the dollar marks caused by mongodb's restriction
-var rulesCorrector = function(original) {
-  var rules = original.rules;
+let rulesCorrector = function(original) {
+  let rules = original.rules;
 
-  var dollarMarkReplacement = original.dollarMarkReplacement;
-  var correctedRules = [];
+  let dollarMarkReplacement = original.dollarMarkReplacement;
+  let correctedRules = [];
   for (let aRule of rules) {
     if ('next' in aRule) {
       if (dollarMarkReplacement in aRule.next) {
@@ -62,17 +59,9 @@ class Scanner {
    * @param {string} chr - next character to process
    */
   _charToTokenTypeKey(chr) {
-    var result = [];
+    let result = [];
     let currentState = this._rules[this._currentStateIndex];
-    if ('continuousState' in currentState) {
-      while ('continuousState' in currentState) {
-        result.push(this._TOKENTYPE[currentState.state]);
-        currentState = this._rules[currentState.continuousState];
-      }
-      result.push(this._TOKENTYPE[currentState.state]);
-      this._resetCurrentStateIndex();
-      return result;
-    }
+
     if ('next' in currentState) {
       if (chr in currentState.next) {
         if (currentState.next[chr] != null) {
@@ -86,8 +75,15 @@ class Scanner {
         return result;
       }
     }
+    if ('continuousState' in currentState) {
+      while ('continuousState' in currentState) {
+        result.push(this._TOKENTYPE[currentState.state]);
+        currentState = this._rules[currentState.continuousState];
+      }
+      result.push(this._TOKENTYPE[currentState.state]);
+      return result;
+    }
     result = [this._TOKENTYPE[currentState.state]];
-    this._resetCurrentStateIndex();
     return result;
   }
 
@@ -106,49 +102,61 @@ class Scanner {
 
     let Token = require('./domain').Token;
 
-    var keyOfEndline = this._tokenTypeKeys[this._endlineIndex];
-    var keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
-    var keyOfNewfile = this._tokenTypeKeys[this._newfileIndex];
-    var keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
+    let keyOfEndline = this._tokenTypeKeys[this._endlineIndex];
+    let keyOfNewline = this._tokenTypeKeys[this._newlineIndex];
+    let keyOfNewfile = this._tokenTypeKeys[this._newfileIndex];
+    let keyOfEndfile = this._tokenTypeKeys[this._endfileIndex];
+    let keyOfStart   = this._tokenTypeKeys[this._startIndex];
 
-    var termOfEndline = this._TOKENTYPE[keyOfEndline];
-    var termOfNewline = this._TOKENTYPE[keyOfNewline];
-    var termOfNewfile = this._TOKENTYPE[keyOfNewfile];
-    var termOfEndfile = this._TOKENTYPE[keyOfEndfile];
-    // this function only scans the first variable which must be a string
+    let termOfEndline = this._TOKENTYPE[keyOfEndline];
+    let termOfNewline = this._TOKENTYPE[keyOfNewline];
+    let termOfNewfile = this._TOKENTYPE[keyOfNewfile];
+    let termOfEndfile = this._TOKENTYPE[keyOfEndfile];
+    let termofStart   = this._TOKENTYPE[keyOfStart];
+    // this function only scans the first letiable which must be a string
     if (typeof string != 'string') {
-      throw 'Scanner Error: input is not string type variable.';
+      throw 'Scanner Error: input is not string type letiable.';
     }
-    let currentLex = "";
-    for (let i = 0, keys, chr, addChar; i < string.length; i++) {
-      addChar = true;
+    let currentLex = '';
+    for (let i = 0, keys, chr, hasNewToken; i < string.length; i++) {
       chr = string.charAt(i);
-      keys = this._charToTokenTypeKey(chr);
-      // console.log(chr);
-      for (let aKey of keys) {
-        addChar = false;
-        if (aKey == termOfEndline || aKey == termOfNewline) {
-          this._outputList.push(new Token(aKey, aKey.termName));
-        }
-        else {
-          this._outputList.push(new Token(aKey, currentLex));
-        }
-      }
 
-      if(addChar) {
-        currentLex += chr;
-      }
-      else {
-        // if the state is reseted then last character needs to be processed
-        // again.
-        i--;
+      do {
+        hasNewToken =
+            false;  // if ture the last character needs to be precessed again.
+        keys = this._charToTokenTypeKey(chr);
 
-        // and reset the currentLex too;
-        currentLex = "";
-      }
+        for (let aKey of keys) {
+          hasNewToken = true;
+          if (aKey.equal(termOfEndline) || aKey.equal(termOfNewline)) {
+            this._outputList.push(new Token(aKey, aKey.termName));
+          } else {
+            this._outputList.push(new Token(aKey, currentLex));
+          }
+        }
+
+        if (hasNewToken) {
+          // if a new token is founded, then reset the current state index
+          // and reset the currentLex.
+          this._resetCurrentStateIndex();
+          currentLex = '';
+        } else {
+          currentLex += chr;
+        }
+      } while (hasNewToken);
     }
-    var keyOfLastState = this._tokenTypeKeys[this._currentStateIndex];
-    this._outputList.push(new Token((this._TOKENTYPE[keyOfLastState]), currentLex));
+
+    let termOfLastState =
+        this._TOKENTYPE[this._tokenTypeKeys[this._currentStateIndex]];
+
+    // todo: refactoring should make this no longer depend on the variable
+    //       make it depend on the rules
+    if (termOfLastState.equal(termOfEndline)) {
+      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+      this._outputList.push(new Token(termOfNewline, termOfNewline.termName));
+    } else if (!termOfLastState.equal(termofStart)) {
+      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+    }
 
     // finish up process: adding ENDLIND to the end,
     //                and adding NEWLINE to the beginning.
@@ -174,11 +182,12 @@ class Scanner {
    * Usage:
    * <pre>
    * <code>
-   * var Scanner = require('./scanner');
-   * var scanner = new Scanner(function(scanFunc) {
+   * let Scanner = require('./scanner');
+   * let scanner = new Scanner(function(scanFunc) {
    *   try {
    *     scanFunc('Hello World!\nMy name', function(result) {
-   *       console.log(result[2]); // Token { term: Term { termName: 'WORD' }, lex: 'Hello' }
+   *       console.log(result[2]); // Token { term: Terminal { termName: 'WORD'
+   *                               // }, lex: 'Hello' }
    *     });
    *   } catch (err) {
    *     console.log(err);
@@ -188,37 +197,37 @@ class Scanner {
    * </pre>
    */
   constructor(callback) {
-    var self = this;
-    getRules(function(result) {
-      self._rules = rulesCorrector(result);
-      self._startIndex = result.startIndex;
-      self._endlineIndex = result.endlineIndex;
-      self._newlineIndex = result.newlineIndex;
-      self._newfileIndex = result.newfileIndex;
-      self._endfileIndex = result.endfileIndex;
-      self._dollarMarkReplacement = result.dollarMarkReplacement;
-      /**
-       * the actual value of a TOKENTYPE for comparison
-       * @typedef {Term} TOKENTYPE_value
-       */
-      /**
-       * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to compare the result
-       * @typedef {string} TOKENTYPE_key
-       */
-      /**
-       * A enum of the types of tokens
-       * @typedef {Object.<TOKENTYPE_key, TOKENTYPE_value>} TOKENTYPE
-       */
-      self._TOKENTYPE = enumGenerator(result.rules);
-      self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
+    let self = this;
+    let result = getRules();
+    self._rules = rulesCorrector(result);
+    self._startIndex = result.startIndex;
+    self._endlineIndex = result.endlineIndex;
+    self._newlineIndex = result.newlineIndex;
+    self._newfileIndex = result.newfileIndex;
+    self._endfileIndex = result.endfileIndex;
+    self._dollarMarkReplacement = result.dollarMarkReplacement;
+    /**
+     * the actual value of a TOKENTYPE for comparison
+     * @typedef {Terminal} TOKENTYPE_value
+     */
+    /**
+     * The key of TOKENTYPE, can be used to get the value of TOKENTYPE to
+     * compare the result
+     * @typedef {string} TOKENTYPE_key
+     */
+    /**
+     * A enum of the types of tokens
+     * @typedef {Object.<TOKENTYPE_key, TOKENTYPE_value>} TOKENTYPE
+     */
+    self._TOKENTYPE = enumGenerator(result.rules);
+    self._tokenTypeKeys = Object.keys(self._TOKENTYPE);
 
-      var scanFunc = self._scan.bind(self);
-      Object.freeze(self._TOKENTYPE);
-      Object.freeze(self._scan);
-      if (typeof callback == 'function') {
-        callback(scanFunc);
-      }
-    });
+    let scanFunc = self._scan.bind(self);
+    Object.freeze(self._TOKENTYPE);
+    Object.freeze(self._scan);
+    if (typeof callback == 'function') {
+      callback(scanFunc);
+    }
   }
   /**
    * callback function to return the entry function and enum object
