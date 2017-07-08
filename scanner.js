@@ -155,7 +155,7 @@ class Scanner {
       this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
       this._outputList.push(new Token(termOfNewline, termOfNewline.termName));
     } else if (!termOfLastState.equal(termofStart)) {
-      this._outputList.push(new Token(termOfLastState, termOfLastState.termName));
+      this._outputList.push(new Token(termOfLastState, currentLex));
     }
 
     // finish up process: adding ENDLIND to the end,
