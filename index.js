@@ -75,7 +75,8 @@ app.post('/', function(req, res) {
     });
     return;
   }
-
+  console.log("received: " + req.body.mxbody);
+  
   try {
     scan(req.body.mxbody, (tokenList) => {
       let resultHtml = myCodeGen.GenerateCode(myParser.parse(tokenList));

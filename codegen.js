@@ -27,6 +27,9 @@ let codegenMarkx = (tree) => {
 
 let codegenStatement = (tree) => {
   switch (tree.str) {
+    case 'statement -> NEWLINE ENDLINE':
+      outputHtml.push('<br />');
+      break;
     case 'statement -> NEWLINE POUND SINGLESPACE inlines SINGLESPACE POUND ENDLINE':
       outputHtml.push('<h1 class="title">');
       codegen(tree.nodes[3]);
@@ -97,34 +100,34 @@ let codegenStatement = (tree) => {
     case 'statement -> NEWLINE SQUIGGLY SQUIGGLY SQUIGGLY ENDLINE':
       outputHtml.push('<hr class="squiggly" />');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE LEFTANGLE ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE LEFTANGLE ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p class="align-left">');
       codegen(tree.nodes[7]);
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE RIGHTANGLE ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE RIGHTANGLE ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p class="align-right">');
       codegen(tree.nodes[7]);
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p class="align-center">');
       codegen(tree.nodes[7]);
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL EQUAL ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p class="fit-width">');
       codegen(tree.nodes[8]);
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p>');
       outputHtml.push('<div class="column column-2">');
       codegen(tree.nodes[9]);
       outputHtml.push('</div>');
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE statements NEWLINE CARET CARET CARET ENDLINE':
+    case 'statement -> NEWLINE CARET CARET CARET SINGLESPACE EQUAL SINGLESPACE EQUAL SINGLESPACE EQUAL ENDLINE lines NEWLINE CARET CARET CARET ENDLINE':
       outputHtml.push('<p>');
       outputHtml.push('<div class="column column-3">');
       codegen(tree.nodes[9]);

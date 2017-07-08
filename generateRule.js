@@ -15,13 +15,14 @@ let nonterminals = [];
 
 /** @type {string} Start symbol default markx */
 const startSymbol = 'markx';
+const transitionRuleFile = "mocktransitions";
 
 let readTransitions = (doneCallback) => {
   let fs = require('fs');
   let readline = require('readline');
   let Stream = require('stream');
 
-  let instream = fs.createReadStream('./db_script/transitions');
+  let instream = fs.createReadStream('./db_script/' + transitionRuleFile);
   let outstream = new Stream;
   let rl = readline.createInterface(instream, outstream);
 
@@ -69,7 +70,7 @@ let readTransitions = (doneCallback) => {
 
 let generateRules = () => {
   // helper functions
-  let getAllCurrTransitions = (nextTerm, symbolsGeneratedFor) => {
+  let getAllIntermediateTransitions = (nextTerm, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
     if (nextTerm.termName === nextTerm.termName.toLowerCase()) {
       let derivedTransitions = transitions.filter((e) => {
@@ -88,7 +89,7 @@ let generateRules = () => {
 
         if (currTran.next && !symbolsGeneratedFor.has(currTran.next.termName)) {
           let nextCurrTransitions =
-            getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
+            getAllIntermediateTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray = currTransArray.concat(nextCurrTransitions);
         }
       }
@@ -111,20 +112,22 @@ let generateRules = () => {
 
     let newState = new Domain.State(0); //{ id: 0, intermediateTransitions: [], rules: [] };
     let currTransArray = JSON.parse(JSON.stringify(intermediateTransitions));
-    let nextSymbol = null;
+    let nextSymbols = [];
 
     for (let currTran of currTransArray) {
       currTran.position++;
       currTran.next = currTran.transition.to[currTran.position];
-      nextSymbol = currTran.next;
+      if (!nextSymbol)
+        nextSymbols.push(currTran.next);
     }
 
     newState.intermediateTransitions = newState.intermediateTransitions.concat(currTransArray);
 
-    if (nextSymbol) {
+    for (var nextSymbol of nextSymbols) {
       // recursively get all non terminal
-      newState.intermediateTransitions = newState.intermediateTransitions.concat(
-        getAllCurrTransitions(nextSymbol, new Set()));
+      if (nextSymbol)
+        newState.intermediateTransitions = newState.intermediateTransitions.concat(
+          getAllIntermediateTransitions(nextSymbol, new Set()));
     }
 
     let existingRuleNode = graph.filter((e) => {
