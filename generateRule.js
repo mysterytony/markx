@@ -241,15 +241,39 @@ let generateRules = () => {
           }
           let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, parseInt(i));
           ruleArray.push(newRule);
+          graph[node.id].rules.push(newRule);
         }
       }
     }
   }
 };
 
+function printGraph() {
+  for (var node of graph) {
+    console.log(node.id);
+    for (var intertran of node.intermediateTransitions) {
+      var outStr = intertran.transition.from.termName + ' ->';
+      for (var i = 0; i < intertran.position; ++ i) {
+        outStr += ' ' + intertran.transition.to[i].termName;
+      }
+      outStr += ' (*)';
+      for (var i = intertran.position; i < intertran.transition.to.length; ++ i) {
+        outStr += ' ' + intertran.transition.to[i].termName;
+      }
+      console.log(outStr);
+    }
+    for (var rule of node.rules) {
+      if (rule.action === Domain.RuleType.reduce) continue;
+      console.log(rule.token + ' => ' + rule.num);
+    }
+    console.log('===================');
+  }
+}
+
 module.exports = (callback) => {
   readTransitions(() => {
     generateRules();
+    printGraph();
     callback(terminals, nonterminals, transitions, ruleArray);
   });
 };
