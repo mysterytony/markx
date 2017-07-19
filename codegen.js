@@ -78,7 +78,7 @@ let codegenStatement = (tree) => {
       codegen(tree.nodes[1]);
       outputHtml.push('</p>');
       break;
-    case 'statement -> NEWLINE RIGHTANGLE RIGHTANGLE RIGHTANGLE ENDLINE lines NEWLINE LEFTANGLE LEFTANGLE LEFTANGLE ENDLINE':
+    case 'statement -> NEWLINE RIGHTANGLE RIGHTANGLE RIGHTANGLE ENDLINE lines LEFTANGLE LEFTANGLE LEFTANGLE':
       outputHtml.push('<div class="block-quote">');
       codegen(tree.nodes[5]);
       outputHtml.push('</div>');
