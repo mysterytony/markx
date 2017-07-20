@@ -15,18 +15,19 @@ let nonterminals = [];
 
 /** @type {string} Start symbol default markx */
 const startSymbol = 'markx';
+const transitionRuleFile = "mocktransitions";
 
 let readTransitions = (doneCallback) => {
   let fs = require('fs');
   let readline = require('readline');
   let Stream = require('stream');
 
-  let instream = fs.createReadStream('./db_script/transitions');
+  let instream = fs.createReadStream('./db_script/' + transitionRuleFile);
   let outstream = new Stream;
   let rl = readline.createInterface(instream, outstream);
 
   rl.on('line', (line) => {
-    if (!line || line === '') {
+    if (!line || line.trim() === '') {
       return;
     }
     let terms = line.split(' ');
@@ -69,7 +70,7 @@ let readTransitions = (doneCallback) => {
 
 let generateRules = () => {
   // helper functions
-  let getAllCurrTransitions = (nextTerm, symbolsGeneratedFor) => {
+  let getAllIntermediateTransitions = (nextTerm, symbolsGeneratedFor) => {
     // check if nextSymbol is a non terminal
     if (nextTerm.termName === nextTerm.termName.toLowerCase()) {
       let derivedTransitions = transitions.filter((e) => {
@@ -88,7 +89,7 @@ let generateRules = () => {
 
         if (currTran.next && !symbolsGeneratedFor.has(currTran.next.termName)) {
           let nextCurrTransitions =
-            getAllCurrTransitions(currTran.next, symbolsGeneratedFor);
+            getAllIntermediateTransitions(currTran.next, symbolsGeneratedFor);
           currTransArray = currTransArray.concat(nextCurrTransitions);
         }
       }
@@ -111,20 +112,22 @@ let generateRules = () => {
 
     let newState = new Domain.State(0); //{ id: 0, intermediateTransitions: [], rules: [] };
     let currTransArray = JSON.parse(JSON.stringify(intermediateTransitions));
-    let nextSymbol = null;
+    let nextSymbols = [];
 
     for (let currTran of currTransArray) {
       currTran.position++;
       currTran.next = currTran.transition.to[currTran.position];
-      nextSymbol = currTran.next;
+      if (!nextSymbol)
+        nextSymbols.push(currTran.next);
     }
 
     newState.intermediateTransitions = newState.intermediateTransitions.concat(currTransArray);
 
-    if (nextSymbol) {
+    for (var nextSymbol of nextSymbols) {
       // recursively get all non terminal
-      newState.intermediateTransitions = newState.intermediateTransitions.concat(
-        getAllCurrTransitions(nextSymbol, new Set()));
+      if (nextSymbol)
+        newState.intermediateTransitions = newState.intermediateTransitions.concat(
+          getAllIntermediateTransitions(nextSymbol, new Set()));
     }
 
     let existingRuleNode = graph.filter((e) => {
@@ -238,15 +241,45 @@ let generateRules = () => {
           }
           let newRule = new Domain.Rule(node.id, token, Domain.RuleType.reduce, parseInt(i));
           ruleArray.push(newRule);
+          graph[node.id].rules.push(newRule);
         }
       }
     }
   }
 };
 
+function printGraph() {
+  for (var node of graph) {
+    console.log(node.id);
+    for (var intertran of node.intermediateTransitions) {
+      var outStr = intertran.transition.from.termName + ' ->';
+      for (var i = 0; i < intertran.position; ++ i) {
+        outStr += ' ' + intertran.transition.to[i].termName;
+      }
+      outStr += ' (*)';
+      for (var i = intertran.position; i < intertran.transition.to.length; ++ i) {
+        outStr += ' ' + intertran.transition.to[i].termName;
+      }
+      console.log(outStr);
+    }
+    for (var rule of node.rules) {
+      if (rule.action === Domain.RuleType.reduce) {
+        console.log(rule.token + ' => ' + transitions[rule.num].from.termName + ' -> ' + 
+          transitions[rule.num].to.map((i) => i.termName).join(' '));
+      }
+      else
+      {
+        console.log(rule.token + ' => ' + rule.num);
+      }
+    }
+    console.log('===================');
+  }
+}
+
 module.exports = (callback) => {
   readTransitions(() => {
     generateRules();
+    printGraph();
     callback(terminals, nonterminals, transitions, ruleArray);
   });
 };
