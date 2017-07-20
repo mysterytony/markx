@@ -27,7 +27,7 @@ let readTransitions = (doneCallback) => {
   let rl = readline.createInterface(instream, outstream);
 
   rl.on('line', (line) => {
-    if (!line || line === '') {
+    if (!line || line.trim() === '') {
       return;
     }
     let terms = line.split(' ');
@@ -263,8 +263,14 @@ function printGraph() {
       console.log(outStr);
     }
     for (var rule of node.rules) {
-      if (rule.action === Domain.RuleType.reduce) continue;
-      console.log(rule.token + ' => ' + rule.num);
+      if (rule.action === Domain.RuleType.reduce) {
+        console.log(rule.token + ' => ' + transitions[rule.num].from.termName + ' -> ' + 
+          transitions[rule.num].to.map((i) => i.termName).join(' '));
+      }
+      else
+      {
+        console.log(rule.token + ' => ' + rule.num);
+      }
     }
     console.log('===================');
   }

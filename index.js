@@ -75,7 +75,7 @@ app.post('/', function(req, res) {
     });
     return;
   }
-  console.log("received: " + req.body.mxbody);
+  // console.log("received: " + req.body.mxbody);
   
   try {
     scan(req.body.mxbody, (tokenList) => {

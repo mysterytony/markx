@@ -44,16 +44,33 @@ class Parser {
     for (var i = tokens.length - 1; i >= 0; --i) {
       // clean NEWLINE LEFTANGLE LEFTANGLE LEFTANGLE ENDLINE
       // to  LEFTANGLE LEFTANGLE LEFTANGLE
-      if ((i+4 < tokens.length) &&
-        (tokens[i].term.termName === 'NEWLINE'
-      && tokens[i+1].term.termName === 'LEFTANGLE'
-      && tokens[i+2].term.termName === 'LEFTANGLE'
-      && tokens[i+3].term.termName === 'LEFTANGLE'
-      && tokens[i+4].term.termName === 'ENDLINE')) {
-          tokens.splice(i+4, 1);
-          tokens.splice(i,1);
-         }
-
+      if ((i + 4 < tokens.length) &&
+          (tokens[i].term.termName === 'NEWLINE' &&
+           tokens[i + 1].term.termName === 'LEFTANGLE' &&
+           tokens[i + 2].term.termName === 'LEFTANGLE' &&
+           tokens[i + 3].term.termName === 'LEFTANGLE' &&
+           tokens[i + 4].term.termName === 'ENDLINE')) {
+        tokens.splice(i + 4, 1);
+        tokens.splice(i, 1);
+      } else if (
+          (i + 4 < tokens.length) &&
+          (tokens[i].term.termName === 'NEWLINE' &&
+           tokens[i + 1].term.termName === 'ESC' &&
+           tokens[i + 2].term.termName === 'ESC' &&
+           tokens[i + 3].term.termName === 'ESC' &&
+           tokens[i + 4].term.termName === 'ENDLINE')) {
+        tokens.splice(i + 4, 1);
+        tokens.splice(i, 1);
+      } else if (
+          (i + 4 < tokens.length) &&
+          (tokens[i].term.termName === 'NEWLINE' &&
+           tokens[i + 1].term.termName === 'CARET' &&
+           tokens[i + 2].term.termName === 'CARET' &&
+           tokens[i + 3].term.termName === 'CARET' &&
+           tokens[i + 4].term.termName === 'ENDLINE')) {
+        tokens.splice(i + 4, 1);
+        tokens.splice(i, 1);
+      }
     }
   }
 
