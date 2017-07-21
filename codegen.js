@@ -501,6 +501,7 @@ let codegenSubwords = (tree) => {
     case 'subwords -> LOWERROMAN subwords':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
+      break;
     case 'subwords -> SPACES subwords':
     case 'subwords -> SINGLESPACE subwords':
       outputHtml.push(' ');
