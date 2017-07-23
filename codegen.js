@@ -366,7 +366,7 @@ let codegenInline = (tree) => {
       codegen(tree.nodes[3]);
       outputHtml.push('</span>');
       break;
-    case 'inline -> SPACE':
+    case 'inline -> SINGLESPACE':
       outputHtml.push(' ');
       break;
   }
@@ -451,6 +451,7 @@ let codegenUrl = (tree) => {
     case 'url -> EXCLAMATION url':
     case 'url -> SLASH url':
     case 'url -> POUND url':
+    case 'url -> COLON url':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
       break;
@@ -479,6 +480,9 @@ let codegenWords = (tree) => {
     case 'words -> LOWERA subwords':
     case 'words -> UPPERROMAN subwords':
     case 'words -> LOWERROMAN subwords':
+    case 'words -> EXCLAMATION subwords':
+    case 'words -> LEFTPAREN subwords':
+    case 'words -> RIGHTPAREN subwords':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
       break;
@@ -499,6 +503,9 @@ let codegenSubwords = (tree) => {
     case 'subwords -> LOWERA subwords':
     case 'subwords -> UPPERROMAN subwords':
     case 'subwords -> LOWERROMAN subwords':
+    case 'subwords -> EXCLAMATION subwords':
+    case 'subwords -> LEFTPAREN subwords':
+    case 'subwords -> RIGHTPAREN subwords':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
       break;
