@@ -156,36 +156,36 @@ let codegenList = (tree) => {
       outputHtml.push('</ol>');
       break;
     case 'list -> NEWLINE RIGHTANGLE SINGLESPACE inlines ENDLINE sublist':
-      outputHtml.push('<ol class="arrow">');
+      outputHtml.push('<ul class="arrow">');
       outputHtml.push('<li>');
       codegen(tree.nodes[3]);
       outputHtml.push('</li>');
       codegen(tree.nodes[5]);
-      outputHtml.push('</ol>');
+      outputHtml.push('</ul>');
       break;
     case 'list -> NEWLINE MINUS SINGLESPACE inlines ENDLINE sublist':
-      outputHtml.push('<ol class="dash">');
+      outputHtml.push('<ul class="dash">');
       outputHtml.push('<li>');
       codegen(tree.nodes[3]);
       outputHtml.push('</li>');
       codegen(tree.nodes[5]);
-      outputHtml.push('</ol>');
+      outputHtml.push('</ul>');
       break;
     case 'list -> NEWLINE PLUS SINGLESPACE inlines ENDLINE sublist':
-      outputHtml.push('<ol class="square">');
+      outputHtml.push('<ul class="square">');
       outputHtml.push('<li>');
       codegen(tree.nodes[3]);
       outputHtml.push('</li>');
       codegen(tree.nodes[5]);
-      outputHtml.push('</ol>');
+      outputHtml.push('</ul>');
       break;
     case 'list -> NEWLINE ASTERISK SINGLESPACE inlines ENDLINE sublist':
-      outputHtml.push('<ol class="disc">');
+      outputHtml.push('<ul class="disc">');
       outputHtml.push('<li>');
       codegen(tree.nodes[3]);
       outputHtml.push('</li>');
       codegen(tree.nodes[5]);
-      outputHtml.push('</ol>');
+      outputHtml.push('</ul>');
       break;
     case 'list -> NEWLINE LOWERA SINGLESPACE inlines ENDLINE sublist':
       outputHtml.push('<ol class="lower-alphabet">');
@@ -248,7 +248,20 @@ let codegenLines = (tree) => {
   switch (tree.str) {
     case 'lines -> NEWLINE inlines ENDLINE sublines':
       codegen(tree.nodes[1]);
+      outputHtml.push('<br />');
       codegen(tree.nodes[3]);
+      break;
+  }
+};
+
+let codegenSublines = (tree) => {
+  switch (tree.str) {
+    case 'sublines -> NEWLINE inlines ENDLINE sublines':
+      codegen(tree.nodes[1]);
+      outputHtml.push('<br />');
+      codegen(tree.nodes[3]);
+      break;
+    case 'sublines ->':
       break;
   }
 };
@@ -301,9 +314,9 @@ let codegenInline = (tree) => {
       codegen(tree.nodes[2]);
        outputHtml.push('" href="#');
       codegen(tree.nodes[2]);
-       outputHtml.push('">[');
-      codegen(tree.nodes[2]);
-       outputHtml.push(']</a></sup>');
+       outputHtml.push('">[' + tree.nodes[2] +']</a></sup>');
+      // codegen(tree.nodes[2]);
+      //  outputHtml.push(']</a></sup>');
       break;
     case 'inline -> DOLLAR math DOLLAR':
       codegen(tree.nodes[1]);
@@ -324,12 +337,12 @@ let codegenInline = (tree) => {
     case 'inline -> ASTERISK words ASTERISK':
       outputHtml.push('<i>');
       codegen(tree.nodes[1]);
-      outputHtml.push('<i>');
+      outputHtml.push('</i>');
       break;
     case 'inline -> ASTERISK ASTERISK words ASTERISK ASTERISK':
       outputHtml.push('<b>');
       codegen(tree.nodes[2]);
-      outputHtml.push('<b>');
+      outputHtml.push('</b>');
       break;
     case 'inline -> ASTERISK ASTERISK ASTERISK words ASTERISK ASTERISK ASTERISK':
       outputHtml.push('<b><i>');
@@ -339,17 +352,17 @@ let codegenInline = (tree) => {
     case 'inline -> UNDERSCORE words UNDERSCORE':
       outputHtml.push('<u>');
       codegen(tree.nodes[1]);
-      outputHtml.push('<u>');
+      outputHtml.push('</u>');
       break;
     case 'inline -> UNDERSCORE UNDERSCORE words UNDERSCORE UNDERSCORE':
       outputHtml.push('<s>');
       codegen(tree.nodes[2]);
-      outputHtml.push('<s>');
+      outputHtml.push('</s>');
       break;
     case 'inline -> UNDERSCORE UNDERSCORE UNDERSCORE words UNDERSCORE UNDERSCORE UNDERSCORE':
       outputHtml.push('<u><s>');
       codegen(tree.nodes[3]);
-      outputHtml.push('</u></s>');
+      outputHtml.push('</s></u>');
       break;
     case 'inline -> MINUS words MINUS':
       outputHtml.push('<mark>');
@@ -366,7 +379,7 @@ let codegenInline = (tree) => {
       codegen(tree.nodes[3]);
       outputHtml.push('</span>');
       break;
-    case 'inline -> SPACE':
+    case 'inline -> SINGLESPACE':
       outputHtml.push(' ');
       break;
   }
@@ -376,6 +389,7 @@ let codegenCodelines = (tree) => {
   switch (tree.str) {
     case 'codelines -> NEWLINE string ENDLINE codelines':
       codegen(tree.nodes[1]);
+      outputHtml.push('\n');
       codegen(tree.nodes[3]);
       break;
     case 'codelines ->':
@@ -451,6 +465,7 @@ let codegenUrl = (tree) => {
     case 'url -> EXCLAMATION url':
     case 'url -> SLASH url':
     case 'url -> POUND url':
+    case 'url -> COLON url':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
       break;
@@ -479,6 +494,9 @@ let codegenWords = (tree) => {
     case 'words -> LOWERA subwords':
     case 'words -> UPPERROMAN subwords':
     case 'words -> LOWERROMAN subwords':
+    case 'words -> EXCLAMATION subwords':
+    case 'words -> LEFTPAREN subwords':
+    case 'words -> RIGHTPAREN subwords':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
       break;
@@ -499,8 +517,12 @@ let codegenSubwords = (tree) => {
     case 'subwords -> LOWERA subwords':
     case 'subwords -> UPPERROMAN subwords':
     case 'subwords -> LOWERROMAN subwords':
+    case 'subwords -> EXCLAMATION subwords':
+    case 'subwords -> LEFTPAREN subwords':
+    case 'subwords -> RIGHTPAREN subwords':
       outputHtml.push(tree.nodes[0].str.split(' ')[1]);
       codegen(tree.nodes[1]);
+      break;
     case 'subwords -> SPACES subwords':
     case 'subwords -> SINGLESPACE subwords':
       outputHtml.push(' ');
@@ -564,6 +586,9 @@ let codegen = (tree) => {
       break;
     case 'url':
       codegenUrl(tree);
+      break;
+    case 'sublines':
+      codegenSublines(tree);
       break;
   }
 };
