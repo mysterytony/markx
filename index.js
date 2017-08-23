@@ -3,8 +3,8 @@
 const Scanner = require('./scanner');
 const Parser = require('./parser');
 const CodeGen = require('./codegen');
-const port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-const ip   = process.env.OPENSHIFT_NODEJS_IP;
+const port = process.env.NODE_PORT || 8080;
+const ip   = process.env.NODE_IP;
 
 let scan = null;
 let parserInitCompleted = false;
