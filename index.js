@@ -3,7 +3,7 @@
 const Scanner = require('./scanner');
 const Parser = require('./parser');
 const CodeGen = require('./codegen');
-
+const port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 let scan = null;
 let parserInitCompleted = false;
 
@@ -75,4 +75,4 @@ app.post('/', function(req, res) {
   }
 });
 
-app.listen(8080, function() {});
+app.listen(port, function() {});
