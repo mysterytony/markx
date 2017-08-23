@@ -38,6 +38,7 @@
 
     #demo-input {
       width: 100%;
+      max-width: 100%;
     }
   </style>
 
@@ -49,7 +50,7 @@
     <h1>The MarkX Project</h1>
     <br />
     <p class="subtitle">
-      The best substitute of markdown. Lightweight and fast. Yet more powerful.
+      A compiler that uses LR1 parsing for a new markup language.
       <a class="github-button" href="https://github.com/mysterytony/markx" data-size="large" data-show-count="true" aria-label="Star mysterytony/markx on GitHub">Star</a>
     </p>
   </div>
@@ -61,7 +62,7 @@
 
     <div>
       <p>
-        Current Release 0.3.0
+        Current Release 0.4.0
       </p>
     </div>
 
@@ -70,9 +71,158 @@
     </div>
 
     <div>
-      <p>
-        A lot of things are working now. Still a lot of bugs.
-      </p>
+      <h4>Title</h4>
+      <pre>#Title#</pre>
+      <p>There is no space between the first <code>#</code> and the first word
+    </div>
+
+    <div>
+      <h4>Header</h4>
+      <pre>
+# Header 1
+## Header 2
+...
+### Header 6</pre>
+      <p>There is exactly one space between <code>#</code> and the first word
+    </div>
+
+
+    <div>
+      <h4>Lists</h4>
+      <pre>
+1 item1
+1 item2
+1 item3
+
+- item1
+- item2
+- item3
+
++ item1
++ item2
++ item3
+
+> item1
+> item2
+> item3
+
+* item1
+* item2
+* item3</pre>
+      <p>There is exactly one space between the bullet point and the first word
+    </div>
+
+    <div>
+      <h4>Block Quote</h4>
+      <pre>
+>>>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<<<</pre>
+      <p>There must be at least one line</p>
+    </div>
+
+    <div>
+      <h4>Code Block</h4>
+      <pre>
+``` js
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+```</pre>
+      <p>There must be at least one line, and one space between <code>`</code> and the language. Syntax lighting is not implemented
+        at this time.</p>
+    </div>
+
+    <div>
+      <h4>Alignment</h4>
+      <pre>
+^^^ <
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+^^^
+
+^^^ =
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+^^^
+
+^^^ >
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+^^^
+
+^^^ ==
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+^^^
+</pre>
+      <p>There must be at least one line.</p>
+    </div>
+
+    <div>
+      <h4>2 Columns</h4>
+      <pre>
+^^^ = =
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+mollit anim id est laborum.
+^^^
+</pre>
+      <p>There must be at least one line.</p>
+    </div>
+
+    <div>
+      <h4>Inlines</h4>
+      <pre>
+[Google](https://www.google.com/)
+&lt;https://www.google.com/&gt;
+![Image](https://unsplash.it/500/300/?random)
+
+% comments
+
+`inline code`
+
+*italics*
+**bold**
+***italics and bold***
+
+_underline_
+__strike through__
+___both___
+
+-highlighted-
+--red--
+---both---
+</pre>
+      <p>There must be at least one line.</p>
     </div>
 
     <div class="page-header">
@@ -93,6 +243,14 @@
         </div>
       </div>
     </div>
+
+    <div class="page-header">
+      <h3>Feedback</h3>
+    </div>
+
+    <p>
+      A lot of features have not been implemented at this time. Report an issue at <a href="https://github.com/mysterytony/markx/issues">here</a>.
+    </p>
 
   </div>
 
