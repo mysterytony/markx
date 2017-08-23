@@ -6,7 +6,7 @@
  */
 
 const MongodbSetting = {
-  connectionString: ` mongodb://${process.env.OPENSHIFT_MONGODB_DB_HOST}:${process.env.OPENSHIFT_MONGODB_DB_PORT}/`
+  connectionString: process.env.OPENSHIFT_MONGODB_DB_URL + '/markx'
 };
 
 const MongodbCollections = {
