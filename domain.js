@@ -194,14 +194,3 @@ module.exports.IntermediateTransition = IntermediateTransition;
 module.exports.State = State;
 module.exports.RuleType = RuleType;
 module.exports.ParseTree = ParseTree;
-
-// let Domain = {
-//   Term: Term,
-//   Terminal: Terminal,
-//   NonTerminal: NonTerminal,
-//   Token: Token,
-//   Transition: Transition,
-//   Rule: Rule,
-//   IntermediateTransition: IntermediateTransition,
-//   State: State
-// };
