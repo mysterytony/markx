@@ -1,12 +1,29 @@
 {
-  "name": "openshift-cartridge-nodejs-template",
-  "version": "1.0.1",
-  "description": "Custom Node.js cartridge for OpenShift - sample application",
-  "private": true,
-  "main": "start.js",
+  "name": "markx",
+  "version": "0.4.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node --use_strict start.js"
+    "start": "node index.js",
+    "test": "node test.js"
   },
-  "author": "Ionut-Cristian Florescu <ionut.florescu@gmail.com>",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mysterytony/markx.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mysterytony/markx/issues"
+  },
+  "homepage": "https://github.com/mysterytony/markx#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "jsdoc": "^3.4.3",
+    "mongodb": "^2.2.27"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
 }

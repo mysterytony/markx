@@ -1,0 +1,414 @@
+{
+    "rules": [
+        {
+            "state": "START",
+            "next": {
+                "#": 1,
+                "`": 2,
+                "*": 3,
+                "_": 4,
+                ">": 5,
+                "<": 6,
+                "^": 7,
+                "0": 9,
+                "1": 8,
+                "2": 9,
+                "3": 9,
+                "4": 9,
+                "5": 9,
+                "6": 9,
+                "7": 9,
+                "8": 9,
+                "9": 9,
+                "a": 11,
+                "A": 10,
+
+                "i": 14,
+
+                "I": 13,
+
+                "+": 15,
+                "-": 16,
+                "=": 17,
+                "~": 18,
+                "[": 19,
+                "]": 20,
+                "(": 21,
+                ")": 22,
+                "!": 23,
+                "{": 24,
+                "}": 25,
+                "%": 26,
+                "|": 27,
+                "\\": 28,
+                "dollar$": 29,
+                " ": 31,
+                "\n": 32,
+                "\r": 38,
+                ":": 34,
+                ";": 35
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "POUND"
+        },
+        {
+            "state": "ESC"
+        },
+        {
+            "state": "ASTERISK"
+        },
+        {
+            "state": "UNDERSCORE"
+        },
+        {
+            "state": "RIGHTANGLE"
+        },
+        {
+            "state": "LEFTANGLE"
+        },
+        {
+            "state": "CARET"
+        },
+        {
+            "state": "NUMONE",
+            "next": {
+                "0": 9,
+                "1": 9,
+                "2": 9,
+                "3": 9,
+                "4": 9,
+                "5": 9,
+                "6": 9,
+                "7": 9,
+                "8": 9,
+                "9": 9
+            }
+        },
+        {
+            "state": "NUM",
+            "next": {
+                "0": 9,
+                "1": 9,
+                "2": 9,
+                "3": 9,
+                "4": 9,
+                "5": 9,
+                "6": 9,
+                "7": 9,
+                "8": 9,
+                "9": 9
+            }
+        },
+        {
+            "state": "UPPERA",
+            "next": {
+                "#": null,
+                "`": null,
+                "*": null,
+                "_": null,
+                ">": null,
+                "<": null,
+                "^": null,
+                "0": null,
+                "1": null,
+                "2": null,
+                "3": null,
+                "4": null,
+                "5": null,
+                "6": null,
+                "7": null,
+                "8": null,
+                "9": null,
+                "+": null,
+                "-": null,
+                "=": null,
+                "~": null,
+                "[": null,
+                "]": null,
+                "(": null,
+                ")": null,
+                "!": null,
+                "{": null,
+                "}": null,
+                "%": null,
+                "|": null,
+                "\\":null,
+                "dollar$": null,
+                " ": null,
+                "\n":null,
+                "\r": null,
+                ":": null,
+                ";": null
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "LOWERA",
+            "next": {
+                "#": null,
+                "`": null,
+                "*": null,
+                "_": null,
+                ">": null,
+                "<": null,
+                "^": null,
+                "0": null,
+                "1": null,
+                "2": null,
+                "3": null,
+                "4": null,
+                "5": null,
+                "6": null,
+                "7": null,
+                "8": null,
+                "9": null,
+
+                "+": null,
+                "-": null,
+                "=": null,
+                "~": null,
+                "[": null,
+                "]": null,
+                "(": null,
+                ")": null,
+                "!": null,
+                "{": null,
+                "}": null,
+                "%": null,
+                "|": null,
+                "\\":null,
+                "dollar$": null,
+                " ": null,
+                "\n":null,
+                "\r": null,
+                ":": null,
+                ";": null
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "WORD",
+            "next": {
+                "#": null,
+                "`": null,
+                "*": null,
+                "_": null,
+                ">": null,
+                "<": null,
+                "^": null,
+                "0": null,
+                "1": null,
+                "2": null,
+                "3": null,
+                "4": null,
+                "5": null,
+                "6": null,
+                "7": null,
+                "8": null,
+                "9": null,
+
+                "+": null,
+                "-": null,
+                "=": null,
+                "~": null,
+                "[": null,
+                "]": null,
+                "(": null,
+                ")": null,
+                "!": null,
+                "{": null,
+                "}": null,
+                "%": null,
+                "|": null,
+                "\\":null,
+                "dollar$": null,
+                " ": null,
+                "\n":null,
+                "\r": null,
+                ":": null,
+                ";": null
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "UPPERROMAN",
+            "next": {
+                "#": null,
+                "`": null,
+                "*": null,
+                "_": null,
+                ">": null,
+                "<": null,
+                "^": null,
+                "0": null,
+                "1": null,
+                "2": null,
+                "3": null,
+                "4": null,
+                "5": null,
+                "6": null,
+                "7": null,
+                "8": null,
+                "9": null,
+
+                "+": null,
+                "-": null,
+                "=": null,
+                "~": null,
+                "[": null,
+                "]": null,
+                "(": null,
+                ")": null,
+                "!": null,
+                "{": null,
+                "}": null,
+                "%": null,
+                "|": null,
+                "\\":null,
+                "dollar$": null,
+                " ": null,
+                "\n":null,
+                "\r": null,
+                ":": null,
+                ";": null
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "LOWERROMAN",
+            "next": {
+                "#": null,
+                "`": null,
+                "*": null,
+                "_": null,
+                ">": null,
+                "<": null,
+                "^": null,
+                "0": null,
+                "1": null,
+                "2": null,
+                "3": null,
+                "4": null,
+                "5": null,
+                "6": null,
+                "7": null,
+                "8": null,
+                "9": null,
+
+                "+": null,
+                "-": null,
+                "=": null,
+                "~": null,
+                "[": null,
+                "]": null,
+                "(": null,
+                ")": null,
+                "!": null,
+                "{": null,
+                "}": null,
+                "%": null,
+                "|": null,
+                "\\":null,
+                "dollar$": null,
+                " ": null,
+                "\n":null,
+                "\r": null,
+                ":": null,
+                ";": null
+            },
+            "otherwiseNext": 12
+        },
+        {
+            "state": "PLUS"
+        },
+        {
+            "state": "MINUS"
+        },
+        {
+            "state": "EQUAL"
+        },
+        {
+            "state": "SQUIGGLY"
+        },
+        {
+            "state": "LEFTSQUAREBRACKET"
+        },
+        {
+            "state": "RIGHTSQUAREBRACKET"
+        },
+        {
+            "state": "LEFTPAREN"
+        },
+        {
+            "state": "RIGHTPAREN"
+        },
+        {
+            "state": "EXCLAMATION"
+        },
+        {
+            "state": "LEFTBRACKET"
+        },
+        {
+            "state": "RIGHTBRACKET"
+        },
+        {
+            "state": "PERCENT"
+        },
+        {
+            "state": "BAR"
+        },
+        {
+            "state": "SLASH"
+        },
+        {
+            "state": "DOLLAR"
+        },
+        {
+            "state": "SPACES",
+            "next": {
+                " ": 30
+            }
+        },
+        {
+            "state": "SINGLESPACE",
+            "next": {
+                " ": 30
+            }
+        },
+        {
+            "state": "ENDLINE",
+            "continuousState": 33
+        },
+        {
+            "state": "NEWLINE"
+        },
+        {
+            "state": "COLON"
+        },        
+        {
+            "state": "SEMICOLON"
+        },
+        {
+            "state": "NEWFILE"
+        },        
+        {
+            "state": "ENDFILE"
+        },
+        {
+            "state": "CARRIAGERETURN",
+            "alias": "ENDLINE",
+            "next": {
+                "\n": 32
+            },
+            "continuousState": 33
+        }
+    ],
+    "startIndex": 0,
+    "endlineIndex": 32,
+    "newlineIndex": 33,
+    "dollarMarkReplacement": "dollar$",
+    "newfileIndex": 36,
+    "endfileIndex": 37
+}

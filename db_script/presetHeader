@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    .mx-body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      padding: 0.5em;
+      margin: 0.5em;
+      border-style: solid;
+      border-color: #DFDFDF;
+      border-radius: 0.3em;
+      border-width: 0.1em;
+    }
+
+    .mx-body p {
+      margin: 0px 0px 10px 0px;
+      padding: 0px;
+    }
+
+    .mx-body h1.title {
+      text-align: center;
+      font-size: 4em;
+      border-bottom: none;
+      padding: 0em;
+    }
+
+    .mx-body h1,
+    .mx-body h2,
+    .mx-body h3,
+    .mx-body h4,
+    .mx-body h5,
+    .mx-body h6 {
+      padding-left: 0px;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-top: 0px;
+    }
+
+    .mx-body h1,
+    .mx-body h2,
+    .mx-body h3 {
+      border-bottom: 1px solid #DFDFDF;
+    }
+
+    .mx-body h1 {
+      font-size: 2.5em;
+    }
+
+    .mx-body h2 {
+      font-size: 2.25em;
+    }
+
+    .mx-body h3 {
+      font-size: 2em;
+    }
+
+    .mx-body h4 {
+      font-size: 1.75em;
+    }
+
+    .mx-body h5 {
+      font-size: 1.5em;
+    }
+
+    .mx-body h6 {
+      font-size: 1.25em;
+    }
+
+    .mx-body .code-block .number-line {
+      position: absolute;
+      padding-left: 5px;
+      padding-top: 11px;
+      font-size: 0.9em;
+      color: #00b9ce;
+      text-align: right;
+      line-height: 14px;
+    }
+
+    .mx-body code {
+      font-family: monospace;
+      font-size: 0.9em;
+      margin: 0em;
+      padding: 0em;
+      line-height: 14px;
+      margin-bottom: 10px;
+    }
+
+    .mx-body pre {
+      padding: 10px 10px 10px 30px;
+      background: #F7F7F7;
+      border: 1px solid #DFDFDF;
+      border-radius: 0.3em;
+      margin: 0em 0em 10px 0em;
+    }
+
+    .mx-body pre .word {
+      color: #00006d;
+    }
+
+    .mx-body pre .func {
+      color: #8E44AD;
+    }
+
+    .mx-body pre .number {
+      color: #0E6655;
+    }
+
+    .mx-body pre .keyword {
+      color: #A71D5D;
+    }
+
+    .mx-body pre .comment {
+      color: #009302;
+    }
+
+    .mx-body span.inline {
+      font-size: 0.9em;
+      background-color: #efefef;
+      color: #161616;
+      padding: 3px;
+      border-radius: 0.3em;
+    }
+
+    .mx-body span.red {
+      color: red;
+    }
+
+    .mx-body span.box {
+      border: 1px solid black;
+      padding: 1px;
+    }
+
+    .mx-body div.block-quote {
+      border-left: 5px solid #00b9ce;
+      padding: 10px;
+      background: #dbfcff;
+      border-top-left-radius: 0.3em;
+      border-bottom-left-radius: 0.3em;
+    }
+
+    .mx-body div.boxed {
+      border: 3px solid #d6d600;
+      background-color: #ffffc9;
+      padding: 10px;
+      border-radius: 0.3em;
+      margin-bottom: 10px;
+    }
+
+    .mx-body ol.number {
+      list-style-type: decimal;
+    }
+
+    .mx-body ol.alphabet {
+      list-style-type: lower-alpha;
+    }
+
+    .mx-body ol.upper-roman {
+      list-style-type: upper-roman;
+    }
+    
+    .mx-body ol.lower-roman {
+      list-style-type: lower-roman;
+    }
+
+    .mx-body ul.disc {
+      list-style-type: disc;
+    }
+
+    .mx-body ul.square {
+      list-style-type: square;
+    }
+
+    .mx-body ul.dash {
+      list-style: none;
+      padding: 0;
+    }
+
+    .mx-body ul.dash li{
+      padding-left: 27px; 
+
+    }
+
+    .mx-body ul.dash li::before{
+      content: "-";
+      padding-right: 8px;
+      line-height: 1em;
+    }
+
+    .mx-body ul.arrow {
+      list-style: none;
+      padding: 0;
+    }
+
+    .mx-body ul.arrow li{
+      padding-left: 19px; 
+
+    }
+
+    .mx-body ul.arrow li::before{
+      content: "⮚";
+      padding-right: 8px;
+      line-height: 1em;
+    }
+
+    .mx-body hr.light {
+      height: 3px;
+      border: none;
+      background-color: #DFDFDF;
+    }
+
+    .mx-body hr.heavy {
+      height: 5px;
+      border: 0;
+      background-color: #b5b5b5;
+    }
+
+    .mx-body hr.squiggly {
+      border: 0;
+      height:15px;
+      background: url(http://ibrahimjabbari.com/english/images/hr-12.png) repeat-x 0 0;
+    }
+
+    .mx-body p.align-left {
+      text-align: left;
+    }
+
+    .mx-body p.align-center {
+      text-align: center;
+    }
+
+    .mx-body p.align-right {
+      text-align: right;
+    }
+
+    .mx-body p.fit-width {
+      text-align: justify;
+    }
+
+    .mx-body div.column {
+      -webkit-column-rule: 1px solid lightblue;
+      -moz-column-rule: 1px solid lightblue;
+      column-rule: 1px solid lightblue;
+      -webkit-column-gap: 40px;
+      -moz-column-gap: 40px;
+      column-gap: 40px;
+    }
+    .mx-body div.column-2 {
+      -webkit-column-count: 2;
+      -moz-column-count: 2;
+      column-count: 2;
+    }
+
+    .mx-body div.column-3 {
+      -webkit-column-count: 3;
+      -moz-column-count: 3;
+      column-count: 3;
+    }
+
+    .mx-body table {
+      border-collapse: collapse;
+      border: 2px solid #b5b5b5;
+      margin-bottom: 10px;
+      width: auto;
+    }
+
+    .mx-body table th {
+      text-align: center;
+    }
+
+    .mx-body table th,
+    .mx-body table td {
+      border: 1px solid #b5b5b5;
+      padding: 5px;
+    }
+
+    .mx-body table tr:nth-child(even) {
+      background-color: #F7F7F7;
+    }
+
+    .mx-body table caption {
+      font-size: 1.25em;
+    }
+  </style>
+  <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+</head>
+
+<body class="mx-body">
