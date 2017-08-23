@@ -4,6 +4,8 @@ const Scanner = require('./scanner');
 const Parser = require('./parser');
 const CodeGen = require('./codegen');
 const port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+const ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
+
 let scan = null;
 let parserInitCompleted = false;
 
@@ -75,4 +77,4 @@ app.post('/', function(req, res) {
   }
 });
 
-app.listen(port, function() {});
+app.listen(port, ip);
