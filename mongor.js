@@ -6,7 +6,7 @@
  */
 
 const MongodbSetting = {
-  connectionString: 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb'
+  connectionString: process.env.OPENSHIFT_MONGODB_DB_URL + '/markx'
 };
 
 const MongodbCollections = {

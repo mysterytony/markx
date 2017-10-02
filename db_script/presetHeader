@@ -201,7 +201,7 @@
     }
 
     .mx-body ul.arrow li::before{
-      content: "⮚";
+      content: "‣";
       padding-right: 8px;
       line-height: 1em;
     }

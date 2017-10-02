@@ -3,6 +3,8 @@
 const Scanner = require('./scanner');
 const Parser = require('./parser');
 const CodeGen = require('./codegen');
+const port = process.env.NODE_PORT || 8080;
+const ip   = process.env.NODE_IP;
 
 let scan = null;
 let parserInitCompleted = false;
@@ -33,22 +35,7 @@ app.use( function(req, res, next) {
   next();
 });
 
-// var MongoClient = require('mongodb').MongoClient;
-
-// Connection URL
-// var url = 'mongodb://admin:markXadmin@ds151461.mlab.com:51461/markxdb';
-
 var greetingMsg = 'hello world';
-
-// Use connect method to connect to the server
-// MongoClient.connect(url, function(err, db) {
-//   var collection = db.collection('test');
-//   // Find some documents
-//   collection.find({}).toArray(function(err, docs) {
-//     greetingMsg = docs[0].message;
-//   });
-//   db.close();
-// });
 
 app.get('/', function(req, res) { 
   res.status(200);
@@ -90,4 +77,4 @@ app.post('/', function(req, res) {
   }
 });
 
-app.listen(8080, function() {});
+app.listen(port, ip);

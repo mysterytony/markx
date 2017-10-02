@@ -1,13 +1,7 @@
 # markx
 
-markx is a markdown compiler built on MEAN, hosted on Google Cloud
+markx is a new markup language compiler using LR1 parse built on MEAN
 
-## Status
+## Demo
 
-| master | release |
-|-|-|
-| [![Build Status](https://travis-ci.com/mysterytony/markx.svg?token=xjxYpwWTjswx1sD5op5a&branch=master)](https://travis-ci.com/mysterytony/markx) | [![Build Status](https://travis-ci.com/mysterytony/markx.svg?token=xjxYpwWTjswx1sD5op5a&branch=release)](https://travis-ci.com/mysterytony/markx) |
-
-## Guide
-
-[The guide to use markx.](/docs/markx_guide.pdf)
+<http://tonyli.me/markx>
