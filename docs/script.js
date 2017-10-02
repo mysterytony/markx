@@ -1,5 +1,5 @@
 // let rest = 'http://markx-168601.appspot.com/';
-let rest = 'http://markx.azurewebsites.net//';
+let rest = 'http://markx.azurewebsites.net/';
 
 $(document).ready(() => {
   $('#demo-input').on('input propertychange', () => {

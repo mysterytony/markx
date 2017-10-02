@@ -3,8 +3,8 @@
 const Scanner = require('./scanner');
 const Parser = require('./parser');
 const CodeGen = require('./codegen');
-const port = process.env.NODE_PORT || 8080;
-const ip   = process.env.NODE_IP;
+// const port = process.env.NODE_PORT || 8080;
+// const ip   = process.env.NODE_IP;
 
 let scan = null;
 let parserInitCompleted = false;
@@ -77,4 +77,4 @@ app.post('/', function(req, res) {
   }
 });
 
-app.listen(port, ip);
+app.listen(process.env.PORT || 3000);
